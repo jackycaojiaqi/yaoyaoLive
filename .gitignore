@@ -1,6 +1,6 @@
-easeui/build
-simpledemo/build
 vmtools/.externalNativeBuild
-*.iml
+simpledemo/build
+easeui/build
 build
 .gradle
+*.iml

@@ -66,4 +66,6 @@
     <color name="color_music_title">#344150</color>
     <color name="white_f6">#F6F6F6</color>
     <color name="head_title">#323232</color>
+    <color name="main_color">#fc157e</color>
+
 </resources>
