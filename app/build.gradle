@@ -1,0 +1,98 @@
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.fubang.video"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    signingConfigs {
+        debug {
+            keyAlias 'jacky'
+            keyPassword 'caojiaqi1314'
+            storeFile file('fubang.jks')
+            storePassword 'caojiaqi1314'
+        }
+    }
+    buildTypes {
+        debug {
+            // 简单粗暴解决多个库引用 jni 库出现 UnsatisfiedLinkError 文件错误问题
+            ndk {
+                abiFilters = ["armeabi-v7a", "x86"]
+            }
+            // 是否开启压缩
+            zipAlignEnabled false
+            // 是否开启混淆
+            minifyEnabled false
+            // 设置debug的签名
+            signingConfig signingConfigs.debug
+        }
+        release {
+            // 简单粗暴解决多个库引用 jni 库出现 UnsatisfiedLinkError 文件错误问题
+            ndk {
+                abiFilters = ["armeabi-v7a", "x86"]
+            }
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        fubang {
+        }
+
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.+'
+    compile 'com.android.support:design:25.+'
+    compile 'com.android.support:support-vector-drawable:25.+'
+    testCompile 'junit:junit:4.12'
+    //网络请求框架
+    compile 'com.lzy.net:okgo:2.1.4'
+    //popwindow封装
+    compile 'com.github.pinguo-zhouwei:CustomPopwindow:2.0.0'
+    //butterknife
+    compile 'com.jakewharton:butterknife:8.4.0'
+    //view注解
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'org.simple:androideventbus:1.0.5.1'
+    compile 'com.android.support:percent:25.+'
+    compile 'com.android.support:recyclerview-v7:25.2.0'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.16'
+    compile 'com.lovedise:permissiongen:0.0.6'
+    compile files('libs/AMap_Location_V3.3.0_20170118.jar')
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'
+    compile 'jp.wasabeef:glide-transformations:2.0.2'
+    compile 'com.facebook.fresco:fresco:1.2.0'
+    compile 'com.facebook.fresco:webpsupport:1.2.0'
+    compile 'com.facebook.fresco:animated-base-support:1.2.0'
+    compile 'com.facebook.fresco:animated-webp:1.2.0'
+    compile 'com.facebook.fresco:animated-gif:0.12.0+'
+    compile files('libs/HwPush_SDK_V2705_nomap.jar')
+    compile 'com.makeramen:roundedimageview:2.3.0'
+    compile project(':vmtools')
+    compile files('libs/hyphenatechat_3.3.2.jar')
+    compile project(':easeui')
+    //tabview
+    compile 'com.zhy:flowlayout-lib:1.0.3'
+    compile files('libs/aliyun-oss-sdk-android-2.3.0.jar')
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+}

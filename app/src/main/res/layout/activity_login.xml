@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vm_dimen_16"
+            android:textColor="@color/vm_black_87"
+            android:textColorHint="@color/vm_black_38">
+
+            <EditText
+                android:id="@+id/et_login_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="账户名"
+                android:inputType="textImeMultiLine"
+                android:textColor="@color/vm_black_87"
+                android:textColorHint="@color/vm_black_38"
+                android:textSize="@dimen/vm_size_body" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vm_dimen_16"
+            android:textColor="@color/vm_black_87"
+            android:textColorHint="@color/vm_black_38">
+
+            <EditText
+                android:id="@+id/et_login_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="密码"
+                android:inputType="textImeMultiLine"
+                android:textColor="@color/vm_black_87"
+                android:textColorHint="@color/vm_black_38"
+                android:textSize="@dimen/vm_size_body" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_login_sign_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="登录" />
+
+        <Button
+            android:id="@+id/btn_login_sign_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="注册" />
+
+        <Button
+            android:id="@+id/btn_login_sign_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="退出登录" />
+    </LinearLayout>
+</LinearLayout>

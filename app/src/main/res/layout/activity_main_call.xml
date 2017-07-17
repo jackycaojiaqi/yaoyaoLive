@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_f6"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/common_head" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp">
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="320dp"
+                        android:background="@color/black_room"
+                        android:scaleType="fitCenter"
+                        app:riv_border_color="#333333"
+                        app:riv_corner_radius="10dip"
+                        app:riv_mutate_background="true" />
+
+                    <ImageView
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="80dp"
+                        android:src="@drawable/ic_home_call" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="170dp"
+                        android:text="当前在线1000人"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="女神"
+                        android:textColor="@color/black_3a3a3a"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
+                        android:text="更多"
+                        android:textColor="@color/gray_deep"
+                        android:textSize="14dp" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_arrow_right" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="125dp"
+                        android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="老司机"
+                        android:textColor="@color/black_3a3a3a"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
+                        android:text="更多"
+                        android:textColor="@color/gray_deep"
+                        android:textSize="14dp" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_arrow_right" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="125dp"
+                        android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_home_ranking" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:text="排行榜"
+                        android:textColor="@color/black_3a3a3a"
+                        android:textSize="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_home_charm_list" />
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_home_rich_list" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="男生"
+                        android:textColor="@color/black_3a3a3a"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
+                        android:text="更多"
+                        android:textColor="@color/gray_deep"
+                        android:textSize="14dp" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_arrow_right" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="125dp"
+                        android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_home_ranking" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:text="排行榜"
+                        android:textColor="@color/black_3a3a3a"
+                        android:textSize="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_home_gift_list" />
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_home_chat_list" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="15dp"
+                        android:layout_marginTop="3dp"
+                        android:src="@drawable/ic_home_quality" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="25dp"
+                        android:text="精选生活圈"
+                        android:textColor="@color/black_3a3a3a"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
+                        android:text="更多"
+                        android:textColor="@color/gray_deep"
+                        android:textSize="14dp" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_arrow_right" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="125dp"
+                        android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
+                </RelativeLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/vm_dimen_16"
+                    android:textColor="@color/vm_black_87"
+                    android:textColorHint="@color/vm_black_38">
+
+                    <EditText
+                        android:id="@+id/edit_contacts_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="对方名字"
+                        android:inputType="textImeMultiLine"
+                        android:textColor="@color/vm_black_87"
+                        android:textColorHint="@color/vm_black_38"
+                        android:textSize="@dimen/vm_size_body" />
+                </android.support.design.widget.TextInputLayout>
+
+
+                <Button
+                    android:id="@+id/btn_send"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="发送测试消息" />
+
+                <Button
+                    android:id="@+id/btn_call_voice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="语音通话" />
+
+                <Button
+                    android:id="@+id/btn_call_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="视频通话" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
