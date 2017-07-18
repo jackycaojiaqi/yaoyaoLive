@@ -1,13 +1,16 @@
 package com.fubang.video.ui;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +22,9 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.fubang.video.AppConstant;
+import com.fubang.video.Constant;
+import com.fubang.video.DemoHelper;
 import com.fubang.video.R;
 import com.fubang.video.adapter.FragmentTabAdapter;
 import com.fubang.video.base.BaseActivity;
@@ -30,11 +36,17 @@ import com.fubang.video.ui.fragment.MineFragment;
 import com.fubang.video.util.LocationUtil;
 import com.fubang.video.util.StartUtil;
 import com.fubang.video.util.StringUtil;
+import com.fubang.video.util.ToastUtil;
+import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
+import com.hyphenate.easeui.utils.EaseCommonUtils;
+import com.hyphenate.exceptions.HyphenateException;
 import com.socks.library.KLog;
 import com.umeng.analytics.MobclickAgent;
+import com.vmloft.develop.library.tools.utils.VMLog;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +98,8 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient;
     private Context context;
+    private String username ="555";
+    private String password = "555";
 
     public void onResume() {
         super.onResume();
@@ -116,6 +130,54 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         initview();
         //注册环信消息监听回调
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
+        //环信登录
+        loginHX();
+    }
+
+    private void loginHX() {
+//        username = (String) VMSPUtil.get(context, AppConstant.USERNAME, "");
+//        password = (String) VMSPUtil.get(context, AppConstant.PASSWORD, "");
+        if (username.isEmpty() || password.isEmpty()) {
+            ToastUtil.show(context, "username or password null");
+            return;
+        }
+        VMSPUtil.put(context, AppConstant.USERNAME, username);
+        EMClient.getInstance().login(username, password, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                VMLog.i("login success");
+                try {
+                    EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+                VMSPUtil.put(context, "username", username);
+                VMSPUtil.put(context, "password", password);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        KLog.e("登录环信成功");
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final int i, final String s) {
+                final String str = "login error: " + i + "; " + s;
+                VMLog.i(str);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.show(context, str);
+                    }
+                });
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
     }
 
     EMMessageListener msgListener = new EMMessageListener() {
@@ -125,6 +187,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
             //收到消息
             if (messages.size() > 0) {
                 for (EMMessage message : messages) {//分发消息
+                    DemoHelper.getInstance().getNotifier().onNewMsg(message);
                     KLog.e(message.toString());
                 }
             }
@@ -158,7 +221,21 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         public void onMessageChanged(EMMessage message, Object change) {
         }
     };
+    private BroadcastReceiver broadcastReceiver;
+    private LocalBroadcastManager broadcastManager;
+    private void registerBroadcastReceiver() {
+        broadcastManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constant.ACTION_CONTACT_CHANAGED);
+        intentFilter.addAction(Constant.ACTION_GROUP_CHANAGED);
+        broadcastReceiver = new BroadcastReceiver() {
 
+            @Override
+            public void onReceive(Context context, Intent intent) {
+            }
+        };
+        broadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+    }
     //定位权限请求成功
     @PermissionSuccess(requestCode = 200)
     public void doSomething() {

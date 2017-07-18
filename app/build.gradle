@@ -97,4 +97,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     //倒计时按钮
     compile 'com.white.countdownbutton:countdownbtn:1.0.1'
+    //图片轮播
+    compile 'com.youth.banner:banner:1.4.9'
+    compile 'com.parse:parse-android:1.13.1'
 }

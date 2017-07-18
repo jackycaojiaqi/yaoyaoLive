@@ -8,6 +8,7 @@
     <include layout="@layout/common_head" />
 
     <RelativeLayout
+        android:id="@+id/rll_message_system"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="@color/white"

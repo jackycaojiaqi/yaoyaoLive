@@ -223,7 +223,6 @@ public class EaseNotifier {
                     contentTitle = customCotentTitle;
                 }   
             }
-
             // create and send notificaiton
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(appContext)
                                                                         .setSmallIcon(appContext.getApplicationInfo().icon)
@@ -261,7 +260,6 @@ public class EaseNotifier {
                     mBuilder.setSmallIcon(smallIcon);
                 }
             }
-
             mBuilder.setContentTitle(contentTitle);
             mBuilder.setTicker(notifyText);
             mBuilder.setContentText(summaryBody);
@@ -313,7 +311,6 @@ public class EaseNotifier {
             if(settingsProvider.isMsgSoundAllowed(message)){
                 if (ringtone == null) {
                     Uri notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
                     ringtone = RingtoneManager.getRingtone(appContext, notificationUri);
                     if (ringtone == null) {
                         EMLog.d(TAG, "cant find ringtone at:" + notificationUri.getPath());

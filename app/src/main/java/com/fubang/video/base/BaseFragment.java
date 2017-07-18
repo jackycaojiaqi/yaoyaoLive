@@ -32,7 +32,6 @@ import java.lang.reflect.Field;
  */
 public class BaseFragment extends Fragment {
 
-    protected Context context;
     /**
      * 通过反射修改TabLayout Indicator的宽度（仅在Android 4.2及以上生效）
      */

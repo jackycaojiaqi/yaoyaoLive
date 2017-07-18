@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_head" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:background="@color/nk_color"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="金币"
+            android:textColor="@color/white"
+            android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/tv_recharge_nk_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="30dp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_recharge_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:textColor="@color/black_3a3a3a"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60dp"
+            android:text="100金币" />
+        <Button
+            android:id="@+id/btn_recharge_1"
+            android:layout_width="80dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:text="¥10"
+            android:background="@drawable/shap_rec_30dp_login_wechat"
+            android:layout_height="30dp" />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_c"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_recharge_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:textColor="@color/black_3a3a3a"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60dp"
+            android:text="300金币"
+             />
+        <Button
+            android:id="@+id/btn_recharge_2"
+            android:layout_width="80dp"
+            android:textColor="@color/white"
+            android:text="¥30"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shap_rec_30dp_login_wechat"
+            android:layout_height="30dp"
+
+        />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_c"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_recharge_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:textColor="@color/black_3a3a3a"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60dp"
+            android:text="500金币" />
+        <Button
+            android:id="@+id/btn_recharge_3"
+            android:layout_width="80dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:text="¥50"
+            android:background="@drawable/shap_rec_30dp_login_wechat"
+            android:layout_height="30dp" />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_c"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_recharge_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:textColor="@color/black_3a3a3a"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60dp"
+            android:text="980金币" />
+        <Button
+            android:id="@+id/btn_recharge_4"
+            android:layout_width="80dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:text="¥98"
+            android:background="@drawable/shap_rec_30dp_login_wechat"
+            android:layout_height="30dp" />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_c"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_recharge_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:textColor="@color/black_3a3a3a"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60dp"
+            android:text="5000金币" />
+        <Button
+            android:id="@+id/btn_recharge_5"
+            android:layout_width="80dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:text="¥500"
+            android:background="@drawable/shap_rec_30dp_login_wechat"
+            android:layout_height="30dp" />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_c"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_recharge_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:textColor="@color/black_3a3a3a"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="60dp"
+            android:text="9980金币" />
+        <Button
+            android:id="@+id/btn_recharge_6"
+            android:layout_width="80dp"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:text="¥998"
+            android:background="@drawable/shap_rec_30dp_login_wechat"
+            android:layout_height="30dp" />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_c"/>
+</LinearLayout>

@@ -1,15 +1,22 @@
 package com.fubang.video.ui;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.sdk.android.oss.ClientConfiguration;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.OSS;
 import com.alibaba.sdk.android.oss.OSSClient;
@@ -24,13 +31,22 @@ import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.util.ToastUtil;
+import com.socks.library.KLog;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.R.attr.path;
 
 /**
  * Created by jacky on 2017/7/17.
@@ -46,6 +62,10 @@ public class PublishCircleActivity extends BaseActivity {
     ImageView ivAction;
     @BindView(R.id.id_flowlayout)
     TagFlowLayout tagGroup;
+    @BindView(R.id.iv_publish_add_video)
+    ImageView ivPublishAddVideo;
+    @BindView(R.id.et_publish_content)
+    EditText etPublishContent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,13 +95,15 @@ public class PublishCircleActivity extends BaseActivity {
         tagGroup.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
             @Override
             public boolean onTagClick(View view, int position, FlowLayout parent) {
-                Toast.makeText(context, date[position], Toast.LENGTH_SHORT).show();
+                ToastUtil.show(context, date[position]);
                 return true;
             }
         });
     }
 
-    @OnClick({R.id.tv_submit})
+    private final int GET_VIDEP_FILE = 0X12;
+
+    @OnClick({R.id.tv_submit, R.id.iv_publish_add_video})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_submit:
@@ -125,6 +147,66 @@ public class PublishCircleActivity extends BaseActivity {
 //             task.cancel(); // 可以取消任务
 //            task.waitUntilFinished(); // 可以等待直到任务完成
                 break;
+            case R.id.iv_publish_add_video:
+                Intent intent = new Intent();
+                intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                ((Activity) context).startActivityForResult(intent,
+                        GET_VIDEP_FILE);
+                break;
         }
+    }
+
+    private String path;
+
+    /**
+     * 视频回调
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+
+            case GET_VIDEP_FILE:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (resultCode == RESULT_OK) {
+                        Uri uri = data.getData();
+                        Cursor cursor = getContentResolver().query(uri, null, null,
+                                null, null);
+                        cursor.moveToFirst();
+                        String v_path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
+                        Long v_size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
+                        v_size = v_size / 1024 / 1024;
+                        String v_name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
+                        KLog.e("v_path=" + android.os.Environment
+                                .getExternalStorageDirectory().getAbsolutePath() + "/" + v_path);
+                        KLog.e("v_size=" + v_size);
+                        KLog.e("v_name=" + v_name);
+                        ivPublishAddVideo.setImageBitmap(createVideoThumbnail(v_path));
+                    }
+                }
+                break;
+        }
+
+    }
+
+    private Bitmap createVideoThumbnail(String filePath) {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(filePath);
+            bitmap = retriever.getFrameAtTime();
+        } catch (IllegalArgumentException ex) {
+            KLog.e("Assume this is a corrupt video file");
+        } catch (RuntimeException ex) {
+            KLog.e("Assume this is a corrupt video file");
+        } finally {
+            try {
+                retriever.release();
+            } catch (RuntimeException ex) {
+                // Ignore failures while cleaning up.
+            }
+        }
+        return bitmap;
     }
 }

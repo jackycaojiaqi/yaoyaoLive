@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.fubang.video.R;
 import com.fubang.video.base.BaseFragment;
+import com.fubang.video.util.ToastUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
@@ -44,7 +46,7 @@ public class HomeFragment extends BaseFragment {
     EditText contactsView;
 
     @BindView(R.id.layout_root)
-    View rootView;
+    SwipeRefreshLayout SwipeRefreshView;
 
     Unbinder unbinder;
     @BindView(R.id.iv_action)
@@ -68,6 +70,12 @@ public class HomeFragment extends BaseFragment {
         contacts = (String) VMSPUtil.get(context, "contacts", "");
         contactsView.setText(contacts);
         ivAction.setVisibility(View.VISIBLE);
+        SwipeRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                SwipeRefreshView.setRefreshing(false);
+            }
+        });
     }
 
 
@@ -159,14 +167,14 @@ public class HomeFragment extends BaseFragment {
             public void onSuccess() {
                 String str = String.format("消息发送成功 msgId %s, content %s", message.getMsgId(),
                         message.getBody());
-                Snackbar.make(rootView, str, Snackbar.LENGTH_INDEFINITE).show();
+                ToastUtil.show(context, str);
                 VMLog.i(str);
             }
 
             @Override
             public void onError(final int i, final String s) {
                 String str = String.format("消息发送失败 code: %d, error: %s", i, s);
-                Snackbar.make(rootView, str, Snackbar.LENGTH_INDEFINITE).show();
+                ToastUtil.show(context, str);
                 VMLog.i(str);
             }
 

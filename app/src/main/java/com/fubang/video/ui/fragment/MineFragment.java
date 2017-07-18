@@ -10,9 +10,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseFragment;
+import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.ui.SettingActivity;
+import com.fubang.video.ui.UserInfoActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,10 +79,16 @@ public class MineFragment extends BaseFragment {
 
     @OnClick({R.id.rll_mine_self, R.id.rll_mine_nk, R.id.rll_mine_circle, R.id.rll_mine_vip, R.id.rll_mine_feedback, R.id.rll_mine_setting})
     public void onViewClicked(View view) {
+        Intent intent;
         switch (view.getId()) {
             case R.id.rll_mine_self:
+                intent = new Intent(getActivity(),UserInfoActivity.class);
+                intent.putExtra(AppConstant.TYPE,1);
+                startActivity(intent);
                 break;
             case R.id.rll_mine_nk:
+                intent = new Intent(getActivity(),RechargeActivity.class);
+                startActivity(intent);
                 break;
             case R.id.rll_mine_circle:
                 break;

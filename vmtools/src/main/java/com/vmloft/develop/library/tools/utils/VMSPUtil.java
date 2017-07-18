@@ -68,7 +68,7 @@ public class VMSPUtil {
     /**
      * 清除所有数据
      */
-    public static void clear(Context appContext, Context context) {
+    public static void clear(Context appContext) {
         SharedPreferences sp = appContext.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.clear();

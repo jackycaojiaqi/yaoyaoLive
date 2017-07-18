@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_f6"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_head" />
+
+    <EditText
+        android:id="@+id/et_feedback_content"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        android:gravity="left"
+        android:hint="请输入你的反馈信息..."
+        android:padding="10dp"
+        android:textColor="@color/gray_deep"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="更多问题，请联系官方QQ：121212"
+        android:textColor="@color/gray_deep" />
+
+</LinearLayout>

@@ -14,10 +14,13 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.cookie.store.PersistentCookieStore;
+import com.lzy.okgo.model.HttpHeaders;
+import com.lzy.okgo.model.HttpParams;
 import com.umeng.analytics.MobclickAgent;
 import com.vmloft.develop.app.demo.call.CallManager;
 import com.vmloft.develop.app.demo.call.CallReceiver;
 import com.vmloft.develop.library.tools.VMApplication;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +37,10 @@ public class APP extends VMApplication {
     }
 
     private CallReceiver callReceiver;
-
+    private static APP instance;
+    public static APP getInstance() {
+        return instance;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -46,7 +52,7 @@ public class APP extends VMApplication {
         //注册环信sdk
         initHyphenate();
 
-        EaseUI.getInstance().init(getApplicationContext(),null);
+
         MobclickAgent.setScenarioType( getApplicationContext(), MobclickAgent.EScenarioType.E_UM_NORMAL);
     }
     private void initOkGo() {
@@ -54,9 +60,8 @@ public class APP extends VMApplication {
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.put("commonHeaderKey1", "commonHeaderValue1");    //header不支持中文
 //        headers.put("commonHeaderKey2", "commonHeaderValue2");
-//        HttpParams params = new HttpParams();
-//        params.put("commonParamsKey1", "commonParamsValue1");     //param支持中文,直接传,不要自己编码
-//        params.put("commonParamsKey2", "这里支持中文参数");
+        HttpParams params = new HttpParams();//公共token参数
+        params.put("token", String.valueOf(VMSPUtil.get(getApplicationContext(),"token","")));     //param支持中文,直接传,不要自己编码
         //-----------------------------------------------------------------------------------//
 
         //必须调用初始化
@@ -144,7 +149,7 @@ public class APP extends VMApplication {
 
         // 初始化环信SDK,一定要先调用init()
         EMClient.getInstance().init(context, options);
-
+        EaseUI.getInstance().init(getApplicationContext(), options);
         // 开启 debug 模式
         EMClient.getInstance().setDebugMode(true);
 
