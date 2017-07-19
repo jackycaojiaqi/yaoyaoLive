@@ -102,4 +102,6 @@ dependencies {
     compile 'com.parse:parse-android:1.13.1'
     compile files('libs/aliyun-vod-upload-android-sdk-1.0.6.jar')
     compile files('libs/gson-2.2.4.jar')
+    //图片选择工具
+    compile 'com.jph.takephoto:takephoto_library:4.0.3'
 }

@@ -10,12 +10,20 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseFragment;
+import com.fubang.video.callback.JsonCallBack;
+import com.fubang.video.entity.BaseInfoEntity;
+import com.fubang.video.entity.LoginEntity;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.ui.SettingActivity;
 import com.fubang.video.ui.UserInfoActivity;
+import com.fubang.video.util.ToastUtil;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,6 +77,37 @@ public class MineFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setText(tvTitle, "我的");
+        initdate();
+    }
+
+    private void initdate() {
+        //去登录
+        OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
+                .tag(this)
+                .params("nuserid", String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERID, "")))
+                .params("ctoken", String.valueOf(VMSPUtil.get(getActivity(), AppConstant.TOKEN, "")))
+                .execute(new JsonCallBack<BaseInfoEntity>(BaseInfoEntity.class) {
+                    @Override
+                    public void onSuccess(Response<BaseInfoEntity> response) {
+                        if (response.body().getStatus().equals("success")) {
+                            tvMineId.setText("妖妖ID:" + VMSPUtil.get(getActivity(), AppConstant.USERID, ""));//ID
+                            tvMineName.setText(response.body().getInfo().getCalias() + "");//姓名
+                            tvMineNkNum.setText("金币*" + response.body().getInfo().getNmoney() + " ");//金币
+                            Glide.with(getActivity()).load(response.body().getInfo().getCphoto()).fitCenter().into(ivMinePic);//头像
+                            if (response.body().getInfo().getNgender().equals("0")) {//性别
+                                ivMineGender.setImageResource(R.drawable.ic_register_female_checked);
+                            } else if (response.body().getInfo().getNgender().equals("1")) {
+                                ivMineGender.setImageResource(R.drawable.ic_register_male_checked);
+                            }
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<BaseInfoEntity> response) {
+                        super.onError(response);
+                    }
+                });
     }
 
     @Override
@@ -82,12 +121,12 @@ public class MineFragment extends BaseFragment {
         Intent intent;
         switch (view.getId()) {
             case R.id.rll_mine_self:
-                intent = new Intent(getActivity(),UserInfoActivity.class);
-                intent.putExtra(AppConstant.TYPE,1);
+                intent = new Intent(getActivity(), UserInfoActivity.class);
+                intent.putExtra(AppConstant.TYPE, 1);
                 startActivity(intent);
                 break;
             case R.id.rll_mine_nk:
-                intent = new Intent(getActivity(),RechargeActivity.class);
+                intent = new Intent(getActivity(), RechargeActivity.class);
                 startActivity(intent);
                 break;
             case R.id.rll_mine_circle:
@@ -97,7 +136,7 @@ public class MineFragment extends BaseFragment {
             case R.id.rll_mine_feedback:
                 break;
             case R.id.rll_mine_setting:
-                startActivity(new Intent(getActivity(),SettingActivity.class));
+                startActivity(new Intent(getActivity(), SettingActivity.class));
                 break;
         }
     }

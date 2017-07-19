@@ -131,54 +131,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         //注册环信消息监听回调
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
         //环信登录
-        loginHX();
+//        loginHX();
     }
 
-    private void loginHX() {
-//        username = (String) VMSPUtil.get(context, AppConstant.USERNAME, "");
-//        password = (String) VMSPUtil.get(context, AppConstant.PASSWORD, "");
-        if (username.isEmpty() || password.isEmpty()) {
-            ToastUtil.show(context, "username or password null");
-            return;
-        }
-        VMSPUtil.put(context, AppConstant.USERNAME, username);
-        EMClient.getInstance().login(username, password, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                VMLog.i("login success");
-                try {
-                    EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                }
-                VMSPUtil.put(context, "username", username);
-                VMSPUtil.put(context, "password", password);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        KLog.e("登录环信成功");
-                    }
-                });
-            }
-
-            @Override
-            public void onError(final int i, final String s) {
-                final String str = "login error: " + i + "; " + s;
-                VMLog.i(str);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtil.show(context, str);
-                    }
-                });
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
-    }
 
     EMMessageListener msgListener = new EMMessageListener() {
 

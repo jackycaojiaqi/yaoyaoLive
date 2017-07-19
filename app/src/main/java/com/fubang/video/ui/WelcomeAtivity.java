@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 
+import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
+import com.fubang.video.util.StringUtil;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 /**
  * Created by jacky on 2017/7/17.
@@ -21,8 +24,13 @@ public class WelcomeAtivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(context, LoginActivity.class));
-                finish();
+                if (!StringUtil.isEmptyandnull(String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN,"")))){
+                    startActivity(new Intent(context, MainActivity.class));
+                    finish();
+                }else {
+                    startActivity(new Intent(context, LoginActivity.class));
+                    finish();
+                }
             }
         }, 1000);
     }

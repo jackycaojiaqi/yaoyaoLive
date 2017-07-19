@@ -53,6 +53,9 @@
         <activity
             android:name="com.hyphenate.easeui.ui.EaseBaiduMapActivity"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".ui.LoginPasswordActivity"
+            android:launchMode="singleTask"></activity>
         <!--语音通话界面-->
         <activity
             android:name="com.vmloft.develop.app.demo.call.VoiceCallActivity"

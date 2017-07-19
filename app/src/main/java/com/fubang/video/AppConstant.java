@@ -22,4 +22,10 @@ public class AppConstant {
 
 
     public static final String URL_PUNLISH_UPLOAD = "/aliyun-php-sdk-vod/aliyun.php";//获取上传凭证
+    public static final String URL_SEND_MSG = "/index.php/LineApp/send_msg";//发送短信验证码
+    public static final String URL_CHECK_MSG = "/index.php/LineApp/check_msg";//核验短信验证码
+    public static final String URL_CHECK_REG = "/index.php/LineApp/check_reg";//用户注册查询是否存在
+    public static final String URL_LOGIN = "/index.php/LineApp/login";//用户登录
+    public static final String URL_REGISTER = "/index.php/LineApp/reg";//用户注册
+    public static final String URL_BASE_INFO = "/index.php/LineApp/base_info";//获取用户基本信息
 }
