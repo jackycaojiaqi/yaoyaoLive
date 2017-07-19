@@ -13,6 +13,7 @@ public class AppConstant {
     public static final String USERNAME = "username";
     public static final String USERID = "userid";
     public static final String TOKEN = "token";
+    public static final String PHONE = "phone";
     public static final String PASSWORD = "password";
     public static final String COUNT = "count";
     public static final String CONTENT = "content";
@@ -28,4 +29,5 @@ public class AppConstant {
     public static final String URL_LOGIN = "/index.php/LineApp/login";//用户登录
     public static final String URL_REGISTER = "/index.php/LineApp/reg";//用户注册
     public static final String URL_BASE_INFO = "/index.php/LineApp/base_info";//获取用户基本信息
+    public static final String URL_UPLOAD_PHOTO = "/index.php/LineApp/upload_pic";//上传图片和头像
 }

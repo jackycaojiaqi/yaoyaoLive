@@ -98,8 +98,8 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient;
     private Context context;
-    private String username ="55";
-    private String password = "55";
+    private String phone;
+    private String password;
 
     public void onResume() {
         super.onResume();
@@ -131,9 +131,51 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         //注册环信消息监听回调
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
         //环信登录
-//        loginHX();
+        loginHX();
     }
 
+    private void loginHX() {
+        phone = String.valueOf(VMSPUtil.get(context, AppConstant.PHONE, ""));
+        password = String.valueOf(VMSPUtil.get(context, AppConstant.PASSWORD, ""));
+        if (phone.isEmpty() || password.isEmpty()) {
+            ToastUtil.show(context, "username or password null");
+            return;
+        }
+        EMClient.getInstance().login(phone, password, new EMCallBack() {
+            @Override
+            public void onSuccess() {
+                VMLog.i("login success");
+                try {
+                    EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        KLog.e("登录环信成功");
+                    }
+                });
+            }
+
+            @Override
+            public void onError(final int i, final String s) {
+                final String str = "login error: " + i + "; " + s;
+                VMLog.i(str);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.show(context, str);
+                    }
+                });
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
+    }
 
     EMMessageListener msgListener = new EMMessageListener() {
 
@@ -178,6 +220,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     };
     private BroadcastReceiver broadcastReceiver;
     private LocalBroadcastManager broadcastManager;
+
     private void registerBroadcastReceiver() {
         broadcastManager = LocalBroadcastManager.getInstance(this);
         IntentFilter intentFilter = new IntentFilter();
@@ -191,6 +234,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         };
         broadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
+
     //定位权限请求成功
     @PermissionSuccess(requestCode = 200)
     public void doSomething() {

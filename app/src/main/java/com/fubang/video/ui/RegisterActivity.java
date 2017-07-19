@@ -24,6 +24,7 @@ import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.LoginEntity;
 import com.fubang.video.entity.SendMsgEntity;
+import com.fubang.video.entity.UploadPhotoEntity;
 import com.fubang.video.util.FileUtils;
 import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.SystemStatusManager;
@@ -79,7 +80,7 @@ public class RegisterActivity extends TakePhotoActivity {
     ClearableEditText etRegisterPassword;
     @BindView(R.id.btn_register_submit)
     Button btnRegisterSubmit;
-    private String phone, calias, password, cphoto;
+    private String phone, calias, password, cphoto, photo_name;
     private int gender = 1;
     private Context context;
 
@@ -133,14 +134,14 @@ public class RegisterActivity extends TakePhotoActivity {
                     ToastUtil.show(context, "密码不能为空");
                     return;
                 }
-                KLog.e(cphoto);
+                KLog.e(photo_name);
                 OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_REGISTER)
                         .tag(this)
                         .params("ctel", phone)
                         .params("calias", calias)
                         .params("password", password)
                         .params("ngender", gender)
-                        .params("cphoto", new File(cphoto))
+                        .params("cphoto", photo_name)
                         .execute(new JsonCallBack<LoginEntity>(LoginEntity.class) {
                             @Override
                             public void onSuccess(Response<LoginEntity> response) {
@@ -148,8 +149,9 @@ public class RegisterActivity extends TakePhotoActivity {
                                     //本地存数据
                                     VMSPUtil.put(context, AppConstant.TOKEN, response.body().getInfo().getCtoken());
                                     VMSPUtil.put(context, AppConstant.PASSWORD, password);
-                                    VMSPUtil.put(context, AppConstant.USERID, phone);
+                                    VMSPUtil.put(context, AppConstant.USERID, response.body().getInfo().getNuserid());
                                     //去登录
+
                                     OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_LOGIN)
                                             .tag(this)
                                             .params("ctel", phone)
@@ -161,7 +163,10 @@ public class RegisterActivity extends TakePhotoActivity {
                                                         VMSPUtil.put(context, AppConstant.USERID, response.body().getInfo().getNuserid());
                                                         VMSPUtil.put(context, AppConstant.TOKEN, response.body().getInfo().getCtoken());
                                                         //环信登录
-                                                        loginHX();
+                                                        Intent intent = new Intent(context, MainActivity.class);
+                                                        startActivity(intent);
+                                                        finish();
+//                                                        loginHX();
                                                     } else {
                                                         ToastUtil.show(context, "密码错误");
                                                     }
@@ -184,53 +189,6 @@ public class RegisterActivity extends TakePhotoActivity {
                         });
                 break;
         }
-    }
-
-
-    private void loginHX() {
-        if (phone.isEmpty() || password.isEmpty()) {
-            ToastUtil.show(context, "username or password null");
-            return;
-        }
-        EMClient.getInstance().login(phone, password, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                VMLog.i("login success");
-                try {
-                    EMClient.getInstance().contactManager().getAllContactsFromServer();
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                }
-                VMSPUtil.put(context, "username", phone);
-                VMSPUtil.put(context, "password", password);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        KLog.e("登录环信成功");
-                    }
-                });
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-
-            @Override
-            public void onError(final int i, final String s) {
-                final String str = "login error: " + i + "; " + s;
-                VMLog.i(str);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtil.show(context, str);
-                    }
-                });
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
     }
 
     /**
@@ -306,6 +264,28 @@ public class RegisterActivity extends TakePhotoActivity {
             KLog.e(images.get(0).getOriginalPath());
             Glide.with(context).load(new File(images.get(0).getOriginalPath())).fitCenter().into(ivRegisterPic);
             cphoto = images.get(0).getOriginalPath();
+            //上传图片
+            OkGo.<UploadPhotoEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPLOAD_PHOTO)
+                    .tag(this)
+                    .params("ctoken", "1500448783_947196")
+                    .params("sub_name","touxiang")
+                    .params("file", new File(cphoto))
+                    .execute(new JsonCallBack<UploadPhotoEntity>(UploadPhotoEntity.class) {
+                        @Override
+                        public void onSuccess(Response<UploadPhotoEntity> response) {
+                            if (response.body().getStatus().equals("success")) {
+                                photo_name = response.body().getInfo().getFilename();
+                            } else {
+                                ToastUtil.show(context, "上传头像失败");
+                            }
+                        }
+
+                        @Override
+                        public void onError(Response<UploadPhotoEntity> response) {
+                            super.onError(response);
+                        }
+                    });
+
         }
     }
 

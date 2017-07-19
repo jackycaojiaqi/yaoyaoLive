@@ -28,10 +28,14 @@ public class WelcomeAtivity extends BaseActivity {
                     startActivity(new Intent(context, MainActivity.class));
                     finish();
                 }else {
+//                    Intent intent = new Intent(context,RegisterActivity.class);
+//                    intent.putExtra(AppConstant.USERID,"15867083397");
+//                    startActivity(intent);
+//                    finish();
                     startActivity(new Intent(context, LoginActivity.class));
                     finish();
                 }
             }
-        }, 1000);
+        }, 2000);
     }
 }

@@ -82,7 +82,11 @@ public class LoginPasswordActivity extends BaseActivity {
                                 if (response.body().getStatus().equals("success")) {
                                     VMSPUtil.put(context,AppConstant.USERID,response.body().getInfo().getNuserid());
                                     VMSPUtil.put(context,AppConstant.TOKEN,response.body().getInfo().getCtoken());
-                                    loginHX();
+                                    VMSPUtil.put(context,AppConstant.PHONE,phone);
+                                    VMSPUtil.put(context,AppConstant.PASSWORD,password);
+                                    Intent intent = new Intent(context, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
                                 } else {
                                     ToastUtil.show(context, "密码错误");
                                 }
@@ -96,49 +100,5 @@ public class LoginPasswordActivity extends BaseActivity {
                 break;
         }
     }
-    private void loginHX() {
-        if (phone.isEmpty() || password.isEmpty()) {
-            ToastUtil.show(context, "username or password null");
-            return;
-        }
-        EMClient.getInstance().login(phone, password, new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                VMLog.i("login success");
-                try {
-                    EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                }
-                VMSPUtil.put(context, "username", phone);
-                VMSPUtil.put(context, "password", password);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        KLog.e("登录环信成功");
-                    }
-                });
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
 
-            @Override
-            public void onError(final int i, final String s) {
-                final String str = "login error: " + i + "; " + s;
-                VMLog.i(str);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtil.show(context, str);
-                    }
-                });
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-
-            }
-        });
-    }
 }
