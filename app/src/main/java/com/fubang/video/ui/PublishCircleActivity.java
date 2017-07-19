@@ -17,21 +17,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.sdk.android.oss.ClientException;
-import com.alibaba.sdk.android.oss.OSS;
-import com.alibaba.sdk.android.oss.OSSClient;
-import com.alibaba.sdk.android.oss.ServiceException;
-import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
-import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
-import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
-import com.alibaba.sdk.android.oss.common.auth.OSSStsTokenCredentialProvider;
-import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
-import com.alibaba.sdk.android.oss.model.PutObjectRequest;
-import com.alibaba.sdk.android.oss.model.PutObjectResult;
+import com.alibaba.sdk.android.vod.upload.VODUploadCallback;
+import com.alibaba.sdk.android.vod.upload.VODUploadClient;
+import com.alibaba.sdk.android.vod.upload.VODUploadClientImpl;
+import com.alibaba.sdk.android.vod.upload.common.utils.StringUtil;
+import com.alibaba.sdk.android.vod.upload.model.UploadFileInfo;
+import com.alibaba.sdk.android.vod.upload.model.VodInfo;
+import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
+import com.fubang.video.callback.JsonCallBack;
+import com.fubang.video.entity.PublishUpLoadEntity;
 import com.fubang.video.util.ToastUtil;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -40,7 +41,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,6 +69,11 @@ public class PublishCircleActivity extends BaseActivity {
     ImageView ivPublishAddVideo;
     @BindView(R.id.et_publish_content)
     EditText etPublishContent;
+    private String uploadAuth = "";
+    private String uploadAddress = "";
+    private String videoId = "";
+    private String accessKeyId = "LTAIlH4qOw6XnQVs";
+    private String accessKeySecret = "jpGMmet5j9IV0gCSE4qkTxcqUVX1Di";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,45 +115,34 @@ public class PublishCircleActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_submit:
-                String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-                // 明文设置secret的方式建议只在测试时使用，更多鉴权模式请参考访问控制章节
-                OSSCredentialProvider credentialProvider = new OSSStsTokenCredentialProvider("<StsToken.AccessKeyId>", "<StsToken.SecretKeyId>", "<StsToken.SecurityToken>");
+                if (StringUtil.isEmpty(path)) {
+                    ToastUtil.show(context, "请选择视频文件");
+                    return;
+                }
+                OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_PUNLISH_UPLOAD)
+                        .tag(this)
+                        .params("type", 2)
+                        .params("title", path)
+                        .params("filename", name)
+                        .params("filesize", size)
+                        .params("desc", path)
+                        .execute(new JsonCallBack<PublishUpLoadEntity>(PublishUpLoadEntity.class) {
+                            @Override
+                            public void onSuccess(Response<PublishUpLoadEntity> response) {
+                                if (response.body().getStatus().equals("success")) {
+                                    uploadAuth = response.body().getInfo().getUploadAuth();
+                                    uploadAddress = response.body().getInfo().getUploadAddress();
+                                    videoId = response.body().getInfo().getVideoId();
+                                    oublishfile(path);
+                                }
+                            }
 
-                OSS oss = new OSSClient(getApplicationContext(), endpoint, credentialProvider);
+                            @Override
+                            public void onError(Response<PublishUpLoadEntity> response) {
+                                super.onError(response);
+                            }
+                        });
 
-                // 构造上传请求
-                PutObjectRequest put = new PutObjectRequest("<bucketName>", "<objectKey>", "<uploadFilePath>");
-                // 异步上传时可以设置进度回调
-                put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
-                    @Override
-                    public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
-                        Log.d("PutObject", "currentSize: " + currentSize + " totalSize: " + totalSize);
-                    }
-                });
-                OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
-                    @Override
-                    public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                        Log.d("PutObject", "UploadSuccess");
-                    }
-
-                    @Override
-                    public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
-                        // 请求异常
-                        if (clientExcepion != null) {
-                            // 本地异常如网络异常等
-                            clientExcepion.printStackTrace();
-                        }
-                        if (serviceException != null) {
-                            // 服务异常
-                            Log.e("ErrorCode", serviceException.getErrorCode());
-                            Log.e("RequestId", serviceException.getRequestId());
-                            Log.e("HostId", serviceException.getHostId());
-                            Log.e("RawMessage", serviceException.getRawMessage());
-                        }
-                    }
-                });
-//             task.cancel(); // 可以取消任务
-//            task.waitUntilFinished(); // 可以等待直到任务完成
                 break;
             case R.id.iv_publish_add_video:
                 Intent intent = new Intent();
@@ -158,7 +155,8 @@ public class PublishCircleActivity extends BaseActivity {
         }
     }
 
-    private String path;
+    private String path, name;
+    private long size;
 
     /**
      * 视频回调
@@ -166,7 +164,6 @@ public class PublishCircleActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-
             case GET_VIDEP_FILE:
                 if (resultCode == Activity.RESULT_OK) {
                     if (resultCode == RESULT_OK) {
@@ -174,20 +171,88 @@ public class PublishCircleActivity extends BaseActivity {
                         Cursor cursor = getContentResolver().query(uri, null, null,
                                 null, null);
                         cursor.moveToFirst();
-                        String v_path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
-                        Long v_size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
-                        v_size = v_size / 1024 / 1024;
-                        String v_name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
-                        KLog.e("v_path=" + android.os.Environment
-                                .getExternalStorageDirectory().getAbsolutePath() + "/" + v_path);
-                        KLog.e("v_size=" + v_size);
-                        KLog.e("v_name=" + v_name);
-                        ivPublishAddVideo.setImageBitmap(createVideoThumbnail(v_path));
+                        path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
+                        size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
+                        name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
+                        KLog.e("v_path=" + path);
+                        KLog.e("v_size=" + size);
+                        KLog.e("v_name=" + name);
+                        ivPublishAddVideo.setImageBitmap(createVideoThumbnail(path));
                     }
                 }
                 break;
         }
+    }
 
+    private VODUploadClient uploader;
+
+    /**
+     * 调用阿里云上传操作
+     * @param name
+     */
+    private void oublishfile(String name) {
+        uploader = new VODUploadClientImpl(context);
+        VODUploadCallback callback = new VODUploadCallback() {
+            /**
+             * 文件开始上传时触发
+             */
+            void onUploadStarted() {
+                KLog.e("onUploadStarted");
+            }
+
+            @Override
+            public void onUploadSucceed(UploadFileInfo uploadFileInfo) {
+                KLog.e("onUploadSucceed");
+            }
+
+            @Override
+            public void onUploadFailed(UploadFileInfo uploadFileInfo, String s, String s1) {
+                KLog.e("onUploadFailed");
+            }
+            @Override
+            public void onUploadProgress(UploadFileInfo uploadFileInfo, long l, long l1) {
+                KLog.e("onUploadProgress");
+            }
+
+            @Override
+            public void onUploadTokenExpired() {
+                KLog.e("onUploadTokenExpired");
+            }
+
+            @Override
+            public void onUploadRetry(String s, String s1) {
+                KLog.e("onUploadRetry");
+            }
+
+            @Override
+            public void onUploadRetryResume() {
+                KLog.e("onUploadRetryResume");
+            }
+
+
+            @Override
+            public void onUploadStarted(UploadFileInfo uploadFileInfo) {
+                uploader.setUploadAuthAndAddress(uploadFileInfo, uploadAuth, uploadAddress);
+            }
+        };
+
+        uploader.init(callback);
+        uploader.addFile(path, getVodInfo(name));
+        uploader.start();
+    }
+
+    private VodInfo getVodInfo(String name) {
+        VodInfo vodInfo = new VodInfo();
+        vodInfo.setTitle("标题" + name);
+        vodInfo.setDesc("描述." + name);
+        vodInfo.setCateId(1);
+        vodInfo.setIsProcess(true);
+        List<String> tags = new ArrayList<>();
+        tags.add("标签" + name);
+        vodInfo.setTags(tags);
+        vodInfo.setIsShowWaterMark(false);
+        vodInfo.setPriority(7);
+        return vodInfo;
     }
 
     private Bitmap createVideoThumbnail(String filePath) {
@@ -208,5 +273,11 @@ public class PublishCircleActivity extends BaseActivity {
             }
         }
         return bitmap;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        uploader.stop();
     }
 }

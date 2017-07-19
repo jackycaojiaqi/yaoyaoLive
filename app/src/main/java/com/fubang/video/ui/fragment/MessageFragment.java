@@ -64,7 +64,7 @@ public class MessageFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.rll_message_system:
                 intent = new Intent(getActivity(), ChatActivity.class);
-                intent.putExtra("userId", "55");
+                intent.putExtra("userId", "555");
                 startActivity(intent);
                 break;
         }

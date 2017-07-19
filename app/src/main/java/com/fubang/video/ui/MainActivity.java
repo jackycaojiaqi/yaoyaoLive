@@ -98,8 +98,8 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient;
     private Context context;
-    private String username ="555";
-    private String password = "555";
+    private String username ="55";
+    private String password = "55";
 
     public void onResume() {
         super.onResume();

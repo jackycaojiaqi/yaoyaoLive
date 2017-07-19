@@ -645,7 +645,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                     selectPicFromLocal();
                     break;
                 case ITEM_LOCATION:
-                    startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
+//                    startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
                     break;
 
                 default:
@@ -767,7 +767,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
             message.setChatType(ChatType.ChatRoom);
         }
         //send message
-        Log.e(TAG,message.toString());
+        Log.e(TAG, message.toString());
         EMClient.getInstance().chatManager().sendMessage(message);
         //refresh ui
         if (isMessageListInited) {

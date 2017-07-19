@@ -66,7 +66,7 @@ dependencies {
     compile 'com.android.support:support-vector-drawable:25.+'
     testCompile 'junit:junit:4.12'
     //网络请求框架
-    compile 'com.lzy.net:okgo:2.1.4'
+    compile 'com.lzy.net:okgo:3.0.1'
     //popwindow封装
     compile 'com.github.pinguo-zhouwei:CustomPopwindow:2.0.0'
     //butterknife
@@ -100,4 +100,6 @@ dependencies {
     //图片轮播
     compile 'com.youth.banner:banner:1.4.9'
     compile 'com.parse:parse-android:1.13.1'
+    compile files('libs/aliyun-vod-upload-android-sdk-1.0.6.jar')
+    compile files('libs/gson-2.2.4.jar')
 }

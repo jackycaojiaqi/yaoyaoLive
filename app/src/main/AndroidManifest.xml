@@ -50,6 +50,9 @@
         <activity
             android:name=".ui.ChatActivity"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name="com.hyphenate.easeui.ui.EaseBaiduMapActivity"
+            android:launchMode="singleTask"></activity>
         <!--语音通话界面-->
         <activity
             android:name="com.vmloft.develop.app.demo.call.VoiceCallActivity"
@@ -95,6 +98,15 @@
         </receiver>
         <meta-data android:name="UMENG_APPKEY" android:value="596c22a9a40fa3558500035f"/>
         <meta-data android:value="yaoyao" android:name="UMENG_CHANNEL"/>
+
+        <!-- 百度地图所需的service -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="3ecea51f560650b1ed8a4b99808f52e8" />
 </application>
     <!--项目权限配置-->
     <!--相机-->
