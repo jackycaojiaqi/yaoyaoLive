@@ -31,9 +31,6 @@ import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.SystemStatusManager;
 import com.fubang.video.util.ToastUtil;
 import com.fubang.video.widget.ClearableEditText;
-import com.hyphenate.EMCallBack;
-import com.hyphenate.chat.EMClient;
-import com.hyphenate.exceptions.HyphenateException;
 import com.jph.takephoto.app.TakePhotoActivity;
 import com.jph.takephoto.model.CropOptions;
 import com.jph.takephoto.model.TImage;
@@ -197,7 +194,6 @@ public class RegisterActivity extends TakePhotoActivity {
      */
     private PopupWindow pop_pic;
     private Uri imageUri;
-
     private void ShowPopAction() {
         final View popupView = getLayoutInflater().inflate(R.layout.pop_user_pic, null);
         pop_pic = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);

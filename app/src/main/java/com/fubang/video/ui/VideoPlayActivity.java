@@ -1,10 +1,10 @@
 package com.fubang.video.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.aliyun.vodplayer.media.AliyunDataSource;
 import com.aliyun.vodplayer.media.AliyunPlayAuth;
 import com.aliyun.vodplayer.media.IAliyunVodPlayer;
 import com.aliyun.vodplayerview.widget.AliyunVodPlayerView;
@@ -13,27 +13,40 @@ import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.PlayVideoEntity;
-import com.fubang.video.entity.PublishUpLoadEntity;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by jacky on 2017/7/20.
  */
 public class VideoPlayActivity extends BaseActivity {
+    @BindView(R.id.iv_back)
+    ImageView ivBack;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+    @BindView(R.id.tv_submit)
+    TextView tvSubmit;
+    @BindView(R.id.iv_action)
+    ImageView ivAction;
     private AliyunVodPlayerView mAliyunVodPlayerView;
     private String VideoId;
     private String PlayAuth;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTranslucentStatus();
         setContentView(R.layout.activity_videoplay);
+        ButterKnife.bind(this);
         VideoId = getIntent().getStringExtra(AppConstant.VIDEOID);
         initview();
         initdate();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -41,6 +54,7 @@ public class VideoPlayActivity extends BaseActivity {
             mAliyunVodPlayerView.onResume();
         }
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -48,6 +62,7 @@ public class VideoPlayActivity extends BaseActivity {
             mAliyunVodPlayerView.onStop();
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -55,7 +70,9 @@ public class VideoPlayActivity extends BaseActivity {
             mAliyunVodPlayerView.onDestroy();
         }
     }
+
     private void initview() {
+        setText(tvTitle, "视频播放");
         //找到播放器对象
         mAliyunVodPlayerView = (AliyunVodPlayerView) findViewById(R.id.video_view);
 
@@ -64,6 +81,7 @@ public class VideoPlayActivity extends BaseActivity {
     private void initdate() {
         getAliPlayAuth();
     }
+
     /**
      * 获取阿里云播放凭证
      */
@@ -72,7 +90,7 @@ public class VideoPlayActivity extends BaseActivity {
         OkGo.<PlayVideoEntity>post(AppConstant.BASE_URL + AppConstant.URL_PUNLISH_UPLOAD)
                 .tag(this)
                 .params("type", 1)
-                .params("VideoId",VideoId)
+                .params("VideoId", VideoId)
                 .execute(new JsonCallBack<PlayVideoEntity>(PlayVideoEntity.class) {
                     @Override
                     public void onSuccess(Response<PlayVideoEntity> response) {

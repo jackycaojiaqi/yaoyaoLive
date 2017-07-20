@@ -34,12 +34,14 @@
             android:launchMode="singleTask"></activity>
         <activity
             android:name=".ui.RegisterActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"></activity>
         <activity
             android:name=".ui.UserInfoActivity"
             android:launchMode="singleTask"></activity>
         <activity
             android:name=".ui.UserinfoEditActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"></activity>
         <activity
             android:name=".ui.RechargeActivity"

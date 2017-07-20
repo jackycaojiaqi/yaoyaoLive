@@ -1,6 +1,7 @@
 package com.fubang.video.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -10,7 +11,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -35,7 +40,12 @@ import com.fubang.video.util.GetPathFromUri4kitkat;
 import com.fubang.video.util.GlideImageLoader;
 import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.StringUtil;
+import com.fubang.video.util.SystemStatusManager;
 import com.fubang.video.util.ToastUtil;
+import com.jph.takephoto.app.TakePhotoActivity;
+import com.jph.takephoto.model.CropOptions;
+import com.jph.takephoto.model.TImage;
+import com.jph.takephoto.model.TResult;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
@@ -43,7 +53,9 @@ import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +64,7 @@ import butterknife.OnClick;
 /**
  * Created by jacky on 2017/7/18.
  */
-public class UserinfoEditActivity extends BaseActivity {
+public class UserinfoEditActivity extends TakePhotoActivity {
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
@@ -110,14 +122,19 @@ public class UserinfoEditActivity extends BaseActivity {
     private String videoId = "";
     private String ctopic;
     private String photo_name;
-
+    private String pic_name;
+    private String picwall_name;
+    private int pic_type = 0;
     private VODUploadClient uploader;
     private final int GET_VIDEP_FILE = 0X12;
+    private Context context;
+    private boolean is_first_add = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTranslucentStatus();
+        context = this;
         setContentView(R.layout.activity_userinfo_edit);
         ButterKnife.bind(this);
         initview();
@@ -125,8 +142,14 @@ public class UserinfoEditActivity extends BaseActivity {
     }
 
     private void initview() {
-        back(ivBack);
-        setText(tvTitle, "编辑信息");
+        ivBack.setVisibility(View.VISIBLE);
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        tvTitle.setText("编辑信息");
     }
 
     private void initdate() {
@@ -148,13 +171,17 @@ public class UserinfoEditActivity extends BaseActivity {
                             tvEditinfoAddress.setText(response.body().getInfo().getCcity() + " ");//城市
                             tvEditinfoBirth.setText(response.body().getInfo().getCbirthdate() + " ");//生日
                             tvEditinfoTab.setText(response.body().getInfo().getClabel() + " ");//标签
-                            if (!StringUtil.isEmptyandnull(response.body().getInfo().getCphoto()))
-                                ImagUtil.set(context, AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivEditinfoPic1);//个人介绍视频图片
+                            if (!StringUtil.isEmptyandnull(response.body().getInfo().getCphoto())) {
+                                pic_name = response.body().getInfo().getCphoto();
+                                ImagUtil.set(context, AppConstant.BASE_IMG_URL + pic_name, ivEditinfoPic1);//个人头像
+                            }
                             if (!StringUtil.isEmptyandnull(response.body().getInfo().getCphotowall())) {
-                                if (response.body().getInfo().getCphotowall().contains(";")) {//显示照片墙 并吧string数组赋值成list方便替换和增加
-                                    imagwall = response.body().getInfo().getCphotowall().split(";");
+                                picwall_name = response.body().getInfo().getCphotowall();
+                                if (picwall_name.contains(";")) {//显示照片墙 并吧string数组赋值成list方便替换和增加
+                                    imagwall = picwall_name.split(";");
                                     for (int i = 0; i < imagwall.length; i++) {
-                                        list_imagwall.add(imagwall[i]);
+                                        if (is_first_add)
+                                            list_imagwall.add(imagwall[i]);
                                         if (i == 0) {
                                             ImagUtil.setnoerror(context, AppConstant.BASE_IMG_URL + imagwall[0], ivEditinfoPic2);
                                         } else if (i == 1) {
@@ -165,7 +192,15 @@ public class UserinfoEditActivity extends BaseActivity {
                                             ImagUtil.setnoerror(context, AppConstant.BASE_IMG_URL + imagwall[3], ivEditinfoPic5);
                                         }
                                     }
+                                } else if (picwall_name.contains(".")) {//只有一张图片
+                                    ImagUtil.setnoerror(context, AppConstant.BASE_IMG_URL + picwall_name, ivEditinfoPic2);
+                                    if (is_first_add)
+                                        list_imagwall.add(picwall_name);
                                 }
+                                KLog.e(list_imagwall.size());
+                            }
+                            if (is_first_add) {//只在第一次进入的时候将图片加入到列表
+                                is_first_add = false;
                             }
                             //个人介绍视频图片
                             if (!StringUtil.isEmptyandnull(response.body().getInfo().getCvideophoto()))
@@ -196,16 +231,36 @@ public class UserinfoEditActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_editinfo_pic1:
+                pic_type = 1;
+                ShowPopAction();
                 break;
             case R.id.iv_editinfo_pic2:
+                pic_type = 2;
+                if (list_imagwall.size() == 4) {//如果照片满了，则删除用户选中的照片
+                    list_imagwall.remove(0);
+                }
+                ShowPopAction();
                 break;
             case R.id.iv_editinfo_pic3:
+                pic_type = 3;
+                if (list_imagwall.size() == 4) {
+                    list_imagwall.remove(1);
+                }
+                ShowPopAction();
                 break;
             case R.id.iv_editinfo_pic4:
+                pic_type = 4;
+                if (list_imagwall.size() == 4) {
+                    list_imagwall.remove(2);
+                }
+                ShowPopAction();
                 break;
             case R.id.iv_editinfo_pic5:
-                break;
-            case R.id.iv_editinfo_video:
+                pic_type = 5;
+                if (list_imagwall.size() == 4) {
+                    list_imagwall.remove(3);
+                }
+                ShowPopAction();
                 break;
             case R.id.rll_editinfo_sign:
                 break;
@@ -232,8 +287,8 @@ public class UserinfoEditActivity extends BaseActivity {
                                             dialog.dismiss();
                                             break;
                                         case 1:
-                                            Intent intent = new Intent(context,VideoPlayActivity.class);
-                                            intent.putExtra(AppConstant.VIDEOID,videoId);
+                                            Intent intent = new Intent(context, VideoPlayActivity.class);
+                                            intent.putExtra(AppConstant.VIDEOID, videoId);
                                             startActivity(intent);
                                             dialog.dismiss();
                                             break;
@@ -424,47 +479,47 @@ public class UserinfoEditActivity extends BaseActivity {
                 });
     }
 
-    /**
-     * 视频回调
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case GET_VIDEP_FILE:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (resultCode == RESULT_OK) {
-                        if (Build.VERSION.SDK_INT >= 19) {//适配高低版本的获取视频信息
-                            Uri uri = data.getData();
-                            path = GetPathFromUri4kitkat.getPath(context, uri);
-                            Cursor cursor = getContentResolver().query(uri, null, null,
-                                    null, null);
-                            cursor.moveToFirst();
-                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
-                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
-                            KLog.e("v_path=" + path);
-                            KLog.e("v_size=" + size);
-                            KLog.e("v_name=" + name);
-                            ivEditinfoVideo.setImageBitmap(createVideoThumbnail(path));
-                            getAliUploadAuth();
-                        } else {
-                            Uri uri = data.getData();
-                            Cursor cursor = getContentResolver().query(uri, null, null,
-                                    null, null);
-                            cursor.moveToFirst();
-                            path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
-                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
-                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
-                            KLog.e("v_path=" + path);
-                            KLog.e("v_size=" + size);
-                            KLog.e("v_name=" + name);
-                            ivEditinfoVideo.setImageBitmap(createVideoThumbnail(path));
-                            getAliUploadAuth();
-                        }
-                    }
-                }
-                break;
-        }
-    }
+//    /**
+//     * 视频回调
+//     */
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switch (requestCode) {
+//            case GET_VIDEP_FILE:
+//                if (resultCode == Activity.RESULT_OK) {
+//                    if (resultCode == RESULT_OK) {
+//                        if (Build.VERSION.SDK_INT >= 19) {//适配高低版本的获取视频信息
+//                            Uri uri = data.getData();
+//                            path = GetPathFromUri4kitkat.getPath(context, uri);
+//                            Cursor cursor = getContentResolver().query(uri, null, null,
+//                                    null, null);
+//                            cursor.moveToFirst();
+//                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
+//                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
+//                            KLog.e("v_path=" + path);
+//                            KLog.e("v_size=" + size);
+//                            KLog.e("v_name=" + name);
+//                            ivEditinfoVideo.setImageBitmap(createVideoThumbnail(path));
+//                            getAliUploadAuth();
+//                        } else {
+//                            Uri uri = data.getData();
+//                            Cursor cursor = getContentResolver().query(uri, null, null,
+//                                    null, null);
+//                            cursor.moveToFirst();
+//                            path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
+//                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
+//                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
+//                            KLog.e("v_path=" + path);
+//                            KLog.e("v_size=" + size);
+//                            KLog.e("v_name=" + name);
+//                            ivEditinfoVideo.setImageBitmap(createVideoThumbnail(path));
+//                            getAliUploadAuth();
+//                        }
+//                    }
+//                }
+//                break;
+//        }
+//    }
 
     private VodInfo getVodInfo(String name) {
         VodInfo vodInfo = new VodInfo();
@@ -511,5 +566,188 @@ public class UserinfoEditActivity extends BaseActivity {
         super.onDestroy();
         if (uploader != null)
             uploader.stop();
+    }
+
+    /**
+     * 处理拍照弹窗
+     */
+    private PopupWindow pop_pic;
+    private Uri imageUri;
+
+    private void ShowPopAction() {
+        final View popupView = getLayoutInflater().inflate(R.layout.pop_user_pic, null);
+        pop_pic = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        pop_pic.showAtLocation(tvTitle, Gravity.CENTER_HORIZONTAL, 0, 0);
+        pop_pic.setOutsideTouchable(false);
+        ImageView iv_cancle = (ImageView) popupView.findViewById(R.id.tv_user_info_pic_cancle);
+        TextView tv_album = (TextView) popupView.findViewById(R.id.tv_user_info_pic_form_album);
+        TextView tv_camera = (TextView) popupView.findViewById(R.id.tv_user_info_pic_form_camera);
+        iv_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pop_pic.dismiss();
+            }
+        });
+        tv_album.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File file = new File(FileUtils.getTempFiles() + System.currentTimeMillis() + "tempalbum.jpg");
+                if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+                imageUri = Uri.fromFile(file);
+                getTakePhoto().onPickFromGalleryWithCrop(imageUri, getCropOptions());
+                pop_pic.dismiss();
+            }
+        });
+        tv_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File file = new File(FileUtils.getTempFiles() + System.currentTimeMillis() + "tempcamera.jpg");
+                if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+                imageUri = Uri.fromFile(file);
+                getTakePhoto().onPickFromCaptureWithCrop(imageUri, getCropOptions());
+                pop_pic.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void takeCancel() {
+        KLog.e("takeCancel");
+        super.takeCancel();
+    }
+
+    @Override
+    public void takeFail(TResult result, String msg) {
+        KLog.e("takeFail");
+        super.takeFail(result, msg);
+    }
+
+    private String cphoto;
+
+    @Override
+    public void takeSuccess(TResult result) {
+        KLog.e("takeSuccess");
+        super.takeSuccess(result);
+        if (result.getImages().size() > 0) {
+            cphoto = result.getImages().get(0).getOriginalPath();
+            uploadImage();
+        }
+    }
+
+    private StringBuffer imagwall_str;
+
+    /**
+     * 上传选中的本地图片到服务器
+     */
+    private void uploadImage() {
+        Map<String, String> map = new HashMap<>();
+        if (pic_type == 1) {
+            map.put("sub_name", "touxiang");
+        } else {
+            map.put("sub_name", "beijing");
+        }
+        //上传图片
+        OkGo.<UploadPhotoEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPLOAD_PHOTO)
+                .tag(this)
+                .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                .params(map)
+                .params("file", new File(cphoto))
+                .execute(new JsonCallBack<UploadPhotoEntity>(UploadPhotoEntity.class) {
+                    @Override
+                    public void onSuccess(Response<UploadPhotoEntity> response) {
+                        if (response.body().getStatus().equals("success")) {
+                            if (pic_type == 1) {
+                                pic_name = response.body().getInfo().getFilename();
+                                update_imag_to_server(pic_name);
+                            } else {
+                                picwall_name = response.body().getInfo().getFilename();
+                                list_imagwall.add(picwall_name);
+                                KLog.e(list_imagwall.size());
+                                imagwall_str = new StringBuffer();
+                                for (int i = 0; i < list_imagwall.size(); i++) {
+                                    if (i == 0) {
+                                        imagwall_str.append(list_imagwall.get(0));
+                                        KLog.e(imagwall_str.toString());
+                                    } else if (i == 1) {
+                                        imagwall_str.append(";" + list_imagwall.get(1));
+                                        KLog.e(imagwall_str.toString());
+                                    } else if (i == 2) {
+                                        imagwall_str.append(";" + list_imagwall.get(2));
+                                        KLog.e(imagwall_str.toString());
+                                    } else if (i == 3) {
+                                        imagwall_str.append(";" + list_imagwall.get(3));
+                                        KLog.e(imagwall_str.toString());
+                                    }
+                                }
+                                KLog.e(imagwall_str.toString());
+                                update_imag_to_server(imagwall_str.toString());
+                            }
+                        } else {
+                            ToastUtil.show(context, "上传头像失败");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<UploadPhotoEntity> response) {
+                        super.onError(response);
+                    }
+                });
+    }
+
+    /**
+     * 将返回的图片名字更新到个人信息中
+     */
+    private void update_imag_to_server(String pic_or_wall_name) {
+        Map<String, String> map = new HashMap<>();
+        if (pic_type == 1) {
+            map.put("cphoto", pic_or_wall_name);
+        } else {
+            map.put("cphotowall", pic_or_wall_name);
+        }
+        OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_INFO)
+                .tag(this)
+                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                .params(map)
+                .execute(new JsonCallBack<PublishUpLoadEntity>(PublishUpLoadEntity.class) {
+                    @Override
+                    public void onSuccess(Response<PublishUpLoadEntity> response) {
+                        if (response.body().getStatus().equals("success")) {
+                            ToastUtil.show(context, "上传照片成功");
+                            initdate();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<PublishUpLoadEntity> response) {
+                        super.onError(response);
+                    }
+                });
+    }
+
+    private CropOptions getCropOptions() {
+        int height = Integer.parseInt("500");
+        int width = Integer.parseInt("600");
+        CropOptions.Builder builder = new CropOptions.Builder();
+        builder.setAspectX(width).setAspectY(height);
+        builder.setOutputX(width).setOutputY(height);
+        return builder.create();
+    }
+
+    /**
+     * 设置状态栏背景状态
+     */
+    public void setTranslucentStatus() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window win = getWindow();
+            WindowManager.LayoutParams winParams = win.getAttributes();
+            final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+            winParams.flags |= bits;
+            win.setAttributes(winParams);
+        }
+        SystemStatusManager tintManager = new SystemStatusManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setStatusBarTintResource(0);//状态栏无背景
+
     }
 }

@@ -17,8 +17,10 @@ import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.BaseInfoEntity;
 import com.fubang.video.util.GlideImageLoader;
 import com.fubang.video.util.ImagUtil;
+import com.fubang.video.util.StringUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
+import com.socks.library.KLog;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
 import com.youth.banner.Banner;
 
@@ -80,6 +82,12 @@ public class UserInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
         initview();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initdate();
     }
 
@@ -95,6 +103,8 @@ public class UserInfoActivity extends BaseActivity {
 
     }
 
+    private String picwall_name;
+
     private void initdate() {
         OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
                 .tag(this)
@@ -106,7 +116,17 @@ public class UserInfoActivity extends BaseActivity {
                         if (response.body().getStatus().equals("success")) {
                             tvUserinfoId.setText("ID:" + VMSPUtil.get(context, AppConstant.USERID, ""));//ID
                             tvUserinfoName.setText(response.body().getInfo().getCalias() + "");//姓名
+                            imags.clear();
                             imags.add(AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto());
+                            if (!StringUtil.isEmptyandnull(response.body().getInfo().getCphotowall())) {
+                                picwall_name = response.body().getInfo().getCphotowall();
+                                if (picwall_name.contains(";")) {//显示照片墙 并吧string数组赋值成list方便替换和增加
+                                    String[] imagwall = picwall_name.split(";");
+                                    for (int i = 0; i < imagwall.length; i++) {
+                                        imags.add(AppConstant.BASE_IMG_URL+imagwall[i]);
+                                    }
+                                }
+                            }
                             banner.setImages(imags).setImageLoader(new GlideImageLoader()).start();//头像照片墙
                             if (response.body().getInfo().getNgender().equals("0")) {//性别
                                 ivUserinfoGender.setImageResource(R.drawable.ic_register_female_checked);

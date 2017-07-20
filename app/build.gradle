@@ -111,7 +111,6 @@ dependencies {
     compile 'com.jph.takephoto:takephoto_library:4.0.3'
     //dialog
     compile 'com.afollestad.material-dialogs:core:0.9.4.5'
-
     compile(name:'AlivcPlayer',ext:'aar')
     compile(name:'AliyunvodPlayer',ext:'aar')
     compile(name:'AliyunVodPlayerView',ext:'aar')

@@ -73,12 +73,12 @@
                     android:id="@+id/tv_userinfo_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="60dp"
-                    android:text="台州"
                     android:layout_alignBaseline="@+id/tv_userinfo_age"
                     android:layout_alignBottom="@+id/tv_userinfo_age"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginStart="22dp"
                     android:layout_toEndOf="@+id/tv_userinfo_age"
-                    android:layout_marginStart="22dp" />
+                    android:text="台州" />
 
                 <ImageView
                     android:id="@+id/iv_userinfo_state"
@@ -214,10 +214,10 @@
                         android:id="@+id/iv_userinfo_self_video"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@mipmap/ic_launcher"
+                        android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentStart="true" />
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_launcher" />
 
                     <ImageView
                         android:id="@+id/iv_userinfo_self_video_play"
@@ -290,12 +290,11 @@
         android:id="@+id/iv_userinfo_back"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:padding="8dp"
-        android:src="@drawable/ic_back_white"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/iv_userinfo_setting"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="5dp"
+        android:padding="11dp"
+        android:src="@drawable/ic_back_white" />
 
     <ImageView
         android:id="@+id/iv_userinfo_setting"
@@ -303,9 +302,9 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_margin="10dp"
-        android:padding="8dp"
+        android:layout_marginTop="5dp"
+        android:padding="11dp"
         android:src="@drawable/ic_three_point" />
-
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -26,6 +26,7 @@ import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.ToastUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
+import com.socks.library.KLog;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import butterknife.BindView;
@@ -80,11 +81,16 @@ public class MineFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setText(tvTitle, "我的");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         initdate();
     }
 
     private void initdate() {
-        //去登录
         OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
                 .tag(this)
                 .params("nuserid", String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERID, "")))
@@ -96,7 +102,7 @@ public class MineFragment extends BaseFragment {
                             tvMineId.setText("妖妖ID:" + VMSPUtil.get(getActivity(), AppConstant.USERID, ""));//ID
                             tvMineName.setText(response.body().getInfo().getCalias() + "");//姓名
                             tvMineNkNum.setText("金币*" + response.body().getInfo().getNmoney() + " ");//金币
-                            ImagUtil.set(getActivity(),AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(),ivMinePic);
+                            ImagUtil.setnoerror(getActivity(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivMinePic);
                             if (response.body().getInfo().getNgender().equals("0")) {//性别
                                 ivMineGender.setImageResource(R.drawable.ic_register_female_checked);
                             } else if (response.body().getInfo().getNgender().equals("1")) {
