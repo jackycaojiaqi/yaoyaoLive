@@ -9,9 +9,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.fubang.video.R;
@@ -41,7 +43,8 @@ public class HomeFragment extends BaseFragment {
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.btn_call_video)
     Button btnCallVideo;
-
+    @BindView(R.id.sv_home)
+    ScrollView svHome;
     @BindView(R.id.edit_contacts_username)
     EditText contactsView;
 
@@ -76,6 +79,15 @@ public class HomeFragment extends BaseFragment {
                 SwipeRefreshView.setRefreshing(false);
             }
         });
+        svHome.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if (SwipeRefreshView != null) {
+                    SwipeRefreshView.setEnabled(svHome.getScrollY() == 0);
+                }
+            }
+        });
+        SwipeRefreshView.setProgressViewOffset(true,150,250);
     }
 
 

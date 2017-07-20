@@ -26,6 +26,7 @@ import com.fubang.video.entity.LoginEntity;
 import com.fubang.video.entity.SendMsgEntity;
 import com.fubang.video.entity.UploadPhotoEntity;
 import com.fubang.video.util.FileUtils;
+import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.SystemStatusManager;
 import com.fubang.video.util.ToastUtil;
@@ -262,12 +263,13 @@ public class RegisterActivity extends TakePhotoActivity {
         KLog.e(images.size());
         if (images.size() > 0) {
             KLog.e(images.get(0).getOriginalPath());
-            Glide.with(context).load(new File(images.get(0).getOriginalPath())).fitCenter().into(ivRegisterPic);
+            ImagUtil.set(context,new File(images.get(0).getOriginalPath()),ivRegisterPic);
+//            Glide.with(context).load(new File(images.get(0).getOriginalPath())).fitCenter().into(ivRegisterPic);
             cphoto = images.get(0).getOriginalPath();
             //上传图片
             OkGo.<UploadPhotoEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPLOAD_PHOTO)
                     .tag(this)
-                    .params("ctoken", "1500448783_947196")
+                    .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN,"")))
                     .params("sub_name","touxiang")
                     .params("file", new File(cphoto))
                     .execute(new JsonCallBack<UploadPhotoEntity>(UploadPhotoEntity.class) {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="items_action">
+        <item>更换</item>
+        <item>查看视频</item>
+        <item>取消</item>
+    </string-array>
+
+    <string-array name="items_action_upload">
+        <item>上传</item>
+        <item>取消</item>
+    </string-array>
+</resources>

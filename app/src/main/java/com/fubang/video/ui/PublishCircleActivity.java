@@ -6,9 +6,12 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,10 @@ import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.PublishUpLoadEntity;
+import com.fubang.video.entity.UploadPhotoEntity;
+import com.fubang.video.util.DialogFactory;
+import com.fubang.video.util.FileUtils;
+import com.fubang.video.util.GetPathFromUri4kitkat;
 import com.fubang.video.util.ToastUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
@@ -69,11 +76,16 @@ public class PublishCircleActivity extends BaseActivity {
     ImageView ivPublishAddVideo;
     @BindView(R.id.et_publish_content)
     EditText etPublishContent;
+    @BindView(R.id.tv_publish_content_num)
+    TextView tvPublishContentNum;
+
     private String uploadAuth = "";
     private String uploadAddress = "";
     private String videoId = "";
     private String accessKeyId = "LTAIlH4qOw6XnQVs";
     private String accessKeySecret = "jpGMmet5j9IV0gCSE4qkTxcqUVX1Di";
+    private String ctopic;
+    private String photo_name;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,7 +116,24 @@ public class PublishCircleActivity extends BaseActivity {
             @Override
             public boolean onTagClick(View view, int position, FlowLayout parent) {
                 ToastUtil.show(context, date[position]);
+                ctopic = date[position];
                 return true;
+            }
+        });
+        etPublishContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tvPublishContentNum.setText(s.length() + "/100");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -119,6 +148,7 @@ public class PublishCircleActivity extends BaseActivity {
                     ToastUtil.show(context, "请选择视频文件");
                     return;
                 }
+                DialogFactory.showRequestDialog(context);
                 OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_PUNLISH_UPLOAD)
                         .tag(this)
                         .params("type", 2)
@@ -133,7 +163,7 @@ public class PublishCircleActivity extends BaseActivity {
                                     uploadAuth = response.body().getInfo().getUploadAuth();
                                     uploadAddress = response.body().getInfo().getUploadAddress();
                                     videoId = response.body().getInfo().getVideoId();
-                                    oublishfile(path);
+                                    publishfile(path);
                                 }
                             }
 
@@ -167,17 +197,31 @@ public class PublishCircleActivity extends BaseActivity {
             case GET_VIDEP_FILE:
                 if (resultCode == Activity.RESULT_OK) {
                     if (resultCode == RESULT_OK) {
-                        Uri uri = data.getData();
-                        Cursor cursor = getContentResolver().query(uri, null, null,
-                                null, null);
-                        cursor.moveToFirst();
-                        path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
-                        size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
-                        name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
-                        KLog.e("v_path=" + path);
-                        KLog.e("v_size=" + size);
-                        KLog.e("v_name=" + name);
-                        ivPublishAddVideo.setImageBitmap(createVideoThumbnail(path));
+                        if (Build.VERSION.SDK_INT >= 19) {//适配高低版本的获取视频信息
+                            Uri uri = data.getData();
+                            path = GetPathFromUri4kitkat.getPath(context, uri);
+                            Cursor cursor = getContentResolver().query(uri, null, null,
+                                    null, null);
+                            cursor.moveToFirst();
+                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
+                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
+                            KLog.e("v_path=" + path);
+                            KLog.e("v_size=" + size);
+                            KLog.e("v_name=" + name);
+                            ivPublishAddVideo.setImageBitmap(createVideoThumbnail(path));
+                        } else {
+                            Uri uri = data.getData();
+                            Cursor cursor = getContentResolver().query(uri, null, null,
+                                    null, null);
+                            cursor.moveToFirst();
+                            path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
+                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
+                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
+                            KLog.e("v_path=" + path);
+                            KLog.e("v_size=" + size);
+                            KLog.e("v_name=" + name);
+                            ivPublishAddVideo.setImageBitmap(createVideoThumbnail(path));
+                        }
                     }
                 }
                 break;
@@ -188,9 +232,10 @@ public class PublishCircleActivity extends BaseActivity {
 
     /**
      * 调用阿里云上传操作
+     *
      * @param name
      */
-    private void oublishfile(String name) {
+    private void publishfile(String name) {
         uploader = new VODUploadClientImpl(context);
         VODUploadCallback callback = new VODUploadCallback() {
             /**
@@ -203,12 +248,17 @@ public class PublishCircleActivity extends BaseActivity {
             @Override
             public void onUploadSucceed(UploadFileInfo uploadFileInfo) {
                 KLog.e("onUploadSucceed");
+                DialogFactory.hideRequestDialog();
+                //先上传视频图片再调用发布接口
+                upload_pic();
             }
 
             @Override
             public void onUploadFailed(UploadFileInfo uploadFileInfo, String s, String s1) {
                 KLog.e("onUploadFailed");
+                DialogFactory.hideRequestDialog();
             }
+
             @Override
             public void onUploadProgress(UploadFileInfo uploadFileInfo, long l, long l1) {
                 KLog.e("onUploadProgress");
@@ -239,6 +289,60 @@ public class PublishCircleActivity extends BaseActivity {
         uploader.init(callback);
         uploader.addFile(path, getVodInfo(name));
         uploader.start();
+    }
+
+    private void upload_pic() {
+        //上传图片
+        try {
+            OkGo.<UploadPhotoEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPLOAD_PHOTO)
+                    .tag(this)
+                    .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                    .params("sub_name", "pengyouquan")
+                    .params("file", new File(FileUtils.saveImg(createVideoThumbnail(path))))
+                    .execute(new JsonCallBack<UploadPhotoEntity>(UploadPhotoEntity.class) {
+                        @Override
+                        public void onSuccess(Response<UploadPhotoEntity> response) {
+                            if (response.body().getStatus().equals("success")) {
+                                photo_name = response.body().getInfo().getFilename();
+                                send_life_to_server();
+                            } else {
+                                ToastUtil.show(context, "上传头像失败");
+                            }
+                        }
+
+                        @Override
+                        public void onError(Response<UploadPhotoEntity> response) {
+                            super.onError(response);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void send_life_to_server() {
+        OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_ADD)
+                .tag(this)
+                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                .params("cvideo", videoId)
+                .params("cvideophoto", photo_name)
+                .params("ccontent", etPublishContent.getText().toString().trim())
+                .params("ctopic", ctopic)
+                .execute(new JsonCallBack<PublishUpLoadEntity>(PublishUpLoadEntity.class) {
+                    @Override
+                    public void onSuccess(Response<PublishUpLoadEntity> response) {
+                        if (response.body().getStatus().equals("success")) {
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<PublishUpLoadEntity> response) {
+                        super.onError(response);
+                    }
+                });
     }
 
     private VodInfo getVodInfo(String name) {
@@ -278,6 +382,8 @@ public class PublishCircleActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        uploader.stop();
+        if (uploader != null)
+            uploader.stop();
     }
+
 }

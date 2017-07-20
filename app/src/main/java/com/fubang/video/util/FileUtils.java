@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.text.TextUtils;
 
 import java.io.BufferedReader;
@@ -498,5 +499,29 @@ public class FileUtils {
             }
         }
         return list_lrc;
+    }
+
+    /**
+     * 将bitmap转化成图片
+     */
+    public static String saveImg(Bitmap b) throws Exception {
+
+        String path = getFiles()+"videoimag/";
+        File mediaFile = new File(path + "temp"+ ".jpg");
+        if (mediaFile.exists()) {
+            mediaFile.delete();
+        }
+        if (!new File(path).exists()) {
+            new File(path).mkdirs();
+        }
+        mediaFile.createNewFile();
+        FileOutputStream fos = new FileOutputStream(mediaFile);
+        b.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        fos.flush();
+        fos.close();
+        b.recycle();
+        b = null;
+        System.gc();
+        return mediaFile.getPath();
     }
 }

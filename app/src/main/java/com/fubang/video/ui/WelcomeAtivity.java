@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
+import com.fubang.video.entity.LoginEntity;
 import com.fubang.video.util.StringUtil;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
@@ -28,8 +29,8 @@ public class WelcomeAtivity extends BaseActivity {
                     startActivity(new Intent(context, MainActivity.class));
                     finish();
                 }else {
-//                    Intent intent = new Intent(context,RegisterActivity.class);
-//                    intent.putExtra(AppConstant.USERID,"15867083397");
+//                    Intent intent = new Intent(context,LoginPasswordActivity.class);
+//                    intent.putExtra(AppConstant.USERID,"15867083398");
 //                    startActivity(intent);
 //                    finish();
                     startActivity(new Intent(context, LoginActivity.class));

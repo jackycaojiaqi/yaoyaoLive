@@ -11,15 +11,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseFragment;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.BaseInfoEntity;
 import com.fubang.video.entity.LoginEntity;
+import com.fubang.video.ui.LoginActivity;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.ui.SettingActivity;
 import com.fubang.video.ui.UserInfoActivity;
+import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.ToastUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
@@ -93,13 +96,14 @@ public class MineFragment extends BaseFragment {
                             tvMineId.setText("妖妖ID:" + VMSPUtil.get(getActivity(), AppConstant.USERID, ""));//ID
                             tvMineName.setText(response.body().getInfo().getCalias() + "");//姓名
                             tvMineNkNum.setText("金币*" + response.body().getInfo().getNmoney() + " ");//金币
-                            Glide.with(getActivity()).load(response.body().getInfo().getCphoto()).fitCenter().into(ivMinePic);//头像
+                            ImagUtil.set(getActivity(),AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(),ivMinePic);
                             if (response.body().getInfo().getNgender().equals("0")) {//性别
                                 ivMineGender.setImageResource(R.drawable.ic_register_female_checked);
                             } else if (response.body().getInfo().getNgender().equals("1")) {
                                 ivMineGender.setImageResource(R.drawable.ic_register_male_checked);
                             }
-                        } else {
+                        } else {//token失效
+                            startActivity(new Intent(getActivity(), LoginActivity.class));
                         }
                     }
 
