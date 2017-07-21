@@ -72,6 +72,7 @@ public class VideoPlayActivity extends BaseActivity {
     }
 
     private void initview() {
+        back(ivBack);
         setText(tvTitle, "视频播放");
         //找到播放器对象
         mAliyunVodPlayerView = (AliyunVodPlayerView) findViewById(R.id.video_view);
@@ -100,7 +101,7 @@ public class VideoPlayActivity extends BaseActivity {
                             mAliyunVodPlayerView.setOnPreparedListener(new IAliyunVodPlayer.OnPreparedListener() {
                                 @Override
                                 public void onPrepared() {
-//                                    mAliyunVodPlayerView.start();
+                                    mAliyunVodPlayerView.start();
                                 }
                             });
                             KLog.e(VideoId);

@@ -3,6 +3,7 @@ package com.fubang.video.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -10,14 +11,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
+import com.fubang.video.adapter.RecentVisiterAdapter;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.BaseInfoEntity;
+import com.fubang.video.entity.PlayVideoEntity;
 import com.fubang.video.util.GlideImageLoader;
 import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.StringUtil;
+import com.fubang.video.widget.DividerItemDecoration;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
@@ -74,6 +79,9 @@ public class UserInfoActivity extends BaseActivity {
     private List<String> imags = new ArrayList<>();
     private int type = 0;// 0其他用户信息   1、自己的信息
     private Banner banner;
+    private String VideoId;
+    private String user_id;
+    private BaseQuickAdapter recentAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +90,6 @@ public class UserInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
         initview();
-
     }
 
     @Override
@@ -93,6 +100,7 @@ public class UserInfoActivity extends BaseActivity {
 
     private void initview() {
         back(ivUserinfoBack);
+        user_id = getIntent().getStringExtra(AppConstant.USERID);
         type = getIntent().getIntExtra(AppConstant.TYPE, 0);
         if (type == 1) {
             btnUserinfoAction.setText("编辑信息");
@@ -108,12 +116,13 @@ public class UserInfoActivity extends BaseActivity {
     private void initdate() {
         OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
                 .tag(this)
-                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                .params("nuserid", user_id)
                 .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
                 .execute(new JsonCallBack<BaseInfoEntity>(BaseInfoEntity.class) {
                     @Override
                     public void onSuccess(Response<BaseInfoEntity> response) {
                         if (response.body().getStatus().equals("success")) {
+                            VideoId = response.body().getInfo().getCprofile();
                             tvUserinfoId.setText("ID:" + VMSPUtil.get(context, AppConstant.USERID, ""));//ID
                             tvUserinfoName.setText(response.body().getInfo().getCalias() + "");//姓名
                             imags.clear();
@@ -123,15 +132,15 @@ public class UserInfoActivity extends BaseActivity {
                                 if (picwall_name.contains(";")) {//显示照片墙 并吧string数组赋值成list方便替换和增加
                                     String[] imagwall = picwall_name.split(";");
                                     for (int i = 0; i < imagwall.length; i++) {
-                                        imags.add(AppConstant.BASE_IMG_URL+imagwall[i]);
+                                        imags.add(AppConstant.BASE_IMG_URL + imagwall[i]);
                                     }
                                 }
                             }
                             banner.setImages(imags).setImageLoader(new GlideImageLoader()).start();//头像照片墙
                             if (response.body().getInfo().getNgender().equals("0")) {//性别
-                                ivUserinfoGender.setImageResource(R.drawable.ic_register_female_checked);
-                            } else if (response.body().getInfo().getNgender().equals("1")) {
                                 ivUserinfoGender.setImageResource(R.drawable.ic_register_male_checked);
+                            } else if (response.body().getInfo().getNgender().equals("1")) {
+                                ivUserinfoGender.setImageResource(R.drawable.ic_register_female_checked);
                             }
                             tvUserinfoAddress.setText(response.body().getInfo().getCcity() + " ");//定位地址
                             tvUserinfoAge.setText(response.body().getInfo().getNage() + " ");//年龄
@@ -146,7 +155,31 @@ public class UserInfoActivity extends BaseActivity {
                             }
                             tvUserinfoPrice.setText(response.body().getInfo().getNprice() + "金币/分钟");//每分钟价格
                             ImagUtil.set(context, AppConstant.BASE_IMG_URL + response.body().getInfo().getCvideophoto(), ivUserinfoSelfVideo);//个人介绍视频图片
-                            tvUserinfoSelfSign.setText(response.body().getInfo().getCidiograph() + " ");
+                            tvUserinfoSelfSign.setText(response.body().getInfo().getCidiograph() + " ");//签名
+                            //处理最近观看的用户列表
+                            final List<BaseInfoEntity.InfoBean.RecentBean> list_recent = response.body().getInfo().getRecent();
+                            //=========================recycleview
+                            recentAdapter = new RecentVisiterAdapter(R.layout.item_recent_visistor, list_recent);
+                            rvUserinfo.setLayoutManager(new GridLayoutManager(context, 5));
+                            recentAdapter.openLoadAnimation();
+                            recentAdapter.setAutoLoadMoreSize(5);
+                            recentAdapter.setEnableLoadMore(true);
+                            recentAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                    Intent intent = new Intent(context, UserInfoActivity.class);
+                                    intent.putExtra(AppConstant.TYPE, 0);
+                                    intent.putExtra(AppConstant.USERID, list_recent.get(position).getNuserid());
+                                    startActivity(intent);
+                                }
+                            });
+                            recentAdapter.bindToRecyclerView(rvUserinfo);
+                            recentAdapter.setEmptyView(R.layout.empty_view);
+                            rvUserinfo.setAdapter(recentAdapter);
+                            //水平分割线
+                            rvUserinfo.addItemDecoration(new DividerItemDecoration(
+                                    context, DividerItemDecoration.HORIZONTAL_LIST, 5, getResources().getColor(R.color.white)));
+
                         } else {
                             startActivity(new Intent(context, LoginActivity.class));
                         }
@@ -161,10 +194,12 @@ public class UserInfoActivity extends BaseActivity {
 
     @OnClick({R.id.iv_userinfo_self_video_play, R.id.iv_userinfo_back, R.id.iv_userinfo_setting, R.id.btn_userinfo_action})
     public void onViewClicked(View view) {
+        Intent intent;
         switch (view.getId()) {
             case R.id.iv_userinfo_self_video_play:
-                break;
-            case R.id.iv_userinfo_back:
+                intent = new Intent(context, VideoPlayActivity.class);
+                intent.putExtra(AppConstant.VIDEOID, VideoId);
+                startActivity(intent);
                 break;
             case R.id.iv_userinfo_setting:
                 break;
@@ -172,7 +207,7 @@ public class UserInfoActivity extends BaseActivity {
                 if (type == 1) {
                     startActivity(new Intent(context, UserinfoEditActivity.class));
                 } else if (type == 0) {
-                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("userId", "15867083398");
                     startActivity(intent);
                 }

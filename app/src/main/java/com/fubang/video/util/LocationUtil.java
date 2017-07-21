@@ -2,6 +2,11 @@ package com.fubang.video.util;
 
 import android.content.Context;
 
+import com.fubang.video.AppConstant;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.adapter.Call;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
 
 

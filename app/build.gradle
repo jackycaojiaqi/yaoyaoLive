@@ -114,4 +114,6 @@ dependencies {
     compile(name:'AlivcPlayer',ext:'aar')
     compile(name:'AliyunvodPlayer',ext:'aar')
     compile(name:'AliyunVodPlayerView',ext:'aar')
+    compile 'com.hanks.animatecheckbox:library:0.1'
+    compile 'com.contrarywind:Android-PickerView:3.2.5'
 }

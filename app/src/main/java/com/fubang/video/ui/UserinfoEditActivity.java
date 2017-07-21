@@ -22,11 +22,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.alibaba.sdk.android.common.utils.DateUtil;
 import com.alibaba.sdk.android.vod.upload.VODUploadCallback;
 import com.alibaba.sdk.android.vod.upload.VODUploadClient;
 import com.alibaba.sdk.android.vod.upload.VODUploadClientImpl;
 import com.alibaba.sdk.android.vod.upload.model.UploadFileInfo;
 import com.alibaba.sdk.android.vod.upload.model.VodInfo;
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
+import com.bigkoo.pickerview.TimePickerView;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
@@ -39,13 +45,23 @@ import com.fubang.video.util.FileUtils;
 import com.fubang.video.util.GetPathFromUri4kitkat;
 import com.fubang.video.util.GlideImageLoader;
 import com.fubang.video.util.ImagUtil;
+import com.fubang.video.util.LocationUtil;
+import com.fubang.video.util.StartUtil;
 import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.SystemStatusManager;
 import com.fubang.video.util.ToastUtil;
+import com.fubang.video.util.dataUtils;
+import com.jph.takephoto.app.TakePhoto;
 import com.jph.takephoto.app.TakePhotoActivity;
+import com.jph.takephoto.app.TakePhotoImpl;
 import com.jph.takephoto.model.CropOptions;
+import com.jph.takephoto.model.InvokeParam;
+import com.jph.takephoto.model.TContextWrap;
 import com.jph.takephoto.model.TImage;
 import com.jph.takephoto.model.TResult;
+import com.jph.takephoto.permission.InvokeListener;
+import com.jph.takephoto.permission.PermissionManager;
+import com.jph.takephoto.permission.TakePhotoInvocationHandler;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
@@ -53,6 +69,8 @@ import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +82,7 @@ import butterknife.OnClick;
 /**
  * Created by jacky on 2017/7/18.
  */
-public class UserinfoEditActivity extends TakePhotoActivity {
+public class UserinfoEditActivity extends BaseActivity implements TakePhoto.TakeResultListener, InvokeListener, AMapLocationListener {
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
@@ -124,31 +142,43 @@ public class UserinfoEditActivity extends TakePhotoActivity {
     private String photo_name;
     private String pic_name;
     private String picwall_name;
-    private int pic_type = 0;
+    private int pic_type = 0;   // 1 头像  2 3 4 5  背景墙  10 生日    20 地址定位
     private VODUploadClient uploader;
     private final int GET_VIDEP_FILE = 0X12;
     private Context context;
     private boolean is_first_add = true;
+    private TakePhoto takePhoto;
+    private InvokeParam invokeParam;
+    //声明mLocationOption对象
+    private AMapLocationClientOption mLocationOption = null;
+    private AMapLocationClient mlocationClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        getTakePhoto().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
         setTranslucentStatus();
         context = this;
         setContentView(R.layout.activity_userinfo_edit);
         ButterKnife.bind(this);
         initview();
+        initlocation();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initdate();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        getTakePhoto().onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
     private void initview() {
-        ivBack.setVisibility(View.VISIBLE);
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        back(ivBack);
         tvTitle.setText("编辑信息");
     }
 
@@ -167,7 +197,7 @@ public class UserinfoEditActivity extends TakePhotoActivity {
                                 tvEditinfoGender.setText("女");
                             }
                             tvEditinfoSign.setText(response.body().getInfo().getCidiograph() + " ");//签名
-                            tvEditinfoName.setText(response.body().getInfo().getCname() + " ");//姓名
+                            tvEditinfoName.setText(response.body().getInfo().getCalias() + " ");//姓名
                             tvEditinfoAddress.setText(response.body().getInfo().getCcity() + " ");//城市
                             tvEditinfoBirth.setText(response.body().getInfo().getCbirthdate() + " ");//生日
                             tvEditinfoTab.setText(response.body().getInfo().getClabel() + " ");//标签
@@ -224,11 +254,34 @@ public class UserinfoEditActivity extends TakePhotoActivity {
                 });
     }
 
+    private void initlocation() {
+        mlocationClient = new AMapLocationClient(this);
+        //初始化定位参数
+        mLocationOption = new AMapLocationClientOption();
+        //设置定位监听
+        mlocationClient.setLocationListener(this);
+        //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        //设置定位间隔,单位毫秒,默认为2000ms
+        mLocationOption.setOnceLocation(true);
+        //设置定位参数
+        mlocationClient.setLocationOption(mLocationOption);
+        // 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
+        // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
+        // 在定位结束后，在合适的生命周期调用onDestroy()方法
+        // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
+        //启动定位
+
+    }
+
+    private int age = 18;
+
     @OnClick({R.id.iv_editinfo_pic1, R.id.iv_editinfo_pic2, R.id.iv_editinfo_pic3, R.id.iv_editinfo_pic4,
             R.id.iv_editinfo_pic5, R.id.iv_editinfo_video, R.id.rll_editinfo_sign, R.id.rll_editinfo_name,
-            R.id.rll_editinfo_gender, R.id.rll_editinfo_address, R.id.rll_editinfo_birth, R.id.rll_editinfo_tab,
+            R.id.rll_editinfo_address, R.id.rll_editinfo_birth, R.id.rll_editinfo_tab,
             R.id.iv_editinfo_video_play})
     public void onViewClicked(View view) {
+        Intent intent;
         switch (view.getId()) {
             case R.id.iv_editinfo_pic1:
                 pic_type = 1;
@@ -263,16 +316,41 @@ public class UserinfoEditActivity extends TakePhotoActivity {
                 ShowPopAction();
                 break;
             case R.id.rll_editinfo_sign:
+                intent = new Intent(context, EditInfoActivity.class);
+                intent.putExtra(AppConstant.OBJECT, 1);
+                startActivity(intent);
                 break;
             case R.id.rll_editinfo_name:
-                break;
-            case R.id.rll_editinfo_gender:
+                intent = new Intent(context, EditInfoActivity.class);
+                intent.putExtra(AppConstant.OBJECT, 2);
+                startActivity(intent);
                 break;
             case R.id.rll_editinfo_address:
+                pic_type = 20;
+                mlocationClient.startLocation();
                 break;
             case R.id.rll_editinfo_birth:
+                pic_type = 10;
+                //时间选择器
+                TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+                    @Override
+                    public void onTimeSelect(Date date, View v) {//选中事件回调
+                        tvEditinfoBirth.setText(dataUtils.formatDateToString(date));
+                        try {
+                            age = dataUtils.getAge(date);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        update_imag_to_server(dataUtils.formatDateToString(date));
+                    }
+                }).setType(new boolean[]{true, true, true, false, false, false}).build();
+                pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
+                pvTime.show();
                 break;
             case R.id.rll_editinfo_tab:
+                intent = new Intent(context, EditInfoActivity.class);
+                intent.putExtra(AppConstant.OBJECT, 3);
+                startActivity(intent);
                 break;
             case R.id.iv_editinfo_video_play:
                 if (has_video) {
@@ -284,6 +362,12 @@ public class UserinfoEditActivity extends TakePhotoActivity {
                                 public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                                     switch (which) {
                                         case 0:
+                                            Intent intent1 = new Intent();
+                                            intent1.setType("video/*");
+                                            intent1.setAction(Intent.ACTION_GET_CONTENT);
+                                            intent1.addCategory(Intent.CATEGORY_OPENABLE);
+                                            ((Activity) context).startActivityForResult(intent1,
+                                                    GET_VIDEP_FILE);
                                             dialog.dismiss();
                                             break;
                                         case 1:
@@ -479,47 +563,48 @@ public class UserinfoEditActivity extends TakePhotoActivity {
                 });
     }
 
-//    /**
-//     * 视频回调
-//     */
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        switch (requestCode) {
-//            case GET_VIDEP_FILE:
-//                if (resultCode == Activity.RESULT_OK) {
-//                    if (resultCode == RESULT_OK) {
-//                        if (Build.VERSION.SDK_INT >= 19) {//适配高低版本的获取视频信息
-//                            Uri uri = data.getData();
-//                            path = GetPathFromUri4kitkat.getPath(context, uri);
-//                            Cursor cursor = getContentResolver().query(uri, null, null,
-//                                    null, null);
-//                            cursor.moveToFirst();
-//                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
-//                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
-//                            KLog.e("v_path=" + path);
-//                            KLog.e("v_size=" + size);
-//                            KLog.e("v_name=" + name);
-//                            ivEditinfoVideo.setImageBitmap(createVideoThumbnail(path));
-//                            getAliUploadAuth();
-//                        } else {
-//                            Uri uri = data.getData();
-//                            Cursor cursor = getContentResolver().query(uri, null, null,
-//                                    null, null);
-//                            cursor.moveToFirst();
-//                            path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
-//                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
-//                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
-//                            KLog.e("v_path=" + path);
-//                            KLog.e("v_size=" + size);
-//                            KLog.e("v_name=" + name);
-//                            ivEditinfoVideo.setImageBitmap(createVideoThumbnail(path));
-//                            getAliUploadAuth();
-//                        }
-//                    }
-//                }
-//                break;
-//        }
-//    }
+    /**
+     * 视频回调
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getTakePhoto().onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case GET_VIDEP_FILE:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (resultCode == RESULT_OK) {
+                        if (Build.VERSION.SDK_INT >= 19) {//适配高低版本的获取视频信息
+                            Uri uri = data.getData();
+                            path = GetPathFromUri4kitkat.getPath(context, uri);
+                            Cursor cursor = getContentResolver().query(uri, null, null,
+                                    null, null);
+                            cursor.moveToFirst();
+                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
+                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
+                            KLog.e("v_path=" + path);
+                            KLog.e("v_size=" + size);
+                            KLog.e("v_name=" + name);
+                            ivEditinfoVideo.setImageBitmap(createVideoThumbnail(path));
+                            getAliUploadAuth();
+                        } else {
+                            Uri uri = data.getData();
+                            Cursor cursor = getContentResolver().query(uri, null, null,
+                                    null, null);
+                            cursor.moveToFirst();
+                            path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 图片文件路径
+                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 图片大小
+                            name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)); // 图片文件名
+                            KLog.e("v_path=" + path);
+                            KLog.e("v_size=" + size);
+                            KLog.e("v_name=" + name);
+                            ivEditinfoVideo.setImageBitmap(createVideoThumbnail(path));
+                            getAliUploadAuth();
+                        }
+                    }
+                }
+                break;
+        }
+    }
 
     private VodInfo getVodInfo(String name) {
         VodInfo vodInfo = new VodInfo();
@@ -613,13 +698,11 @@ public class UserinfoEditActivity extends TakePhotoActivity {
     @Override
     public void takeCancel() {
         KLog.e("takeCancel");
-        super.takeCancel();
     }
 
     @Override
     public void takeFail(TResult result, String msg) {
         KLog.e("takeFail");
-        super.takeFail(result, msg);
     }
 
     private String cphoto;
@@ -627,7 +710,6 @@ public class UserinfoEditActivity extends TakePhotoActivity {
     @Override
     public void takeSuccess(TResult result) {
         KLog.e("takeSuccess");
-        super.takeSuccess(result);
         if (result.getImages().size() > 0) {
             cphoto = result.getImages().get(0).getOriginalPath();
             uploadImage();
@@ -695,12 +777,22 @@ public class UserinfoEditActivity extends TakePhotoActivity {
     }
 
     /**
-     * 将返回的图片名字更新到个人信息中
+     * 将返回的图片名字、年龄、生日更新到个人信息中
      */
     private void update_imag_to_server(String pic_or_wall_name) {
         Map<String, String> map = new HashMap<>();
         if (pic_type == 1) {
             map.put("cphoto", pic_or_wall_name);
+        } else if (pic_type == 10) {
+            map.put("cbirthdate", pic_or_wall_name);
+            map.put("nage", String.valueOf(age));
+        } else if (pic_type == 20) {
+            map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
+            map.put("cprovince", String.valueOf(VMSPUtil.get(context, AppConstant.PRIVINCE, "")));
+            map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
+            map.put("cdistrict", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
+            map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
+            map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
         } else {
             map.put("cphotowall", pic_or_wall_name);
         }
@@ -713,7 +805,7 @@ public class UserinfoEditActivity extends TakePhotoActivity {
                     @Override
                     public void onSuccess(Response<PublishUpLoadEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-                            ToastUtil.show(context, "上传照片成功");
+                            ToastUtil.show(context, "上传成功");
                             initdate();
                         }
                     }
@@ -734,20 +826,44 @@ public class UserinfoEditActivity extends TakePhotoActivity {
         return builder.create();
     }
 
-    /**
-     * 设置状态栏背景状态
-     */
-    public void setTranslucentStatus() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window win = getWindow();
-            WindowManager.LayoutParams winParams = win.getAttributes();
-            final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-            winParams.flags |= bits;
-            win.setAttributes(winParams);
-        }
-        SystemStatusManager tintManager = new SystemStatusManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintResource(0);//状态栏无背景
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.TPermissionType type = PermissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.handlePermissionsResult(this, type, invokeParam, this);
+    }
+
+    @Override
+    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
+        PermissionManager.TPermissionType type = PermissionManager.checkPermission(TContextWrap.of(this), invokeParam.getMethod());
+        if (PermissionManager.TPermissionType.WAIT.equals(type)) {
+            this.invokeParam = invokeParam;
+        }
+        return type;
+    }
+
+    /**
+     * 获取TakePhoto实例
+     *
+     * @return
+     */
+    public TakePhoto getTakePhoto() {
+        if (takePhoto == null) {
+            takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
+        }
+        return takePhoto;
+    }
+
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            VMSPUtil.put(context, AppConstant.CITY, aMapLocation.getCity());
+            VMSPUtil.put(context, AppConstant.PRIVINCE, aMapLocation.getProvince());
+            VMSPUtil.put(context, AppConstant.ADDRDETAIL, aMapLocation.getAddress());
+            VMSPUtil.put(context, AppConstant.LAT, aMapLocation.getLatitude());
+            VMSPUtil.put(context, AppConstant.LON, aMapLocation.getLongitude());
+            update_imag_to_server("");
+        }
     }
 }

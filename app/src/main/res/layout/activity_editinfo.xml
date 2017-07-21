@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_head" />
+
+    <LinearLayout
+        android:id="@+id/ll_edit_type1_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_edit_content"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/shap_rec_10dp_edit_bg"
+            android:gravity="left"
+            android:hint="请输入您的信息"
+            android:padding="10dp"
+            android:textColor="@color/black_3a3a3a" />
+
+        <TextView
+            android:id="@+id/tv_edit_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/edit_sign" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_edit_type3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="有钱任性"
+                android:textColor="@color/black_3a3a3a"
+                android:textSize="16dp" />
+
+            <com.hanks.library.AnimateCheckBox
+                android:id="@+id/cb_lable_1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                app:animDuration="200"
+                app:checkedColor="@color/main_color"
+                app:lineColor="@color/main_color"
+                app:lineWidth="1.2dp"
+                app:unCheckColor="#ff0" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_c" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="聊污污"
+                android:textColor="@color/black_3a3a3a"
+                android:textSize="16dp" />
+
+            <com.hanks.library.AnimateCheckBox
+                android:id="@+id/cb_lable_2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                app:animDuration="200"
+                app:checkedColor="@color/main_color"
+                app:lineColor="@color/main_color"
+                app:lineWidth="1.2dp"
+                app:unCheckColor="#ff0" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_c" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="空虚寂寞冷"
+                android:textColor="@color/black_3a3a3a"
+                android:textSize="16dp" />
+
+            <com.hanks.library.AnimateCheckBox
+                android:id="@+id/cb_lable_3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                app:animDuration="200"
+                app:checkedColor="@color/main_color"
+                app:lineColor="@color/main_color"
+                app:lineWidth="1.2dp"
+                app:unCheckColor="#ff0" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_c" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="声音控"
+                android:textColor="@color/black_3a3a3a"
+                android:textSize="16dp" />
+
+            <com.hanks.library.AnimateCheckBox
+                android:id="@+id/cb_lable_4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                app:animDuration="200"
+                app:checkedColor="@color/main_color"
+                app:lineColor="@color/main_color"
+                app:lineWidth="1.2dp"
+                app:unCheckColor="#ff0" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_c" />
+    </LinearLayout>
+</LinearLayout>

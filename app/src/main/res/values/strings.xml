@@ -35,4 +35,6 @@
     <string name="call_voice_calling">语音通话进行中</string>
     <string name="at_your_in_group">%s在群聊中@了你</string>
     <string name="pick_action">选择您的操作</string>
+    <string name="edit_sign">小贴士：个性签名将显示在首页列表中</string>
+    <string name="edit_name">有趣的昵称会给别人留下深刻的印象（10字以内）</string>
 </resources>

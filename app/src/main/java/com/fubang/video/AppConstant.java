@@ -11,6 +11,7 @@ public class AppConstant {
     public static final String BASE_DOWNLOAD_MUSIC = "http://120.26.127.210:333/mp3_ge/";//音乐下载链接前缀
     public static final String BASE_DOWNLOAD_LRC = "http://120.26.127.210:333/mp3_lrc/";//音乐下载链接前缀
     public static final String USERNAME = "username";
+    public static final String OBJECT = "onject";
     public static final String USERID = "userid";
     public static final String TOKEN = "token";
     public static final String PHONE = "phone";
@@ -21,6 +22,11 @@ public class AppConstant {
     public static final String PAGE = "page";
     public static final String TYPE = "type";
     public static final long NKTIMES = 100;
+    public static final String PRIVINCE = "privince";
+    public static final String CITY = "city";
+    public static final String ADDRDETAIL = "addrdetail";
+    public static final String LAT = "lat";
+    public static final String LON = "lon";
 
 
     public static final String URL_PUNLISH_UPLOAD = "/aliyun-php-sdk-vod/aliyun.php";//获取上传播放凭证

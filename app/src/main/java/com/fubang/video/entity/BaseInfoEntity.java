@@ -1,5 +1,7 @@
 package com.fubang.video.entity;
 
+import java.util.List;
+
 /**
  * Created by jacky on 2017/7/19.
  */
@@ -8,7 +10,7 @@ public class BaseInfoEntity {
 
     /**
      * status : success
-     * info : {"nuserid":"11","ninviterid":null,"calias":"tUUU","nage":null,"ngender":"1","cbirthdate":null,"ccountry":null,"cprovince":null,"ccity":null,"cdistrict":null,"cwechat":null,"cqq":null,"cphoto":"a.png","cphotowall":null,"cprofile":null,"cvideophoto":null,"cidiograph":null,"clabel":null,"cname":null,"cidcard":null,"cregisterip":"115.202.4.188","dregisterdate":"2017-07-18 08:31:08.272004+08","nmoney":"0","dviptime":"1970-01-01 00:00:00+08","nstatus":"2","nprice":"20","nlongitude":null,"nlatitude":null,"clocation":null}
+     * info : {"nuserid":"12","ninviterid":null,"calias":"小新","nage":"16","ngender":"1","cbirthdate":"2001-07-21","ccountry":null,"cprovince":"浙江省","ccity":"台州市","cdistrict":"浙江省台州市椒江区白云山西路1402号靠近椒江区葭芷街道水门村卫生室(台州安民医院东南)","cwechat":null,"cqq":null,"cphoto":"touxiang_20170720051930_7208.jpg","cphotowall":"beijing_20170720051633_6688.jpg;beijing_20170720051642_7918.jpg;beijing_20170720053119_4286.jpg;beijing_20170720053127_4176.jpg","cprofile":"10578b97111048ebbb05744179346569","cvideophoto":"userinfovideobg_20170720020357_714.jpg","cidiograph":"小丸子你好呀","clabel":"聊污污;空虚寂寞冷","cname":null,"cidcard":null,"cregisterip":"115.202.4.188","dregisterdate":"2017-07-19 15:15:53.859042+08","nmoney":"10000","dviptime":"1970-01-01 00:00:00+08","nstatus":"2","nprice":"20","nlongitude":null,"nlatitude":null,"clocation":null,"chenggong":2035,"shibai":2012,"ntime":0,"recent":[{"nuserid":"878","calias":"878","cphoto":null},{"nuserid":"683","calias":"683","cphoto":null},{"nuserid":"812","calias":"812","cphoto":null},{"nuserid":"401","calias":"401","cphoto":null},{"nuserid":"764","calias":"764","cphoto":null},{"nuserid":"997","calias":"997","cphoto":null},{"nuserid":"740","calias":"740","cphoto":null},{"nuserid":"512","calias":"512","cphoto":null},{"nuserid":"765","calias":"765","cphoto":null},{"nuserid":"752","calias":"752","cphoto":null}]}
      */
 
     private String status;
@@ -32,35 +34,39 @@ public class BaseInfoEntity {
 
     public static class InfoBean {
         /**
-         * nuserid : 11
+         * nuserid : 12
          * ninviterid : null
-         * calias : tUUU
-         * nage : null
+         * calias : 小新
+         * nage : 16
          * ngender : 1
-         * cbirthdate : null
+         * cbirthdate : 2001-07-21
          * ccountry : null
-         * cprovince : null
-         * ccity : null
-         * cdistrict : null
+         * cprovince : 浙江省
+         * ccity : 台州市
+         * cdistrict : 浙江省台州市椒江区白云山西路1402号靠近椒江区葭芷街道水门村卫生室(台州安民医院东南)
          * cwechat : null
          * cqq : null
-         * cphoto : a.png
-         * cphotowall : null
-         * cprofile : null
-         * cvideophoto : null
-         * cidiograph : null
-         * clabel : null
+         * cphoto : touxiang_20170720051930_7208.jpg
+         * cphotowall : beijing_20170720051633_6688.jpg;beijing_20170720051642_7918.jpg;beijing_20170720053119_4286.jpg;beijing_20170720053127_4176.jpg
+         * cprofile : 10578b97111048ebbb05744179346569
+         * cvideophoto : userinfovideobg_20170720020357_714.jpg
+         * cidiograph : 小丸子你好呀
+         * clabel : 聊污污;空虚寂寞冷
          * cname : null
          * cidcard : null
          * cregisterip : 115.202.4.188
-         * dregisterdate : 2017-07-18 08:31:08.272004+08
-         * nmoney : 0
+         * dregisterdate : 2017-07-19 15:15:53.859042+08
+         * nmoney : 10000
          * dviptime : 1970-01-01 00:00:00+08
          * nstatus : 2
          * nprice : 20
          * nlongitude : null
          * nlatitude : null
          * clocation : null
+         * chenggong : 2035
+         * shibai : 2012
+         * ntime : 0
+         * recent : [{"nuserid":"878","calias":"878","cphoto":null},{"nuserid":"683","calias":"683","cphoto":null},{"nuserid":"812","calias":"812","cphoto":null},{"nuserid":"401","calias":"401","cphoto":null},{"nuserid":"764","calias":"764","cphoto":null},{"nuserid":"997","calias":"997","cphoto":null},{"nuserid":"740","calias":"740","cphoto":null},{"nuserid":"512","calias":"512","cphoto":null},{"nuserid":"765","calias":"765","cphoto":null},{"nuserid":"752","calias":"752","cphoto":null}]
          */
 
         private String nuserid;
@@ -92,6 +98,10 @@ public class BaseInfoEntity {
         private String nlongitude;
         private String nlatitude;
         private String clocation;
+        private int chenggong;
+        private int shibai;
+        private int ntime;
+        private List<RecentBean> recent;
 
         public String getNuserid() {
             return nuserid;
@@ -323,6 +333,74 @@ public class BaseInfoEntity {
 
         public void setClocation(String clocation) {
             this.clocation = clocation;
+        }
+
+        public int getChenggong() {
+            return chenggong;
+        }
+
+        public void setChenggong(int chenggong) {
+            this.chenggong = chenggong;
+        }
+
+        public int getShibai() {
+            return shibai;
+        }
+
+        public void setShibai(int shibai) {
+            this.shibai = shibai;
+        }
+
+        public int getNtime() {
+            return ntime;
+        }
+
+        public void setNtime(int ntime) {
+            this.ntime = ntime;
+        }
+
+        public List<RecentBean> getRecent() {
+            return recent;
+        }
+
+        public void setRecent(List<RecentBean> recent) {
+            this.recent = recent;
+        }
+
+        public static class RecentBean {
+            /**
+             * nuserid : 878
+             * calias : 878
+             * cphoto : null
+             */
+
+            private String nuserid;
+            private String calias;
+            private String cphoto;
+
+            public String getNuserid() {
+                return nuserid;
+            }
+
+            public void setNuserid(String nuserid) {
+                this.nuserid = nuserid;
+            }
+
+            public String getCalias() {
+                return calias;
+            }
+
+            public void setCalias(String calias) {
+                this.calias = calias;
+            }
+
+            public String getCphoto() {
+                return cphoto;
+            }
+
+            public void setCphoto(String cphoto) {
+                this.cphoto = cphoto;
+            }
         }
     }
 }
