@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.support.multidex.MultiDex;
 
 import com.fubang.video.util.LiteOrmDBUtil;
 import com.fubang.video.widget.imageload.ImageLoaderManager;
@@ -58,7 +59,7 @@ public class APP extends VMApplication {
         DemoHelper.getInstance().init(getApplicationContext());
         //注册环信sdk
         initHyphenate();
-
+        MultiDex.install(this);
 
         MobclickAgent.setScenarioType( getApplicationContext(), MobclickAgent.EScenarioType.E_UM_NORMAL);
     }

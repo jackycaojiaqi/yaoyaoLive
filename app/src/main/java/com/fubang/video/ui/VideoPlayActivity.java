@@ -34,6 +34,7 @@ public class VideoPlayActivity extends BaseActivity {
     ImageView ivAction;
     private AliyunVodPlayerView mAliyunVodPlayerView;
     private String VideoId;
+    private String VideoCover;
     private String PlayAuth;
 
     @Override
@@ -43,6 +44,7 @@ public class VideoPlayActivity extends BaseActivity {
         setContentView(R.layout.activity_videoplay);
         ButterKnife.bind(this);
         VideoId = getIntent().getStringExtra(AppConstant.VIDEOID);
+        VideoCover = getIntent().getStringExtra(AppConstant.OBJECT);
         initview();
         initdate();
     }
@@ -109,6 +111,7 @@ public class VideoPlayActivity extends BaseActivity {
                             aliyunPlayAuthBuilder.setPlayAuth(PlayAuth);
                             aliyunPlayAuthBuilder.setVid(VideoId);
                             aliyunPlayAuthBuilder.setQuality(IAliyunVodPlayer.QualityValue.QUALITY_ORIGINAL);
+                            mAliyunVodPlayerView.setCoverUri(AppConstant.BASE_IMG_URL + VideoCover);
                             mAliyunVodPlayerView.setAuthInfo(aliyunPlayAuthBuilder.build());
                         }
                     }

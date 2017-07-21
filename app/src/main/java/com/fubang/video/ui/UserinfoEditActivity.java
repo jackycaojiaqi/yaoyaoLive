@@ -138,6 +138,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
     private String uploadAuth = "";
     private String uploadAddress = "";
     private String videoId = "";
+    private String VideoCover;
     private String ctopic;
     private String photo_name;
     private String pic_name;
@@ -190,6 +191,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                 .execute(new JsonCallBack<BaseInfoEntity>(BaseInfoEntity.class) {
                     @Override
                     public void onSuccess(Response<BaseInfoEntity> response) {
+
                         if (response.body().getStatus().equals("success")) {
                             if (response.body().getInfo().getNgender().equals("0")) {//性别
                                 tvEditinfoGender.setText("男");
@@ -238,6 +240,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                             if (!StringUtil.isEmptyandnull(response.body().getInfo().getCprofile())) {
                                 has_video = true;
                                 videoId = response.body().getInfo().getCprofile();
+                                VideoCover = response.body().getInfo().getCvideophoto();
                             } else {
                                 has_video = false;
                             }
@@ -373,6 +376,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                                         case 1:
                                             Intent intent = new Intent(context, VideoPlayActivity.class);
                                             intent.putExtra(AppConstant.VIDEOID, videoId);
+                                            intent.putExtra(AppConstant.OBJECT, VideoCover);
                                             startActivity(intent);
                                             dialog.dismiss();
                                             break;

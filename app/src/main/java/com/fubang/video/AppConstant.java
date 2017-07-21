@@ -39,4 +39,6 @@ public class AppConstant {
     public static final String URL_UPLOAD_PHOTO = "/index.php/LineApp/upload_pic";//上传图片和头像
     public static final String URL_LIFE_ADD = "/index.php/LineApp/life_add";//生活圈发布
     public static final String URL_UPDATE_INFO = "/index.php/LineApp/update_info";//更新用户基本信息
+    public static final String URL_LIFE_LIST = "/index.php/LineApp/life_list";//朋友圈列表
+
 }

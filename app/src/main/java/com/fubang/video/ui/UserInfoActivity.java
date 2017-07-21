@@ -80,6 +80,7 @@ public class UserInfoActivity extends BaseActivity {
     private int type = 0;// 0其他用户信息   1、自己的信息
     private Banner banner;
     private String VideoId;
+    private String VideoCover;
     private String user_id;
     private BaseQuickAdapter recentAdapter;
 
@@ -123,6 +124,7 @@ public class UserInfoActivity extends BaseActivity {
                     public void onSuccess(Response<BaseInfoEntity> response) {
                         if (response.body().getStatus().equals("success")) {
                             VideoId = response.body().getInfo().getCprofile();
+                            VideoCover = response.body().getInfo().getCvideophoto();
                             tvUserinfoId.setText("ID:" + VMSPUtil.get(context, AppConstant.USERID, ""));//ID
                             tvUserinfoName.setText(response.body().getInfo().getCalias() + "");//姓名
                             imags.clear();
@@ -199,6 +201,7 @@ public class UserInfoActivity extends BaseActivity {
             case R.id.iv_userinfo_self_video_play:
                 intent = new Intent(context, VideoPlayActivity.class);
                 intent.putExtra(AppConstant.VIDEOID, VideoId);
+                intent.putExtra(AppConstant.OBJECT, VideoCover);
                 startActivity(intent);
                 break;
             case R.id.iv_userinfo_setting:
