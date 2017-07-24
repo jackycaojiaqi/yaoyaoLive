@@ -34,24 +34,26 @@
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:layout_width="match_parent"
                         android:layout_height="320dp"
-                        android:background="@color/black_room"
+                        android:background="@drawable/ic_home_call_bg"
                         android:scaleType="fitCenter"
                         app:riv_border_color="#333333"
                         app:riv_corner_radius="10dip"
                         app:riv_mutate_background="true" />
 
                     <ImageView
-                        android:layout_width="65dp"
-                        android:layout_height="65dp"
+                        android:id="@+id/tv_home_random_call"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="80dp"
                         android:src="@drawable/ic_home_call" />
 
                     <TextView
+                        android:id="@+id/tv_home_online_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="170dp"
+                        android:layout_marginTop="180dp"
                         android:text="当前在线1000人"
                         android:textColor="@color/white"
                         android:textSize="16dp" />
@@ -67,11 +69,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="女神"
+                        android:text="在线"
                         android:textColor="@color/black_3a3a3a"
                         android:textSize="16dp" />
 
                     <TextView
+                        android:id="@+id/tv_home_action1"
                         android:layout_width="30dp"
                         android:layout_height="20dp"
                         android:layout_alignParentRight="true"
@@ -88,8 +91,10 @@
                         android:src="@drawable/ic_arrow_right" />
 
                     <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_home_action1"
+                        android:layout_marginTop="22dp"
                         android:layout_width="match_parent"
-                        android:layout_height="125dp"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
                 </RelativeLayout>
 
@@ -101,11 +106,14 @@
                     android:padding="5dp">
 
                     <TextView
+                        android:id="@+id/tv_home_action2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="老司机"
+                        android:text="土豪"
                         android:textColor="@color/black_3a3a3a"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true" />
 
                     <TextView
                         android:layout_width="30dp"
@@ -124,8 +132,9 @@
                         android:src="@drawable/ic_arrow_right" />
 
                     <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_home_action2"
                         android:layout_width="match_parent"
-                        android:layout_height="125dp"
+                        android:layout_height="wrap_content"  android:layout_marginTop="22dp"
                         android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
                 </RelativeLayout>
 
@@ -178,9 +187,10 @@
                     android:padding="5dp">
 
                     <TextView
+                        android:id="@+id/tv_home_action3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="男生"
+                        android:text="新人"
                         android:textColor="@color/black_3a3a3a"
                         android:textSize="16dp" />
 
@@ -201,8 +211,9 @@
                         android:src="@drawable/ic_arrow_right" />
 
                     <android.support.v7.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="125dp"
+                        android:id="@+id/rv_home_action3"
+                        android:layout_width="match_parent"  android:layout_marginTop="22dp"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
                 </RelativeLayout>
 
@@ -249,7 +260,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="160dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@color/white"
                     android:padding="5dp">
@@ -269,63 +280,31 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        android:id="@+id/tv_home_action4"
                         android:layout_width="30dp"
                         android:layout_height="20dp"
-                        android:layout_alignParentRight="true"
                         android:layout_marginRight="20dp"
                         android:text="更多"
                         android:textColor="@color/gray_deep"
-                        android:textSize="14dp" />
+                        android:textSize="14dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toStartOf="@+id/imageView" />
 
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_alignParentRight="true"
                         android:padding="2dp"
-                        android:src="@drawable/ic_arrow_right" />
+                        android:src="@drawable/ic_arrow_right"
+                        android:id="@+id/imageView" />
 
                     <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_home_action4"
                         android:layout_width="match_parent"
-                        android:layout_height="125dp"
+                        android:layout_marginTop="22dp"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
                 </RelativeLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/vm_dimen_16"
-                    android:textColor="@color/vm_black_87"
-                    android:textColorHint="@color/vm_black_38">
-
-                    <EditText
-                        android:id="@+id/edit_contacts_username"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="对方名字"
-                        android:inputType="textImeMultiLine"
-                        android:textColor="@color/vm_black_87"
-                        android:textColorHint="@color/vm_black_38"
-                        android:textSize="@dimen/vm_size_body" />
-                </android.support.design.widget.TextInputLayout>
-
-
-                <Button
-                    android:id="@+id/btn_send"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="发送测试消息" />
-
-                <Button
-                    android:id="@+id/btn_call_voice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="语音通话" />
-
-                <Button
-                    android:id="@+id/btn_call_video"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="视频通话" />
 
             </LinearLayout>
         </ScrollView>

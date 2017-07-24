@@ -6,6 +6,7 @@ import com.fubang.video.db.UserDao;
 import com.fubang.video.util.PreferenceManager;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
+import com.socks.library.KLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class DemoModel {
     }
     
     public void saveContact(EaseUser user){
+        KLog.e("saveContact");
         UserDao dao = new UserDao(context);
         dao.saveContact(user);
     }

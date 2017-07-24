@@ -11,6 +11,7 @@ import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.entity.LoginEntity;
 import com.fubang.video.util.StringUtil;
+import com.squareup.haha.perflib.Main;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 /**

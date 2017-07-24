@@ -133,7 +133,7 @@ public class MineFragment extends BaseFragment {
             case R.id.rll_mine_self:
                 intent = new Intent(getActivity(), UserInfoActivity.class);
                 intent.putExtra(AppConstant.TYPE, 1);
-                intent.putExtra(AppConstant.USERID,(String)VMSPUtil.get(getActivity(),AppConstant.USERID,""));
+                intent.putExtra(AppConstant.USERID, (String) VMSPUtil.get(getActivity(), AppConstant.USERID, ""));
                 startActivity(intent);
                 break;
             case R.id.rll_mine_nk:

@@ -3,6 +3,7 @@ package com.hyphenate.easeui.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -19,6 +20,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMConversationListener;
@@ -48,7 +51,8 @@ public class EaseConversationListFragment extends EaseBaseFragment{
     protected FrameLayout errorItemContainer;
 
     protected boolean isConflict;
-    
+    protected TextView tvTitle;
+    protected RelativeLayout rllMessageSystem;
     protected EMConversationListener convListener = new EMConversationListener(){
 
 		@Override
@@ -61,6 +65,13 @@ public class EaseConversationListFragment extends EaseBaseFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ease_fragment_conversation_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        rllMessageSystem = (RelativeLayout) view.findViewById(R.id.rll_message_system);
     }
 
     @Override

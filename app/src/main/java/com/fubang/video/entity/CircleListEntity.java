@@ -10,7 +10,7 @@ public class CircleListEntity {
 
     /**
      * status : success
-     * info : [{"nid":"7","nuserid":"12","cvideo":"e027e26c572c4e61858a4138f7d1f1f7","cvideophoto":"pengyouquan_20170720094608_5876.jpg","ccontent":"855699325","ctopic":"#好声音#","nflower":"5","dtime":"2017-07-20 09:46:08.586852+08","nscan":"0","nreview":"0","nflowercount":"0","pnuserid":null,"pcalias":null,"hnuserid":null,"hcalias":null,"creview":null,"cphoto":null,"calias":"小新","nage":null,"ngender":"1","ccity":null},{"nid":"6","nuserid":"12","cvideo":"f08819703abe402fb55435751564b966","cvideophoto":"pengyouquan_20170720094354_5986.jpg","ccontent":"87645669","ctopic":"#好身材#","nflower":"5","dtime":"2017-07-20 09:43:54.326768+08","nscan":"0","nreview":"3","nflowercount":"0","pnuserid":"{520,750,740}","pcalias":"{520,750,740}","hnuserid":"{0,0,0}","hcalias":"{NULL,NULL,NULL}","creview":"{taihal,OK,OppppK}","cphoto":null,"calias":"小新","nage":null,"ngender":"1","ccity":null},{"nid":"5","nuserid":"11","cvideo":null,"cvideophoto":null,"ccontent":"9p09","ctopic":null,"nflower":"5","dtime":"2017-07-19 15:36:46.638406+08","nscan":"0","nreview":"1","nflowercount":"0","pnuserid":"{321}","pcalias":"{321}","hnuserid":"{0}","hcalias":"{NULL}","creview":"{maihao}","cphoto":"a.png","calias":"tUUU","nage":null,"ngender":"1","ccity":null},{"nid":"4","nuserid":"11","cvideo":null,"cvideophoto":null,"ccontent":"9p09","ctopic":null,"nflower":"5","dtime":"2017-07-19 15:36:43.483294+08","nscan":"0","nreview":"0","nflowercount":"0","pnuserid":null,"pcalias":null,"hnuserid":null,"hcalias":null,"creview":null,"cphoto":"a.png","calias":"tUUU","nage":null,"ngender":"1","ccity":null},{"nid":"3","nuserid":"11","cvideo":null,"cvideophoto":null,"ccontent":"9p09","ctopic":null,"nflower":"5","dtime":"2017-07-19 13:44:27.683799+08","nscan":"0","nreview":"0","nflowercount":"0","pnuserid":null,"pcalias":null,"hnuserid":null,"hcalias":null,"creview":null,"cphoto":"a.png","calias":"tUUU","nage":null,"ngender":"1","ccity":null}]
+     * info : [{"nid":"7","nuserid":"12","cvideo":"e027e26c572c4e61858a4138f7d1f1f7","cvideophoto":"pengyouquan_20170720094608_5876.jpg","ccontent":"855699325","ctopic":"#好声音#","nflower":"5","dtime":"2017-07-20 09:46:08.586852+08","nscan":"3","nreview":"0","nflowercount":"0","dtime1":"1500480000","cphoto":"touxiang_20170720051930_7208.jpg","calias":"小新","nage":"19","ngender":"1","ccity":"台州市","clabel":"聊污污;空虚寂寞冷;声音控","review_list":{"creview":[],"pnuserid":[],"pcalias":[],"hnuserid":[],"hcalias":[],"pdtime":[]}},{"nid":"6","nuserid":"12","cvideo":"f08819703abe402fb55435751564b966","cvideophoto":"pengyouquan_20170720094354_5986.jpg","ccontent":"87645669","ctopic":"#好身材#","nflower":"5","dtime":"2017-07-20 09:43:54.326768+08","nscan":"7","nreview":"3","nflowercount":"0","dtime1":"1500480000","cphoto":"touxiang_20170720051930_7208.jpg","calias":"小新","nage":"19","ngender":"1","ccity":"台州市","clabel":"聊污污;空虚寂寞冷;声音控","review_list":{"creview":["OppppK","OK","taihal"],"pnuserid":["740","750","520"],"pcalias":["740","750","520"],"hnuserid":[],"hcalias":[],"pdtime":["\"2017-07-20 14:17:34.776466+08\"","\"2017-07-20 14:17:19.027154+08\"","\"2017-07-20 14:16:58.143058+08\""]}},{"nid":"5","nuserid":"11","cvideo":null,"cvideophoto":null,"ccontent":"9p09","ctopic":null,"nflower":"5","dtime":"2017-07-19 15:36:46.638406+08","nscan":"2","nreview":"1","nflowercount":"0","dtime1":"1500393600","cphoto":"a.png","calias":"tUUU","nage":null,"ngender":"1","ccity":null,"clabel":null,"review_list":{"creview":["maihao"],"pnuserid":["321"],"pcalias":["321"],"hnuserid":[],"hcalias":[],"pdtime":["\"2017-07-20 14:18:01.9055+08\""]}},{"nid":"4","nuserid":"11","cvideo":null,"cvideophoto":null,"ccontent":"9p09","ctopic":null,"nflower":"5","dtime":"2017-07-19 15:36:43.483294+08","nscan":"0","nreview":"0","nflowercount":"0","dtime1":"1500393600","cphoto":"a.png","calias":"tUUU","nage":null,"ngender":"1","ccity":null,"clabel":null,"review_list":{"creview":[],"pnuserid":[],"pcalias":[],"hnuserid":[],"hcalias":[],"pdtime":[]}},{"nid":"3","nuserid":"11","cvideo":null,"cvideophoto":null,"ccontent":"9p09","ctopic":null,"nflower":"5","dtime":"2017-07-19 13:44:27.683799+08","nscan":"0","nreview":"0","nflowercount":"0","dtime1":"1500393600","cphoto":"a.png","calias":"tUUU","nage":null,"ngender":"1","ccity":null,"clabel":null,"review_list":{"creview":[],"pnuserid":[],"pcalias":[],"hnuserid":[],"hcalias":[],"pdtime":[]}},{"nid":"2","nuserid":"11","cvideo":null,"cvideophoto":null,"ccontent":"古古11怪怪","ctopic":null,"nflower":"5","dtime":"2017-07-19 13:18:52.16511+08","nscan":"1","nreview":"3","nflowercount":"10","dtime1":"1500393600","cphoto":"a.png","calias":"tUUU","nage":null,"ngender":"1","ccity":null,"clabel":null,"review_list":{"creview":["gooo"],"pnuserid":["11","11","11"],"pcalias":["tUUU","tUUU","tUUU"],"hnuserid":["43","43","43"],"hcalias":["43","43","43"],"pdtime":["\"2017-07-19 13:30:28.078476+08\"","\"2017-07-19 13:30:17.842186+08\"","\"2017-07-19 13:27:40.541036+08\""]}},{"nid":"1","nuserid":"11","cvideo":"sdfsd","cvideophoto":null,"ccontent":"古古怪怪","ctopic":null,"nflower":"5","dtime":"2017-07-19 13:18:02.689854+08","nscan":"0","nreview":"0","nflowercount":"0","dtime1":"1500393600","cphoto":"a.png","calias":"tUUU","nage":null,"ngender":"1","ccity":null,"clabel":null,"review_list":{"creview":[],"pnuserid":[],"pcalias":[],"hnuserid":[],"hcalias":[],"pdtime":[]}}]
      */
 
     private String status;
@@ -42,19 +42,17 @@ public class CircleListEntity {
          * ctopic : #好声音#
          * nflower : 5
          * dtime : 2017-07-20 09:46:08.586852+08
-         * nscan : 0
+         * nscan : 3
          * nreview : 0
          * nflowercount : 0
-         * pnuserid : null
-         * pcalias : null
-         * hnuserid : null
-         * hcalias : null
-         * creview : null
-         * cphoto : null
+         * dtime1 : 1500480000
+         * cphoto : touxiang_20170720051930_7208.jpg
          * calias : 小新
-         * nage : null
+         * nage : 19
          * ngender : 1
-         * ccity : null
+         * ccity : 台州市
+         * clabel : 聊污污;空虚寂寞冷;声音控
+         * review_list : {"creview":[],"pnuserid":[],"pcalias":[],"hnuserid":[],"hcalias":[],"pdtime":[]}
          */
 
         private String nid;
@@ -68,16 +66,14 @@ public class CircleListEntity {
         private String nscan;
         private String nreview;
         private String nflowercount;
-        private String pnuserid;
-        private String pcalias;
-        private String hnuserid;
-        private String hcalias;
-        private String creview;
+        private String dtime1;
         private String cphoto;
         private String calias;
         private String nage;
         private String ngender;
         private String ccity;
+        private String clabel;
+        private ReviewListBean review_list;
 
         public String getNid() {
             return nid;
@@ -167,44 +163,12 @@ public class CircleListEntity {
             this.nflowercount = nflowercount;
         }
 
-        public String getPnuserid() {
-            return pnuserid;
+        public String getDtime1() {
+            return dtime1;
         }
 
-        public void setPnuserid(String pnuserid) {
-            this.pnuserid = pnuserid;
-        }
-
-        public String getPcalias() {
-            return pcalias;
-        }
-
-        public void setPcalias(String pcalias) {
-            this.pcalias = pcalias;
-        }
-
-        public String getHnuserid() {
-            return hnuserid;
-        }
-
-        public void setHnuserid(String hnuserid) {
-            this.hnuserid = hnuserid;
-        }
-
-        public String getHcalias() {
-            return hcalias;
-        }
-
-        public void setHcalias(String hcalias) {
-            this.hcalias = hcalias;
-        }
-
-        public String getCreview() {
-            return creview;
-        }
-
-        public void setCreview(String creview) {
-            this.creview = creview;
+        public void setDtime1(String dtime1) {
+            this.dtime1 = dtime1;
         }
 
         public String getCphoto() {
@@ -245,6 +209,79 @@ public class CircleListEntity {
 
         public void setCcity(String ccity) {
             this.ccity = ccity;
+        }
+
+        public String getClabel() {
+            return clabel;
+        }
+
+        public void setClabel(String clabel) {
+            this.clabel = clabel;
+        }
+
+        public ReviewListBean getReview_list() {
+            return review_list;
+        }
+
+        public void setReview_list(ReviewListBean review_list) {
+            this.review_list = review_list;
+        }
+
+        public static class ReviewListBean {
+            private List<String> creview;
+            private List<String> pnuserid;
+            private List<String> pcalias;
+            private List<String> hnuserid;
+            private List<String> hcalias;
+            private List<String> pdtime;
+
+            public List<String> getCreview() {
+                return creview;
+            }
+
+            public void setCreview(List<String> creview) {
+                this.creview = creview;
+            }
+
+            public List<String> getPnuserid() {
+                return pnuserid;
+            }
+
+            public void setPnuserid(List<String> pnuserid) {
+                this.pnuserid = pnuserid;
+            }
+
+            public List<String> getPcalias() {
+                return pcalias;
+            }
+
+            public void setPcalias(List<String> pcalias) {
+                this.pcalias = pcalias;
+            }
+
+            public List<String> getHnuserid() {
+                return hnuserid;
+            }
+
+            public void setHnuserid(List<String> hnuserid) {
+                this.hnuserid = hnuserid;
+            }
+
+            public List<String> getHcalias() {
+                return hcalias;
+            }
+
+            public void setHcalias(List<String> hcalias) {
+                this.hcalias = hcalias;
+            }
+
+            public List<String> getPdtime() {
+                return pdtime;
+            }
+
+            public void setPdtime(List<String> pdtime) {
+                this.pdtime = pdtime;
+            }
         }
     }
 }

@@ -14,10 +14,10 @@ import java.util.GregorianCalendar;
  */
 public class dataUtils {
 
-        /**
-         * 将时间戳转换为时间字符串
-         */
-        public static String formatData(String dataFormat, long timeStamp) {
+    /**
+     * 将时间戳转换为时间字符串
+     */
+    public static String formatData(String dataFormat, long timeStamp) {
         if (timeStamp == 0) {
             return "";
         }
@@ -29,9 +29,9 @@ public class dataUtils {
     }
 
 
-        /**
-         * 将时间戳转换为Date
-         */
+    /**
+     * 将时间戳转换为Date
+     */
     public static String formatData(long timeStamp) {
         if (timeStamp == 0) {
             return "";
@@ -183,4 +183,15 @@ public class dataUtils {
         return age;
     }
 
+    public static String getInterval(long s1, long s2) {
+        int days = (int) ((s2 - s1) / ( 3600 * 24));
+        if (days <= 0) {
+            long betweenDays = (long) ((s2 - s1) / (60 * 60 * 24) + 0.5);
+            return String.valueOf(betweenDays)+"小时";
+        } else {
+            return String.valueOf(days)+"天";
+        }
+
+
+    }
 }

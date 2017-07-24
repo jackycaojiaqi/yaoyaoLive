@@ -121,4 +121,5 @@ dependencies {
     compile 'com.hanks.animatecheckbox:library:0.1'
     compile 'com.contrarywind:Android-PickerView:3.2.5'
     compile 'com.android.support:multidex:1.0.0'
+    compile 'fm.jiecao:jiecaovideoplayer:5.7'
 }

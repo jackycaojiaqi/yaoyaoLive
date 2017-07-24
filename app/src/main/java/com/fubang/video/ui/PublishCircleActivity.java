@@ -98,7 +98,7 @@ public class PublishCircleActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvSubmit, "发布");
+        setText(tvTitle, "发布");
         tvSubmit.setTextColor(getResources().getColor(R.color.orange));
         final String[] date = new String[]{"#好身材#", "#美女#", "#好声音#", "#无聊，找人撩#", "#污污污#", "#午夜#", "#半夜春声#", "#小狐狸报道#", "#日久见人性#", "#no作no die#", "#大学生了没#"};
         final LayoutInflater mInflater = LayoutInflater.from(context);

@@ -54,6 +54,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import kr.co.namee.permissiongen.PermissionGen;
 import kr.co.namee.permissiongen.PermissionSuccess;
 
@@ -109,6 +110,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     public void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+        JCVideoPlayer.releaseAllVideos();
     }
 
     @Override
@@ -383,5 +385,14 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
                     String.valueOf(aMapLocation.getLongitude()));
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (JCVideoPlayer.backPress()) {
+            return;
+        }
+        super.onBackPressed();
+    }
+
 
 }

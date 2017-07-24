@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +16,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.fubang.video.AppConstant;
 import com.fubang.video.R;
+import com.fubang.video.adapter.HomeLifeAdapter;
+import com.fubang.video.adapter.HomeNewAdapter;
+import com.fubang.video.adapter.HomeOnlineAdapter;
+import com.fubang.video.adapter.HomeTuHaoAdapter;
 import com.fubang.video.base.BaseFragment;
+import com.fubang.video.callback.JsonCallBack;
+import com.fubang.video.entity.HomeEntity;
+import com.fubang.video.entity.ReviewEntity;
+import com.fubang.video.ui.CircleInfoDetailActivity;
+import com.fubang.video.ui.SearUserActivity;
+import com.fubang.video.ui.UserInfoActivity;
 import com.fubang.video.util.ToastUtil;
+import com.fubang.video.widget.DividerItemDecoration;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 import com.vmloft.develop.app.demo.call.CallManager;
 import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.app.demo.call.VoiceCallActivity;
@@ -30,6 +48,9 @@ import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,12 +62,8 @@ import butterknife.Unbinder;
  */
 public class HomeFragment extends BaseFragment {
     private final String TAG = this.getClass().getSimpleName();
-    @BindView(R.id.btn_call_video)
-    Button btnCallVideo;
     @BindView(R.id.sv_home)
     ScrollView svHome;
-    @BindView(R.id.edit_contacts_username)
-    EditText contactsView;
 
     @BindView(R.id.layout_root)
     SwipeRefreshLayout SwipeRefreshView;
@@ -54,10 +71,35 @@ public class HomeFragment extends BaseFragment {
     Unbinder unbinder;
     @BindView(R.id.iv_action)
     ImageView ivAction;
+    @BindView(R.id.tv_home_random_call)
+    ImageView tvHomeRandomCall;
+    @BindView(R.id.tv_home_online_num)
+    TextView tvHomeOnlineNum;
+    @BindView(R.id.tv_home_action1)
+    TextView tvHomeAction1;
+    @BindView(R.id.rv_home_action1)
+    RecyclerView rvHomeAction1;
+    @BindView(R.id.tv_home_action2)
+    TextView tvHomeAction2;
+    @BindView(R.id.rv_home_action2)
+    RecyclerView rvHomeAction2;
+    @BindView(R.id.tv_home_action3)
+    TextView tvHomeAction3;
+    @BindView(R.id.rv_home_action3)
+    RecyclerView rvHomeAction3;
+    @BindView(R.id.tv_home_action4)
+    TextView tvHomeAction4;
+    @BindView(R.id.rv_home_action4)
+    RecyclerView rvHomeAction4;
     private String username;
     private String password;
     private String contacts;
     private Context context;
+    private BaseQuickAdapter adapter_1, adapter_2, adapter_3, adapter_4;
+    private List<HomeEntity.InfoBean.OnlineListBean> list_action1 = new ArrayList<>();
+    private List<HomeEntity.InfoBean.TuhaoListBean> list_action2 = new ArrayList<>();
+    private List<HomeEntity.InfoBean.NewListBean> list_action3 = new ArrayList<>();
+    private List<HomeEntity.InfoBean.LifeListBean> list_action4 = new ArrayList<>();
 
     @Nullable
     @Override
@@ -69,14 +111,132 @@ public class HomeFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        initdate();
+    }
+
+    private void initdate() {
+        OkGo.<HomeEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_HOME_DATE)
+                .tag(this)
+                .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                .params("ngender", String.valueOf(VMSPUtil.get(context, AppConstant.GENDER, "0")))
+                .execute(new JsonCallBack<HomeEntity>(HomeEntity.class) {
+                    @Override
+                    public void onSuccess(Response<HomeEntity> response) {
+                        if (response.body().getStatus().equals("success")) {
+
+                            list_action1 = response.body().getInfo().getOnline_list();
+                            list_action2 = response.body().getInfo().getTuhao_list();
+                            list_action3 = response.body().getInfo().getNew_list();
+                            list_action4 = response.body().getInfo().getLife_list();
+                            //列表1 在线======================================================================================
+                            adapter_1 = new HomeOnlineAdapter(R.layout.item_home_online, list_action1);
+                            rvHomeAction1.setLayoutManager(new GridLayoutManager(context, 3));
+                            adapter_1.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                    Intent intent = new Intent(context, UserInfoActivity.class);
+                                    intent.putExtra(AppConstant.USERID, list_action1.get(position).getNuserid());
+                                    if (list_action1.get(position).getNuserid().equals(VMSPUtil.get(context, AppConstant.USERID, ""))) {
+                                        intent.putExtra(AppConstant.TYPE, 1);
+                                    } else {
+                                        intent.putExtra(AppConstant.TYPE, 0);
+                                    }
+                                    startActivity(intent);
+                                }
+                            });
+                            adapter_1.bindToRecyclerView(rvHomeAction1);
+                            adapter_1.setEmptyView(R.layout.empty_view);
+                            rvHomeAction1.setAdapter(adapter_1);
+                            //水平分割线
+                            rvHomeAction1.addItemDecoration(new DividerItemDecoration(
+                                    context, DividerItemDecoration.HORIZONTAL_LIST, 10, getResources().getColor(R.color.white)));
+
+                            //列表2 土豪======================================================================================
+                            adapter_2 = new HomeTuHaoAdapter(R.layout.item_home_online, list_action2);
+                            rvHomeAction2.setLayoutManager(new GridLayoutManager(context, 3));
+                            adapter_2.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                    Intent intent = new Intent(context, UserInfoActivity.class);
+                                    intent.putExtra(AppConstant.USERID, list_action2.get(position).getNuserid());
+                                    if (list_action1.get(position).getNuserid().equals(VMSPUtil.get(context, AppConstant.USERID, ""))) {
+                                        intent.putExtra(AppConstant.TYPE, 1);
+                                    } else {
+                                        intent.putExtra(AppConstant.TYPE, 0);
+                                    }
+                                    startActivity(intent);
+                                }
+                            });
+                            adapter_2.bindToRecyclerView(rvHomeAction2);
+                            adapter_2.setEmptyView(R.layout.empty_view);
+                            rvHomeAction2.setAdapter(adapter_2);
+                            //水平分割线
+                            rvHomeAction2.addItemDecoration(new DividerItemDecoration(
+                                    context, DividerItemDecoration.HORIZONTAL_LIST, 10, getResources().getColor(R.color.white)));
+                            //列表3 新人===================================================================================
+                            adapter_3 = new HomeNewAdapter(R.layout.item_home_online, list_action3);
+                            rvHomeAction3.setLayoutManager(new GridLayoutManager(context, 3));
+                            adapter_3.setEnableLoadMore(true);
+                            adapter_3.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                    Intent intent = new Intent(context, UserInfoActivity.class);
+                                    intent.putExtra(AppConstant.USERID, list_action3.get(position).getNuserid());
+                                    if (list_action1.get(position).getNuserid().equals(VMSPUtil.get(context, AppConstant.USERID, ""))) {
+                                        intent.putExtra(AppConstant.TYPE, 1);
+                                    } else {
+                                        intent.putExtra(AppConstant.TYPE, 0);
+                                    }
+                                    startActivity(intent);
+                                }
+                            });
+                            adapter_3.bindToRecyclerView(rvHomeAction3);
+                            adapter_3.setEmptyView(R.layout.empty_view);
+                            rvHomeAction3.setAdapter(adapter_3);
+                            //水平分割线
+                            rvHomeAction3.addItemDecoration(new DividerItemDecoration(
+                                    context, DividerItemDecoration.HORIZONTAL_LIST, 10, getResources().getColor(R.color.white)));
+                            //列表4 朋友圈===================================================================================
+                            adapter_4 = new HomeLifeAdapter(R.layout.item_home_life, list_action4);
+                            //设置布局管理器
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+                            linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                            rvHomeAction4.setLayoutManager(linearLayoutManager);
+                            adapter_4.setEnableLoadMore(true);
+                            adapter_4.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                                    Intent intent = new Intent(context, CircleInfoDetailActivity.class);
+                                    intent.putExtra(AppConstant.OBJECT, list_action4.get(position).getNid());
+                                    intent.putExtra(AppConstant.TYPE, "0");
+                                    startActivity(intent);
+                                }
+                            });
+                            adapter_4.bindToRecyclerView(rvHomeAction4);
+                            adapter_4.setEmptyView(R.layout.empty_view);
+                            rvHomeAction4.setAdapter(adapter_4);
+                            //水平分割线
+                            rvHomeAction4.addItemDecoration(new DividerItemDecoration(
+                                    context, DividerItemDecoration.VERTICAL_LIST, 10, getResources().getColor(R.color.white)));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<HomeEntity> response) {
+                        super.onError(response);
+                    }
+                });
+    }
+
     private void init() {
         contacts = (String) VMSPUtil.get(context, "contacts", "");
-        contactsView.setText(contacts);
         ivAction.setVisibility(View.VISIBLE);
         SwipeRefreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                SwipeRefreshView.setRefreshing(false);
+                initdate();
             }
         });
         svHome.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -87,81 +247,9 @@ public class HomeFragment extends BaseFragment {
                 }
             }
         });
-        SwipeRefreshView.setProgressViewOffset(true,150,250);
+        SwipeRefreshView.setProgressViewOffset(true, 150, 250);
     }
 
-
-    @OnClick({
-            R.id.btn_send,
-            R.id.btn_call_voice, R.id.btn_call_video
-    })
-    void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_send:
-                sendTextMessage();
-                break;
-            case R.id.btn_call_voice:
-                callVoice();
-                break;
-            case R.id.btn_call_video:
-                callVideo();
-                break;
-        }
-    }
-
-    /**
-     * 发送消息
-     */
-    private void sendTextMessage() {
-        checkContacts();
-        EMMessage message = EMMessage.createTxtSendMessage("测试发送消息，主要是为了测试是否在线", contacts);
-        // 设置强制推送
-        message.setAttribute("em_force_notification", "true");
-        message.setTo("2");
-        // 设置自定义推送提示
-        JSONObject extObj = new JSONObject();
-        try {
-            extObj.put("em_push_title", "测试消息推送，这里是推送内容，一般这里直接写上消息详情");
-            extObj.put("extern", "定义推送扩展内容");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        message.setAttribute("em_apns_ext", extObj);
-        sendMessage(message);
-    }
-
-    /**
-     * 视频呼叫
-     */
-    private void callVideo() {
-        checkContacts();
-        Intent intent = new Intent(context, VideoCallActivity.class);
-        CallManager.getInstance().setChatId(contacts);
-        CallManager.getInstance().setInComingCall(false);
-        CallManager.getInstance().setCallType(CallManager.CallType.VIDEO);
-        startActivity(intent);
-    }
-
-    /**
-     * 语音呼叫
-     */
-    private void callVoice() {
-        checkContacts();
-        Intent intent = new Intent(context, VoiceCallActivity.class);
-        CallManager.getInstance().setChatId(contacts);
-        CallManager.getInstance().setInComingCall(false);
-        CallManager.getInstance().setCallType(CallManager.CallType.VOICE);
-        startActivity(intent);
-    }
-
-    private void checkContacts() {
-        contacts = contactsView.getText().toString().trim();
-        if (contacts.isEmpty()) {
-            Toast.makeText(context, "constact user not null", Toast.LENGTH_LONG).show();
-            return;
-        }
-        VMSPUtil.put(context, "contacts", contacts);
-    }
 
     /**
      * 最终调用发送信息方法
@@ -192,7 +280,6 @@ public class HomeFragment extends BaseFragment {
 
             @Override
             public void onProgress(int i, String s) {
-                // TODO 消息发送进度，这里不处理，留给消息Item自己去更新
                 VMLog.i("消息发送中 progress: %d, %s", i, s);
             }
         });
@@ -206,5 +293,25 @@ public class HomeFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick({R.id.tv_home_random_call, R.id.tv_home_action1, R.id.tv_home_action2, R.id.tv_home_action3, R.id.tv_home_action4,
+            R.id.iv_action})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_home_random_call:
+                break;
+            case R.id.tv_home_action1:
+                break;
+            case R.id.tv_home_action2:
+                break;
+            case R.id.tv_home_action3:
+                break;
+            case R.id.tv_home_action4:
+                break;
+            case R.id.iv_action:
+                startActivity(new Intent(context, SearUserActivity.class));
+                break;
+        }
     }
 }

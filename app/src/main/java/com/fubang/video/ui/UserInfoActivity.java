@@ -26,6 +26,8 @@ import com.fubang.video.widget.DividerItemDecoration;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
+import com.vmloft.develop.app.demo.call.CallManager;
+import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
 import com.youth.banner.Banner;
 
@@ -210,11 +212,20 @@ public class UserInfoActivity extends BaseActivity {
                 if (type == 1) {
                     startActivity(new Intent(context, UserinfoEditActivity.class));
                 } else if (type == 0) {
-                    intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra("userId", "15867083398");
-                    startActivity(intent);
+                    callVideo(user_id);
                 }
                 break;
         }
+    }
+
+    /**
+     * 视频呼叫
+     */
+    private void callVideo(String contacts) {
+        Intent intent = new Intent(context, VideoCallActivity.class);
+        CallManager.getInstance().setChatId(contacts);
+        CallManager.getInstance().setInComingCall(false);
+        CallManager.getInstance().setCallType(CallManager.CallType.VIDEO);
+        startActivity(intent);
     }
 }

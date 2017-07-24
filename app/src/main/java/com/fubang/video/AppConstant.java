@@ -27,7 +27,7 @@ public class AppConstant {
     public static final String ADDRDETAIL = "addrdetail";
     public static final String LAT = "lat";
     public static final String LON = "lon";
-
+    public static final String GENDER = "gender";
 
     public static final String URL_PUNLISH_UPLOAD = "/aliyun-php-sdk-vod/aliyun.php";//获取上传播放凭证
     public static final String URL_SEND_MSG = "/index.php/LineApp/send_msg";//发送短信验证码
@@ -35,10 +35,19 @@ public class AppConstant {
     public static final String URL_CHECK_REG = "/index.php/LineApp/check_reg";//用户注册查询是否存在
     public static final String URL_LOGIN = "/index.php/LineApp/login";//用户登录
     public static final String URL_REGISTER = "/index.php/LineApp/reg";//用户注册
+
     public static final String URL_BASE_INFO = "/index.php/LineApp/base_info";//获取用户基本信息
     public static final String URL_UPLOAD_PHOTO = "/index.php/LineApp/upload_pic";//上传图片和头像
-    public static final String URL_LIFE_ADD = "/index.php/LineApp/life_add";//生活圈发布
     public static final String URL_UPDATE_INFO = "/index.php/LineApp/update_info";//更新用户基本信息
+    public static final String URL_UPDATE_EXTINFO = "/index.php/LineApp/update_extinfo";//更新用户扩展信息
+
+    public static final String URL_LIFE_ADD = "/index.php/LineApp/life_add";//生活圈发布
     public static final String URL_LIFE_LIST = "/index.php/LineApp/life_list";//朋友圈列表
+    public static final String URL_LIFE_DETAIL = "/index.php/LineApp/life_detail";//朋友圈列表
+    public static final String URL_LIFE_REVIEW = "/index.php/LineApp/life_review";//朋友圈评论
+    public static final String URL_LIFE_FLOWER = "/index.php/LineApp/life_flower";//朋友圈鲜花
+
+    public static final String URL_LIFE_HOME_DATE = "/index.php/LineApp/index_data";//首页数据获取
+
 
 }

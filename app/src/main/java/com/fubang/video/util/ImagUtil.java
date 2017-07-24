@@ -15,10 +15,13 @@ import java.io.File;
  */
 public class ImagUtil {
     public static void set(Context context, String url, View view) {
-        Glide.with(context).load(url).error(R.drawable.ic_load_error).centerCrop().placeholder(R.drawable.ic_load_error).into((ImageView) view);
+        Glide.with(context).load(url).error(R.drawable.ic_load_error).centerCrop().into((ImageView) view);
     }
     public static void setnoerror(Context context, String url, View view) {
         Glide.with(context).load(url).centerCrop().into((ImageView) view);
+    }
+    public static void setwithbg(Context context, String url, View view) {
+        Glide.with(context).load(url).centerCrop().error(R.drawable.ic_no_pic_rec).into((ImageView) view);
     }
     public static void set(Context context, Drawable url, View view) {
         Glide.with(context).load(url).error(R.drawable.ic_load_error).centerCrop().placeholder(R.drawable.ic_load_error).into((ImageView) view);

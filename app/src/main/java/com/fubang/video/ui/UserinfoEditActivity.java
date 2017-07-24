@@ -793,14 +793,41 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
         } else if (pic_type == 20) {
             map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
             map.put("cprovince", String.valueOf(VMSPUtil.get(context, AppConstant.PRIVINCE, "")));
-            map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
             map.put("cdistrict", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
-            map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
-            map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
         } else {
             map.put("cphotowall", pic_or_wall_name);
         }
         OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_INFO)
+                .tag(this)
+                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                .params(map)
+                .execute(new JsonCallBack<PublishUpLoadEntity>(PublishUpLoadEntity.class) {
+                    @Override
+                    public void onSuccess(Response<PublishUpLoadEntity> response) {
+                        if (response.body().getStatus().equals("success")) {
+                            ToastUtil.show(context, "上传成功");
+                            initdate();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<PublishUpLoadEntity> response) {
+                        super.onError(response);
+                    }
+                });
+    }
+
+    /**
+     * 更新用户扩展
+     */
+    private void update_et_to_server() {
+        Map<String, String> map = new HashMap<>();
+        map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
+        map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
+        map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
+        map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
+        OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_EXTINFO)
                 .tag(this)
                 .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
                 .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
@@ -867,6 +894,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
             VMSPUtil.put(context, AppConstant.ADDRDETAIL, aMapLocation.getAddress());
             VMSPUtil.put(context, AppConstant.LAT, aMapLocation.getLatitude());
             VMSPUtil.put(context, AppConstant.LON, aMapLocation.getLongitude());
+            update_et_to_server();
             update_imag_to_server("");
         }
     }

@@ -148,6 +148,7 @@ public class RegisterActivity extends TakePhotoActivity {
                                     VMSPUtil.put(context, AppConstant.TOKEN, response.body().getInfo().getCtoken());
                                     VMSPUtil.put(context, AppConstant.PASSWORD, password);
                                     VMSPUtil.put(context, AppConstant.USERID, response.body().getInfo().getNuserid());
+                                    VMSPUtil.put(context, AppConstant.GENDER, gender);
                                     //去登录
 
                                     OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_LOGIN)

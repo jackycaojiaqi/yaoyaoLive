@@ -13,6 +13,7 @@ import com.fubang.video.domain.RobotUser;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.util.HanziToPinyin;
+import com.socks.library.KLog;
 
 import java.util.ArrayList;
 import java.util.Collections;
