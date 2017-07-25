@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.aliyun.vodplayerview.widget.AliyunVodPlayerView;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.adapter.CircleInfoReviewAdapter;
@@ -161,6 +162,35 @@ public class CircleInfoDetailActivity extends BaseActivity {
                                     showKeyboard(etCircleInfo);
                                 }
                             });
+
+                            jcVideoPlayerStandard = (JCVideoPlayerStandard) findViewById(R.id.videoplayer);
+                            jcVideoPlayerStandard.setUp(response.body().getInfo().getCvideo_mp4()
+                                    , JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, response.body().getInfo().getCalias());
+                            jcVideoPlayerStandard.ACTION_BAR_EXIST = false;
+                            jcVideoPlayerStandard.TOOL_BAR_EXIST = false;
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        bitmap = Glide.with(context)
+                                                .load(AppConstant.BASE_IMG_URL + response.body().getInfo().getCvideophoto())
+                                                .asBitmap() //必须
+                                                .centerCrop()
+                                                .into(500, 500)
+                                                .get();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                jcVideoPlayerStandard.thumbImageView.setImageBitmap(bitmap);
+                                            }
+                                        });
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }).start();
                         }
                     }
 
@@ -192,38 +222,13 @@ public class CircleInfoDetailActivity extends BaseActivity {
                 return false;
             }
         });
-        jcVideoPlayerStandard = (JCVideoPlayerStandard) findViewById(R.id.videoplayer);
-        jcVideoPlayerStandard.setUp("http://baobab.wdjcdn.com/14525705791193.mp4"
-                , JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, " ");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    bitmap = Glide.with(context)
-                            .load("http://p.qpic.cn/videoyun/0/2449_43b6f696980311e59ed467f22794e792_1/640")
-                            .asBitmap() //必须
-                            .centerCrop()
-                            .into(500, 500)
-                            .get();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            jcVideoPlayerStandard.thumbImageView.setImageBitmap(bitmap);
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
 
     }
 
     /**
      * 发送回复
+     *
      * @param content
      */
     private void send_review_content(final String content) {
@@ -252,6 +257,7 @@ public class CircleInfoDetailActivity extends BaseActivity {
 
     /**
      * 送鲜花
+     *
      * @param
      */
     private void send_flower() {
@@ -269,13 +275,15 @@ public class CircleInfoDetailActivity extends BaseActivity {
                             ToastUtil.show(context, "送鲜花成功");
                         }
                     }
+
                     @Override
                     public void onError(Response<ReviewEntity> response) {
                         super.onError(response);
                     }
                 });
     }
-    @OnClick({R.id.iv_back, R.id.ll_circle_send_flower,R.id.iv_circle_info_pic})
+
+    @OnClick({R.id.iv_back, R.id.ll_circle_send_flower, R.id.iv_circle_info_pic})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:

@@ -74,7 +74,7 @@ public class MessageFragment extends EaseConversationListFragment {
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(),NotifyActivity.class));
 //                //通过发送信息来新建conversation对话框
-//                EMMessage message = EMMessage.createTxtSendMessage("123", "9988");
+//                EMMessage message = EMMessage.createTxtSendMessage("123", "15867083398");
 //                //发送消息
 //                EMClient.getInstance().chatManager().sendMessage(message);
             }

@@ -2,6 +2,7 @@ package com.fubang.video.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,6 +15,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
@@ -21,7 +23,9 @@ import com.fubang.video.adapter.CircleListAdapter;
 import com.fubang.video.base.BaseFragment;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.CircleListEntity;
+import com.fubang.video.entity.PublishUpLoadEntity;
 import com.fubang.video.entity.ReviewEntity;
+import com.fubang.video.entity.VideoInfoEntity;
 import com.fubang.video.ui.CircleInfoDetailActivity;
 import com.fubang.video.ui.PublishCircleActivity;
 import com.fubang.video.ui.RuleActivity;
@@ -40,6 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 
 /**
  * Created by jacky on 2017/7/11.
@@ -167,6 +172,8 @@ public class CircleFragment extends BaseFragment {
 
     }
 
+
+
     /**
      * 送鲜花
      *
@@ -202,7 +209,7 @@ public class CircleFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.btn_goto_publish_circle,R.id.tv_submit})
+    @OnClick({R.id.btn_goto_publish_circle, R.id.tv_submit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_goto_publish_circle:

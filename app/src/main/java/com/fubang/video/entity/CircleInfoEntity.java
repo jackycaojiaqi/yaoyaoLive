@@ -66,6 +66,8 @@ public class CircleInfoEntity {
         private String nscan;
         private String nreview;
         private String nflowercount;
+        private String cvideo_mp4;
+        private String cvideo_m3u8;
         private String dtime1;
         private String cphoto;
         private String calias;
@@ -74,6 +76,22 @@ public class CircleInfoEntity {
         private String ccity;
         private String clabel;
         private List<ReviewListBean> review_list;
+
+        public String getCvideo_mp4() {
+            return cvideo_mp4;
+        }
+
+        public void setCvideo_mp4(String cvideo_mp4) {
+            this.cvideo_mp4 = cvideo_mp4;
+        }
+
+        public String getCvideo_m3u8() {
+            return cvideo_m3u8;
+        }
+
+        public void setCvideo_m3u8(String cvideo_m3u8) {
+            this.cvideo_m3u8 = cvideo_m3u8;
+        }
 
         public String getNid() {
             return nid;

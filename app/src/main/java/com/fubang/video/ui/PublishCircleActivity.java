@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -32,6 +33,7 @@ import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.PublishUpLoadEntity;
 import com.fubang.video.entity.UploadPhotoEntity;
+import com.fubang.video.entity.VideoInfoEntity;
 import com.fubang.video.util.DialogFactory;
 import com.fubang.video.util.FileUtils;
 import com.fubang.video.util.GetPathFromUri4kitkat;
@@ -44,6 +46,8 @@ import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -86,6 +90,8 @@ public class PublishCircleActivity extends BaseActivity {
     private String accessKeySecret = "jpGMmet5j9IV0gCSE4qkTxcqUVX1Di";
     private String ctopic;
     private String photo_name;
+    private String cvideo_mp4;
+    private String cvideo_m3u8;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +105,7 @@ public class PublishCircleActivity extends BaseActivity {
     private void initview() {
         back(ivBack);
         setText(tvTitle, "发布");
+        setText(tvSubmit, "发送");
         tvSubmit.setTextColor(getResources().getColor(R.color.orange));
         final String[] date = new String[]{"#好身材#", "#美女#", "#好声音#", "#无聊，找人撩#", "#污污污#", "#午夜#", "#半夜春声#", "#小狐狸报道#", "#日久见人性#", "#no作no die#", "#大学生了没#"};
         final LayoutInflater mInflater = LayoutInflater.from(context);
@@ -248,7 +255,7 @@ public class PublishCircleActivity extends BaseActivity {
             @Override
             public void onUploadSucceed(UploadFileInfo uploadFileInfo) {
                 KLog.e("onUploadSucceed");
-                DialogFactory.hideRequestDialog();
+
                 //先上传视频图片再调用发布接口
                 upload_pic();
             }
@@ -322,25 +329,63 @@ public class PublishCircleActivity extends BaseActivity {
     }
 
     private void send_life_to_server() {
-        OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_ADD)
+        OkGo.<VideoInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_PLAY_VIDEO_INFO)
                 .tag(this)
-                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
-                .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
-                .params("cvideo", videoId)
-                .params("cvideophoto", photo_name)
-                .params("ccontent", etPublishContent.getText().toString().trim())
-                .params("ctopic", ctopic)
-                .execute(new JsonCallBack<PublishUpLoadEntity>(PublishUpLoadEntity.class) {
+                .params("VideoId", videoId)
+                .execute(new JsonCallBack<VideoInfoEntity>(VideoInfoEntity.class) {
                     @Override
-                    public void onSuccess(Response<PublishUpLoadEntity> response) {
-                        if (response.body().getStatus().equals("success")) {
-                            finish();
+                    public void onSuccess(Response<VideoInfoEntity> response) {
+                        if (response.body().getPlayInfoList() != null) {
+                            if (response.body().getPlayInfoList().getPlayInfo().size() > 0) {
+                                for (int i = 0; i < response.body().getPlayInfoList().getPlayInfo().size(); i++) {
+                                    if (response.body().getPlayInfoList().getPlayInfo().get(i).getFormat().equals("mp4")) {
+                                        cvideo_mp4 = response.body().getPlayInfoList().getPlayInfo().get(i).getPlayURL();
+                                    } else if (response.body().getPlayInfoList().getPlayInfo().get(i).getFormat().equals("m3u8")) {
+                                        cvideo_m3u8 = response.body().getPlayInfoList().getPlayInfo().get(i).getPlayURL();
+                                    }
+                                }
+                            }
+
+                            if (com.fubang.video.util.StringUtil.isEmptyandnull(cvideo_mp4) && !com.fubang.video.util.StringUtil.isEmptyandnull(cvideo_m3u8)) {
+                                cvideo_mp4 = cvideo_m3u8;
+                            }
+                            if (!com.fubang.video.util.StringUtil.isEmptyandnull(cvideo_mp4) && com.fubang.video.util.StringUtil.isEmptyandnull(cvideo_m3u8)) {
+                                cvideo_m3u8 = cvideo_mp4;
+                            }
+                            KLog.e(cvideo_mp4 + "  " + cvideo_m3u8);
+                            OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_ADD)
+                                    .tag(this)
+                                    .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                                    .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                                    .params("cvideo", videoId)
+                                    .params("cvideophoto", photo_name)
+                                    .params("ccontent", etPublishContent.getText().toString().trim())
+                                    .params("ctopic", ctopic)
+                                    .params("cvideo_mp4", cvideo_mp4)
+                                    .params("cvideo_m3u8", cvideo_m3u8)
+                                    .execute(new JsonCallBack<PublishUpLoadEntity>(PublishUpLoadEntity.class) {
+                                        @Override
+                                        public void onSuccess(Response<PublishUpLoadEntity> response) {
+                                            if (response.body().getStatus().equals("success")) {
+                                                DialogFactory.hideRequestDialog();
+                                                finish();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Response<PublishUpLoadEntity> response) {
+                                            super.onError(response);
+                                        }
+                                    });
+                        } else {
+                            send_life_to_server();
                         }
                     }
 
                     @Override
-                    public void onError(Response<PublishUpLoadEntity> response) {
+                    public void onError(Response<VideoInfoEntity> response) {
                         super.onError(response);
+
                     }
                 });
     }
@@ -361,10 +406,22 @@ public class PublishCircleActivity extends BaseActivity {
 
     private Bitmap createVideoThumbnail(String filePath) {
         Bitmap bitmap = null;
+        Bitmap bitmap2 = null;
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
             retriever.setDataSource(filePath);
             bitmap = retriever.getFrameAtTime();
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            int options = 100;
+            while (baos.toByteArray().length / 1024 > 32) {
+                baos.reset();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, options, baos);
+                options -= 10;
+            }
+            ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
+            bitmap2 = BitmapFactory.decodeStream(isBm, null, null);
         } catch (IllegalArgumentException ex) {
             KLog.e("Assume this is a corrupt video file");
         } catch (RuntimeException ex) {
@@ -376,7 +433,7 @@ public class PublishCircleActivity extends BaseActivity {
                 // Ignore failures while cleaning up.
             }
         }
-        return bitmap;
+        return bitmap2;
     }
 
     @Override

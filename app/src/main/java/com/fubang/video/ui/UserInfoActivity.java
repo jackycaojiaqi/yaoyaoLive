@@ -115,6 +115,7 @@ public class UserInfoActivity extends BaseActivity {
     }
 
     private String picwall_name;
+    private String phone;
 
     private void initdate() {
         OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
@@ -126,6 +127,7 @@ public class UserInfoActivity extends BaseActivity {
                     public void onSuccess(Response<BaseInfoEntity> response) {
                         if (response.body().getStatus().equals("success")) {
                             VideoId = response.body().getInfo().getCprofile();
+                            phone = response.body().getInfo().getCtel();
                             VideoCover = response.body().getInfo().getCvideophoto();
                             tvUserinfoId.setText("ID:" + VMSPUtil.get(context, AppConstant.USERID, ""));//ID
                             tvUserinfoName.setText(response.body().getInfo().getCalias() + "");//姓名
@@ -212,7 +214,8 @@ public class UserInfoActivity extends BaseActivity {
                 if (type == 1) {
                     startActivity(new Intent(context, UserinfoEditActivity.class));
                 } else if (type == 0) {
-                    callVideo(user_id);
+                    KLog.e(phone);
+                    callVideo(phone);
                 }
                 break;
         }

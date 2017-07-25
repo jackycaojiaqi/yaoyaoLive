@@ -16,7 +16,6 @@ import com.socks.library.KLog;
 public class LocationUtil {
     public static void uploadLatLng(Context context, String lat, String lng) {
         if (lat.startsWith("0") || lng.startsWith("0")) {
-            KLog.e("经纬度为0，无效");
             return;
         }
 //        String url = AppConstant.BASE_URL + AppConstant.MSG_UPLOAD_LATLON;

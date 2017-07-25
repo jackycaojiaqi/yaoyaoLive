@@ -133,6 +133,8 @@ public class RegisterActivity extends TakePhotoActivity {
                     return;
                 }
                 KLog.e(photo_name);
+
+
                 OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_REGISTER)
                         .tag(this)
                         .params("ctel", phone)
@@ -148,9 +150,10 @@ public class RegisterActivity extends TakePhotoActivity {
                                     VMSPUtil.put(context, AppConstant.TOKEN, response.body().getInfo().getCtoken());
                                     VMSPUtil.put(context, AppConstant.PASSWORD, password);
                                     VMSPUtil.put(context, AppConstant.USERID, response.body().getInfo().getNuserid());
-                                    VMSPUtil.put(context, AppConstant.GENDER, gender);
+                                    VMSPUtil.put(context, AppConstant.GENDER, String.valueOf(gender));
                                     VMSPUtil.put(context, AppConstant.USERNAME, calias);
                                     VMSPUtil.put(context, AppConstant.USERPIC, AppConstant.BASE_IMG_URL + photo_name);
+                                    VMSPUtil.put(context, AppConstant.PHONE, phone);
                                     //去登录
 
                                     OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_LOGIN)

@@ -31,6 +31,9 @@ public class AppConstant {
     public static final String GENDER = "gender";
 
     public static final String URL_PUNLISH_UPLOAD = "/aliyun-php-sdk-vod/aliyun.php";//获取上传播放凭证
+    public static final String URL_PLAY_VIDEO_INFO = "/aliyun-php-sdk-vod/aliyun_url.php";//获取播放地址
+
+
     public static final String URL_SEND_MSG = "/index.php/LineApp/send_msg";//发送短信验证码
     public static final String URL_CHECK_MSG = "/index.php/LineApp/check_msg";//核验短信验证码
     public static final String URL_CHECK_REG = "/index.php/LineApp/check_reg";//用户注册查询是否存在

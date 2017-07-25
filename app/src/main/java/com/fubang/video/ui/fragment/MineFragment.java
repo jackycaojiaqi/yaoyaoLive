@@ -91,6 +91,7 @@ public class MineFragment extends BaseFragment {
     }
 
     private void initdate() {
+        KLog.e(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERID, ""))+"   "+String.valueOf(VMSPUtil.get(getActivity(), AppConstant.TOKEN, "")));
         OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
                 .tag(this)
                 .params("nuserid", String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERID, "")))

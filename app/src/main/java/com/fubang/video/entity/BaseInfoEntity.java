@@ -88,6 +88,7 @@ public class BaseInfoEntity {
         private String cidiograph;
         private String clabel;
         private String cname;
+        private String ctel;
         private String cidcard;
         private String cregisterip;
         private String dregisterdate;
@@ -102,6 +103,14 @@ public class BaseInfoEntity {
         private int shibai;
         private int ntime;
         private List<RecentBean> recent;
+
+        public String getCtel() {
+            return ctel;
+        }
+
+        public void setCtel(String ctel) {
+            this.ctel = ctel;
+        }
 
         public String getNuserid() {
             return nuserid;

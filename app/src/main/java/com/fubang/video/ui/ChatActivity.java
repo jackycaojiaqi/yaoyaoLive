@@ -32,6 +32,8 @@ import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.hyphenate.easeui.widget.EaseTitleBar;
 import com.hyphenate.util.EasyUtils;
 import com.socks.library.KLog;
+import com.vmloft.develop.app.demo.call.CallManager;
+import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import org.dync.giftlibrary.widget.GiftControl;
@@ -65,6 +67,7 @@ public class ChatActivity extends BaseActivity {
         activityInstance = this;
         //get user id or group id
         toChatUsername = getIntent().getExtras().getString("userId");
+
         //use EaseChatFratFragment
         chatFragment = new ChatFragment();
         //pass parameters to chat fragment
@@ -90,7 +93,12 @@ public class ChatActivity extends BaseActivity {
         KLog.e("showPop");
         showPopupWindow(giftFrameLayout2);
     }
+    @Subscriber(tag = "callVideo")
+    public void callVideo(String msg) {
+        KLog.e("callVideo");
+        callVideo();
 
+    }
     @Subscriber(tag = "sendTextMessage")
     public void sendTextMessage(SelfMessageCallBack callBack) {
         callBack.fail("金币不足");
@@ -195,6 +203,17 @@ public class ChatActivity extends BaseActivity {
         rv_gift.setAdapter(adapter_gift);
         // 设置好参数之后再show
         popupWindow.showAtLocation(view, Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+    /**
+     * 视频呼叫
+     */
+    private void callVideo() {
+        KLog.e(toChatUsername);
+        Intent intent = new Intent(context, VideoCallActivity.class);
+        CallManager.getInstance().setChatId(toChatUsername);
+        CallManager.getInstance().setInComingCall(false);
+        CallManager.getInstance().setCallType(CallManager.CallType.VIDEO);
+        startActivity(intent);
     }
 
 }

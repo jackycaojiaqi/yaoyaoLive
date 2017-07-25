@@ -68,7 +68,8 @@ public class CircleListAdapter extends BaseQuickAdapter<CircleListEntity.InfoBea
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, CircleListEntity.InfoBean item) {
+    protected void convert(BaseViewHolder helper, final CircleListEntity.InfoBean item) {
+
         if (!StringUtil.isEmptyandnull(item.getCphoto()))//头像
             ImagUtil.set(mContext, AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_circle_list_pic));
         if (!StringUtil.isEmptyandnull(item.getNgender()))//性别
@@ -90,20 +91,23 @@ public class CircleListAdapter extends BaseQuickAdapter<CircleListEntity.InfoBea
                 .setText(R.id.tv_circlr_review_num, item.getNreview() + "")//评论次数
                 .setText(R.id.tv_circle_flower_num, item.getNflowercount() + "")//收到鲜花量
                 .addOnClickListener(R.id.iv_circle_list_pic)
-                .addOnClickListener(R.id.ll_circle_list_send_flower);
+                .addOnClickListener(R.id.ll_circle_list_send_flower)
+        ;
 
         videoPlayerStandard = helper.getView(R.id.videoplayer);
-        videoPlayerStandard.setUp("http://baobab.wdjcdn.com/14525705791193.mp4"
-                , JCVideoPlayerStandard.SCREEN_LAYOUT_LIST, "嫂子闭眼睛");
+        videoPlayerStandard.ACTION_BAR_EXIST = false;
+        videoPlayerStandard.TOOL_BAR_EXIST = false;
+        videoPlayerStandard.setUp(item.getCvideo_mp4()
+                , JCVideoPlayerStandard.SCREEN_LAYOUT_LIST, item.getCalias());
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     bitmap = Glide.with(mContext)
-                            .load("http://p.qpic.cn/videoyun/0/2449_43b6f696980311e59ed467f22794e792_1/640")
+                            .load(AppConstant.BASE_IMG_URL + item.getCvideophoto())
                             .asBitmap() //必须
                             .centerCrop()
-                            .into(500, 500)
+                            .into(400, 300)
                             .get();
                     mHandler.sendEmptyMessage(MSG_SUCCESS);
                 } catch (InterruptedException e) {

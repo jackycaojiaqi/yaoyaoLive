@@ -889,6 +889,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
+            KLog.e(aMapLocation.getCity());
             VMSPUtil.put(context, AppConstant.CITY, aMapLocation.getCity());
             VMSPUtil.put(context, AppConstant.PRIVINCE, aMapLocation.getProvince());
             VMSPUtil.put(context, AppConstant.ADDRDETAIL, aMapLocation.getAddress());

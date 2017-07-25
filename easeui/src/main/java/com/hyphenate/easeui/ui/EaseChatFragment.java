@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,7 +37,6 @@ import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessage.ChatType;
 import com.hyphenate.chat.EMTextMessageBody;
-import com.hyphenate.easeui.BuildConfig;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.EaseUI;
@@ -107,13 +105,13 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     protected EMMessage contextMenuMessage;
 
     static final int ITEM_TAKE_PICTURE = 1;
-    static final int ITEM_PICTURE = 2;
-    static final int ITEM_LOCATION = 3;
+    static final int ITEM_GIFT = 2;
+    static final int ITEM_VIDEO_CALL = 3;
 
-    protected int[] itemStrings = {R.string.attach_picture, R.string.attach_location};
+    protected int[] itemStrings = {R.string.attach_picture, R.string.attach_location,R.string.attach_video_call};
     protected int[] itemdrawables = {R.drawable.ease_chat_image_selector,
-            R.drawable.ease_chat_location_selector};
-    protected int[] itemIds = {ITEM_TAKE_PICTURE, ITEM_PICTURE, ITEM_LOCATION};
+            R.drawable.ease_chat_location_selector,R.drawable.ic_call_circle};
+    protected int[] itemIds = {ITEM_TAKE_PICTURE, ITEM_GIFT, ITEM_VIDEO_CALL};
     private boolean isMessageListInited;
     protected MyItemClickListener extendMenuItemClickListener;
 
@@ -647,12 +645,12 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                 case ITEM_TAKE_PICTURE:
                     selectPicFromLocal();
                     break;
-                case ITEM_PICTURE:
+                case ITEM_GIFT:
                     EventBus.getDefault().post("showPop", "showPop");
                     break;
-                case ITEM_LOCATION:
+                case ITEM_VIDEO_CALL:
                     //弹出礼物框
-//                    startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
+                    EventBus.getDefault().post("callVideo", "callVideo");
                     break;
 
                 default:
