@@ -82,7 +82,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     //view注解
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'org.simple:androideventbus:1.0.5.1'
     compile 'com.android.support:percent:25.+'
     compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.16'
@@ -115,11 +114,12 @@ dependencies {
     compile 'com.jph.takephoto:takephoto_library:4.0.3'
     //dialog
     compile 'com.afollestad.material-dialogs:core:0.9.4.5'
-    compile(name:'AlivcPlayer',ext:'aar')
-    compile(name:'AliyunvodPlayer',ext:'aar')
-    compile(name:'AliyunVodPlayerView',ext:'aar')
+    compile(name: 'AlivcPlayer', ext: 'aar')
+    compile(name: 'AliyunvodPlayer', ext: 'aar')
+    compile(name: 'AliyunVodPlayerView', ext: 'aar')
     compile 'com.hanks.animatecheckbox:library:0.1'
     compile 'com.contrarywind:Android-PickerView:3.2.5'
     compile 'com.android.support:multidex:1.0.0'
     compile 'fm.jiecao:jiecaovideoplayer:5.7'
+    compile project(':giftlibrary')
 }

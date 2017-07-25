@@ -29,6 +29,7 @@ import com.fubang.video.base.BaseFragment;
 import com.fubang.video.db.InviteMessgeDao;
 import com.fubang.video.domain.InviteMessage;
 import com.fubang.video.ui.ChatActivity;
+import com.fubang.video.ui.NotifyActivity;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.EMValueCallBack;
@@ -71,8 +72,11 @@ public class MessageFragment extends EaseConversationListFragment {
         rllMessageSystem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DemoHelper.getInstance().saveContact(new EaseUser("9988"));
-                refresh();
+                startActivity(new Intent(getActivity(),NotifyActivity.class));
+//                //通过发送信息来新建conversation对话框
+//                EMMessage message = EMMessage.createTxtSendMessage("123", "9988");
+//                //发送消息
+//                EMClient.getInstance().chatManager().sendMessage(message);
             }
         });
         View errorView = (LinearLayout) View.inflate(getActivity(), R.layout.em_chat_neterror_item, null);

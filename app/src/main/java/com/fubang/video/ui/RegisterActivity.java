@@ -149,6 +149,8 @@ public class RegisterActivity extends TakePhotoActivity {
                                     VMSPUtil.put(context, AppConstant.PASSWORD, password);
                                     VMSPUtil.put(context, AppConstant.USERID, response.body().getInfo().getNuserid());
                                     VMSPUtil.put(context, AppConstant.GENDER, gender);
+                                    VMSPUtil.put(context, AppConstant.USERNAME, calias);
+                                    VMSPUtil.put(context, AppConstant.USERPIC, AppConstant.BASE_IMG_URL + photo_name);
                                     //去登录
 
                                     OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_LOGIN)
@@ -195,6 +197,7 @@ public class RegisterActivity extends TakePhotoActivity {
      */
     private PopupWindow pop_pic;
     private Uri imageUri;
+
     private void ShowPopAction() {
         final View popupView = getLayoutInflater().inflate(R.layout.pop_user_pic, null);
         pop_pic = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
@@ -260,14 +263,14 @@ public class RegisterActivity extends TakePhotoActivity {
         KLog.e(images.size());
         if (images.size() > 0) {
             KLog.e(images.get(0).getOriginalPath());
-            ImagUtil.set(context,new File(images.get(0).getOriginalPath()),ivRegisterPic);
+            ImagUtil.set(context, new File(images.get(0).getOriginalPath()), ivRegisterPic);
 //            Glide.with(context).load(new File(images.get(0).getOriginalPath())).fitCenter().into(ivRegisterPic);
             cphoto = images.get(0).getOriginalPath();
             //上传图片
             OkGo.<UploadPhotoEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPLOAD_PHOTO)
                     .tag(this)
-                    .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN,"")))
-                    .params("sub_name","touxiang")
+                    .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                    .params("sub_name", "touxiang")
                     .params("file", new File(cphoto))
                     .execute(new JsonCallBack<UploadPhotoEntity>(UploadPhotoEntity.class) {
                         @Override

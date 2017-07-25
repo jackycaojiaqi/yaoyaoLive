@@ -146,6 +146,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         EMClient.getInstance().login(phone, password, new EMCallBack() {
             @Override
             public void onSuccess() {
+                // 将自己服务器返回的环信账号、昵称和头像URL设置到帮助类中。
+                DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(String.valueOf(VMSPUtil.get(context, AppConstant.USERNAME,"")));
+                DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(context, AppConstant.USERPIC,"")));
                 VMLog.i("login success");
                 try {
                     EMClient.getInstance().groupManager().getJoinedGroupsFromServer();

@@ -11,8 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,9 +38,11 @@ import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMMessage.ChatType;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.easeui.BuildConfig;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.EaseUI;
+import com.hyphenate.easeui.callback.SelfMessageCallBack;
 import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
@@ -55,6 +59,8 @@ import com.hyphenate.easeui.widget.EaseVoiceRecorderView.EaseVoiceRecorderCallba
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.util.EMLog;
 import com.hyphenate.util.PathUtil;
+
+import org.simple.eventbus.EventBus;
 
 import java.io.File;
 import java.util.List;
@@ -104,8 +110,8 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     static final int ITEM_PICTURE = 2;
     static final int ITEM_LOCATION = 3;
 
-    protected int[] itemStrings = {R.string.attach_take_pic, R.string.attach_picture, R.string.attach_location};
-    protected int[] itemdrawables = {R.drawable.ease_chat_takepic_selector, R.drawable.ease_chat_image_selector,
+    protected int[] itemStrings = {R.string.attach_picture, R.string.attach_location};
+    protected int[] itemdrawables = {R.drawable.ease_chat_image_selector,
             R.drawable.ease_chat_location_selector};
     protected int[] itemIds = {ITEM_TAKE_PICTURE, ITEM_PICTURE, ITEM_LOCATION};
     private boolean isMessageListInited;
@@ -639,12 +645,13 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
             }
             switch (itemId) {
                 case ITEM_TAKE_PICTURE:
-                    selectPicFromCamera();
-                    break;
-                case ITEM_PICTURE:
                     selectPicFromLocal();
                     break;
+                case ITEM_PICTURE:
+                    EventBus.getDefault().post("showPop", "showPop");
+                    break;
                 case ITEM_LOCATION:
+                    //弹出礼物框
 //                    startActivityForResult(new Intent(getActivity(), EaseBaiduMapActivity.class), REQUEST_CODE_MAP);
                     break;
 
@@ -688,14 +695,27 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
 
 
     //send message
-    protected void sendTextMessage(String content) {
-        Log.e(TAG, content);
-        if (EaseAtMessageHelper.get().containsAtUsername(content)) {
-            sendAtMessage(content);
-        } else {
-            EMMessage message = EMMessage.createTxtSendMessage(content, toChatUsername);
-            sendMessage(message);
-        }
+    protected void sendTextMessage(final String content) {
+        EventBus.getDefault().post(new SelfMessageCallBack() {
+            @Override
+            public void success(String msg) {
+                Log.e(TAG, "success");
+                if (EaseAtMessageHelper.get().containsAtUsername(content)) {
+                    sendAtMessage(content);
+                } else {
+                    EMMessage message = EMMessage.createTxtSendMessage(content, toChatUsername);
+                    sendMessage(message);
+                }
+            }
+
+            @Override
+            public void fail(String msg) {
+                Log.e(TAG, "fail");
+                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+            }
+        }, "sendTextMessage");
+        // 做链接c++减币操作
+
     }
 
     /**
@@ -723,16 +743,49 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
 
 
     protected void sendBigExpressionMessage(String name, String identityCode) {
+        EventBus.getDefault().post(new SelfMessageCallBack() {
+            @Override
+            public void success(String msg) {
+                Log.e(TAG, "success");
+            }
+
+            @Override
+            public void fail(String msg) {
+                Log.e(TAG, "fail");
+            }
+        }, "sendBigExpressionMessage");
         EMMessage message = EaseCommonUtils.createExpressionMessage(toChatUsername, name, identityCode);
         sendMessage(message);
     }
 
     protected void sendVoiceMessage(String filePath, int length) {
+        EventBus.getDefault().post(new SelfMessageCallBack() {
+            @Override
+            public void success(String msg) {
+                Log.e(TAG, "success");
+            }
+
+            @Override
+            public void fail(String msg) {
+                Log.e(TAG, "fail");
+            }
+        }, "sendVoiceMessage");
         EMMessage message = EMMessage.createVoiceSendMessage(filePath, length, toChatUsername);
         sendMessage(message);
     }
 
     protected void sendImageMessage(String imagePath) {
+        EventBus.getDefault().post(new SelfMessageCallBack() {
+            @Override
+            public void success(String msg) {
+                Log.e(TAG, "success");
+            }
+
+            @Override
+            public void fail(String msg) {
+                Log.e(TAG, "fail");
+            }
+        }, "sendImageMessage");
         EMMessage message = EMMessage.createImageSendMessage(imagePath, false, toChatUsername);
         sendMessage(message);
     }
@@ -877,8 +930,18 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                 + System.currentTimeMillis() + ".jpg");
         //noinspection ResultOfMethodCallIgnored
         cameraFile.getParentFile().mkdirs();
+        Intent intent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(getActivity(), "com.fubang.video " + ".fileProvider", cameraFile);
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile));
+        }
+
         startActivityForResult(
-                new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
+                intent,
                 REQUEST_CODE_CAMERA);
     }
 

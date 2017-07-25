@@ -1,1 +1,1 @@
-include ':app', ':vmtools', ':easeui'
+include ':app', ':vmtools', ':easeui', ':giftlibrary'

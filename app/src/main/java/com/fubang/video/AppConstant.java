@@ -11,6 +11,7 @@ public class AppConstant {
     public static final String BASE_DOWNLOAD_MUSIC = "http://120.26.127.210:333/mp3_ge/";//音乐下载链接前缀
     public static final String BASE_DOWNLOAD_LRC = "http://120.26.127.210:333/mp3_lrc/";//音乐下载链接前缀
     public static final String USERNAME = "username";
+    public static final String USERPIC = "userpic";
     public static final String OBJECT = "onject";
     public static final String USERID = "userid";
     public static final String TOKEN = "token";

@@ -167,7 +167,6 @@ public class LoginActivity extends BaseActivity {
             ToastUtil.show(context, "username or password null");
             return;
         }
-        VMSPUtil.put(context, AppConstant.USERNAME, username);
     }
 
 
