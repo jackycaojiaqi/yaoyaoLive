@@ -101,7 +101,7 @@ public class ChatActivity extends BaseActivity {
     }
     @Subscriber(tag = "sendTextMessage")
     public void sendTextMessage(SelfMessageCallBack callBack) {
-        callBack.fail("金币不足");
+        callBack.success("成功");
         KLog.e("sendTextMessage");
     }
 

@@ -1,29 +1,52 @@
 package com.vmloft.develop.app.demo.call;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.fubang.video.AppConstant;
 import com.fubang.video.R;
+import com.fubang.video.adapter.GiftItemAdapter;
+import com.fubang.video.entity.GiftEntity;
+import com.fubang.video.ui.RechargeActivity;
+import com.fubang.video.util.GiftUtil;
+import com.fubang.video.util.ToastUtil;
 import com.hyphenate.chat.EMCallManager;
 import com.hyphenate.chat.EMCallStateChangeListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.media.EMCallSurfaceView;
+import com.socks.library.KLog;
 import com.superrtc.sdk.VideoView;
 import com.vmloft.develop.library.tools.utils.VMDimenUtil;
 import com.vmloft.develop.library.tools.utils.VMLog;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
+import org.dync.giftlibrary.widget.GiftControl;
+import org.dync.giftlibrary.widget.GiftFrameLayout;
+import org.dync.giftlibrary.widget.GiftModel;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,27 +69,48 @@ public class VideoCallActivity extends CallActivity {
     private RelativeLayout.LayoutParams oppositeParams = null;
 
     // 使用 ButterKnife 注解的方式获取控件
-    @BindView(R.id.layout_root) View rootView;
-    @BindView(R.id.layout_call_control) View controlLayout;
-    @BindView(R.id.layout_surface_container) RelativeLayout surfaceLayout;
+    @BindView(R.id.layout_root)
+    View rootView;
+    @BindView(R.id.layout_call_control)
+    View controlLayout;
+    @BindView(R.id.layout_surface_container)
+    RelativeLayout surfaceLayout;
 
-    @BindView(R.id.btn_exit_full_screen) ImageButton exitFullScreenBtn;
-    @BindView(R.id.text_call_state) TextView callStateView;
-    @BindView(R.id.text_call_time) TextView callTimeView;
-    @BindView(R.id.btn_mic_switch) ImageButton micSwitch;
-    @BindView(R.id.btn_camera_switch) ImageButton cameraSwitch;
-    @BindView(R.id.btn_speaker_switch) ImageButton speakerSwitch;
-    @BindView(R.id.btn_record_switch) ImageButton recordSwitch;
-    @BindView(R.id.btn_screenshot) ImageButton screenshotSwitch;
-    @BindView(R.id.btn_change_camera_switch) ImageButton changeCameraSwitch;
-    @BindView(R.id.fab_reject_call) FloatingActionButton rejectCallFab;
-    @BindView(R.id.fab_end_call) FloatingActionButton endCallFab;
-    @BindView(R.id.fab_answer_call) FloatingActionButton answerCallFab;
+    @BindView(R.id.btn_exit_full_screen)
+    ImageButton exitFullScreenBtn;
+    @BindView(R.id.text_call_state)
+    TextView callStateView;
+    @BindView(R.id.text_call_time)
+    TextView callTimeView;
+    @BindView(R.id.btn_mic_switch)
+    ImageButton micSwitch;
+    @BindView(R.id.btn_camera_switch)
+    ImageButton cameraSwitch;
+    @BindView(R.id.btn_speaker_switch)
+    ImageButton speakerSwitch;
+    @BindView(R.id.btn_record_switch)
+    ImageButton recordSwitch;
+    @BindView(R.id.btn_screenshot)
+    ImageButton screenshotSwitch;
+    @BindView(R.id.btn_change_camera_switch)
+    ImageButton changeCameraSwitch;
+    @BindView(R.id.fab_reject_call)
+    FloatingActionButton rejectCallFab;
+    @BindView(R.id.fab_end_call)
+    FloatingActionButton endCallFab;
+    @BindView(R.id.fab_answer_call)
+    FloatingActionButton answerCallFab;
+    @BindView(R.id.iv_video_call_gift)
+    ImageView ivVideoCallGift;
+    @BindView(R.id.iv_video_call_charge)
+    ImageView ivVideoCallCharge;
+    private Context context;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_call);
-
+        context = this;
         ButterKnife.bind(this);
 
         initView();
@@ -75,8 +119,14 @@ public class VideoCallActivity extends CallActivity {
     /**
      * 重载父类方法,实现一些当前通话的操作，
      */
-    @Override protected void initView() {
+    @Override
+    protected void initView() {
         super.initView();
+
+        //礼物连击
+        giftFrameLayout1 = (GiftFrameLayout) findViewById(R.id.gift_layout1);
+        giftFrameLayout2 = (GiftFrameLayout) findViewById(R.id.gift_layout2);
+        giftControl = new GiftControl(giftFrameLayout1, giftFrameLayout2);
         if (CallManager.getInstance().isInComingCall()) {
             endCallFab.setVisibility(View.GONE);
             answerCallFab.setVisibility(View.VISIBLE);
@@ -125,8 +175,9 @@ public class VideoCallActivity extends CallActivity {
     @OnClick({
             R.id.layout_call_control, R.id.btn_exit_full_screen, R.id.btn_change_camera_switch, R.id.btn_mic_switch,
             R.id.btn_camera_switch, R.id.btn_speaker_switch, R.id.btn_record_switch, R.id.btn_screenshot, R.id.fab_reject_call,
-            R.id.fab_end_call, R.id.fab_answer_call
-    }) void onClick(View v) {
+            R.id.fab_end_call, R.id.fab_answer_call, R.id.iv_video_call_gift, R.id.iv_video_call_charge
+    })
+    void onClick(View v) {
         switch (v.getId()) {
             case R.id.layout_call_control:
                 onControlLayout();
@@ -170,6 +221,12 @@ public class VideoCallActivity extends CallActivity {
             case R.id.fab_answer_call:
                 // 接听通话
                 answerCall();
+                break;
+            case R.id.iv_video_call_gift:
+                showPopupWindow(giftFrameLayout1);
+                break;
+            case R.id.iv_video_call_charge:
+                startActivity(new Intent(context, RechargeActivity.class));
                 break;
         }
     }
@@ -333,7 +390,8 @@ public class VideoCallActivity extends CallActivity {
     /**
      * 接听通话
      */
-    @Override protected void answerCall() {
+    @Override
+    protected void answerCall() {
         super.answerCall();
         endCallFab.setVisibility(View.VISIBLE);
         rejectCallFab.setVisibility(View.GONE);
@@ -362,7 +420,8 @@ public class VideoCallActivity extends CallActivity {
         surfaceLayout.addView(localSurface);
 
         localSurface.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 onControlLayout();
             }
         });
@@ -398,13 +457,15 @@ public class VideoCallActivity extends CallActivity {
         localSurface.setLayoutParams(localParams);
 
         localSurface.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 changeCallSurface();
             }
         });
 
         oppositeSurface.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 onControlLayout();
             }
         });
@@ -423,7 +484,8 @@ public class VideoCallActivity extends CallActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN) public void onEventBus(CallEvent event) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventBus(CallEvent event) {
         if (event.isState()) {
             refreshCallView(event);
         }
@@ -496,6 +558,66 @@ public class VideoCallActivity extends CallActivity {
         }
     }
 
+    private int gift_id = -1;
+    private BaseQuickAdapter adapter_gift;
+    private List<GiftEntity> list_gift = new ArrayList<>();
+    private GiftFrameLayout giftFrameLayout1;
+    private GiftFrameLayout giftFrameLayout2;
+    private GiftControl giftControl;
+
+    private void showPopupWindow(View view) {
+        // 一个自定义的布局，作为显示的内容
+        View contentView = LayoutInflater.from(context).inflate(
+                R.layout.pop_window_gift, null);
+
+        final PopupWindow popupWindow = new PopupWindow(contentView,
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+        popupWindow.setTouchable(true);
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(
+                R.color.transparent_50));
+        RelativeLayout rll_gift_bg = (RelativeLayout) contentView.findViewById(R.id.rll_gift_bg);
+        rll_gift_bg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+        TextView tv_send = (TextView) contentView.findViewById(R.id.tv_send_gift);
+        tv_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (gift_id == -1) {
+                    ToastUtil.show(context, "请先选择一种礼物");
+                    return;
+                }
+                giftControl.loadGift(new GiftModel(String.valueOf(gift_id), "送出礼物：", 1,
+                        String.valueOf(gift_id), CallManager.getInstance().getChatId(), CallManager.getInstance().getChatId(),
+                        AppConstant.BASE_IMG_URL + VMSPUtil.get(context, AppConstant.USERPIC, ""), System.currentTimeMillis()));
+                gift_id = -1;
+                popupWindow.dismiss();
+            }
+        });
+        RecyclerView rv_gift = (RecyclerView) contentView.findViewById(R.id.rv_gift);
+        list_gift = GiftUtil.getGifts();
+        adapter_gift = new GiftItemAdapter(R.layout.pop_item_gift, list_gift);
+        //设置布局管理器
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rv_gift.setLayoutManager(linearLayoutManager);
+        adapter_gift.setEnableLoadMore(true);
+        adapter_gift.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                gift_id = list_gift.get(position).getGiftId();
+            }
+        });
+        adapter_gift.bindToRecyclerView(rv_gift);
+        adapter_gift.setEmptyView(R.layout.empty_view);
+        rv_gift.setAdapter(adapter_gift);
+        // 设置好参数之后再show
+        popupWindow.showAtLocation(view, Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+
     /**
      * 刷新通话时间显示
      */
@@ -529,11 +651,13 @@ public class VideoCallActivity extends CallActivity {
     /**
      * 屏幕方向改变回调方法
      */
-    @Override public void onConfigurationChanged(Configuration newConfig) {
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
 
-    @Override protected void onUserLeaveHint() {
+    @Override
+    protected void onUserLeaveHint() {
         //super.onUserLeaveHint();
         exitFullScreen();
     }
@@ -541,12 +665,14 @@ public class VideoCallActivity extends CallActivity {
     /**
      * 通话界面拦截 Back 按键，不能返回
      */
-    @Override public void onBackPressed() {
+    @Override
+    public void onBackPressed() {
         //super.onBackPressed();
         exitFullScreen();
     }
 
-    @Override protected void onFinish() {
+    @Override
+    protected void onFinish() {
         // release surface view
         if (localSurface != null) {
             if (localSurface.getRenderer() != null) {

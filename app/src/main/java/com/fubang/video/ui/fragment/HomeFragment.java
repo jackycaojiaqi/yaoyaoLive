@@ -125,7 +125,6 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onSuccess(Response<HomeEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-
                             list_action1 = response.body().getInfo().getOnline_list();
                             list_action2 = response.body().getInfo().getTuhao_list();
                             list_action3 = response.body().getInfo().getNew_list();

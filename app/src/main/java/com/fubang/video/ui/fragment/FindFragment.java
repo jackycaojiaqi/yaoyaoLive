@@ -3,6 +3,7 @@ package com.fubang.video.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fubang.video.R;
+import com.fubang.video.adapter.FindViewpagerAdapter;
 import com.fubang.video.base.BaseFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +32,8 @@ public class FindFragment extends BaseFragment {
     @BindView(R.id.vp_find)
     ViewPager vpFind;
     Unbinder unbinder;
+    private List<String> titles = new ArrayList<>();
+    private List<Fragment> fragments = new ArrayList<>();
 
     @Nullable
     @Override
@@ -39,7 +46,17 @@ public class FindFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setText(tvTitle,"发现");
+        setText(tvTitle, "发现");
+        titles.add("土豪榜");
+        titles.add("魅力榜");
+        titles.add("礼物榜");
+        fragments.add(new FindTuHaoFrament());
+        fragments.add(new FindMeiliFrament());
+        fragments.add(new FindGiftFrament());
+        FindViewpagerAdapter adapter = new FindViewpagerAdapter(getActivity().getSupportFragmentManager(), fragments, titles);
+        vpFind.setAdapter(adapter);
+        tlFind.setupWithViewPager(vpFind);
+        tlFind.setTabMode(TabLayout.MODE_FIXED);
     }
 
     @Override

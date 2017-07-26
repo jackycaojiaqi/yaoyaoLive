@@ -13,11 +13,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
+import com.fubang.video.DemoHelper;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseFragment;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.BaseInfoEntity;
 import com.fubang.video.entity.LoginEntity;
+import com.fubang.video.ui.CircleListActivity;
 import com.fubang.video.ui.LoginActivity;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.ui.SettingActivity;
@@ -68,6 +70,7 @@ public class MineFragment extends BaseFragment {
     RelativeLayout rllMineFeedback;
     @BindView(R.id.rll_mine_setting)
     RelativeLayout rllMineSetting;
+    private String user_id;
 
     @Nullable
     @Override
@@ -91,7 +94,6 @@ public class MineFragment extends BaseFragment {
     }
 
     private void initdate() {
-        KLog.e(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERID, ""))+"   "+String.valueOf(VMSPUtil.get(getActivity(), AppConstant.TOKEN, "")));
         OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
                 .tag(this)
                 .params("nuserid", String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERID, "")))
@@ -100,13 +102,20 @@ public class MineFragment extends BaseFragment {
                     @Override
                     public void onSuccess(Response<BaseInfoEntity> response) {
                         if (response.body().getStatus().equals("success")) {
+                            user_id = response.body().getInfo().getNuserid();
                             tvMineId.setText("妖妖ID:" + VMSPUtil.get(getActivity(), AppConstant.USERID, ""));//ID
                             tvMineName.setText(response.body().getInfo().getCalias() + "");//姓名
                             tvMineNkNum.setText("金币*" + response.body().getInfo().getNmoney() + " ");//金币
                             ImagUtil.setnoerror(getActivity(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivMinePic);
-                            if (response.body().getInfo().getNgender().equals("0")) {//性别
+                            //本地存头像地址
+                            VMSPUtil.put(getActivity(), AppConstant.USERPIC, AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto());
+                            //本地存昵称
+                            VMSPUtil.put(getActivity(), AppConstant.USERNAME, response.body().getInfo().getCalias());
+                            DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERNAME, "")));
+                            DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERPIC, "")));
+                            if (response.body().getInfo().getNgender().equals("1")) {//性别
                                 ivMineGender.setImageResource(R.drawable.ic_register_female_checked);
-                            } else if (response.body().getInfo().getNgender().equals("1")) {
+                            } else if (response.body().getInfo().getNgender().equals("0")) {
                                 ivMineGender.setImageResource(R.drawable.ic_register_male_checked);
                             }
                         } else {//token失效
@@ -142,6 +151,9 @@ public class MineFragment extends BaseFragment {
                 startActivity(intent);
                 break;
             case R.id.rll_mine_circle:
+                intent = new Intent(getActivity(), CircleListActivity.class);
+                intent.putExtra(AppConstant.USERID, user_id);
+                startActivity(intent);
                 break;
             case R.id.rll_mine_vip:
                 break;

@@ -8,9 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
@@ -18,7 +18,6 @@ import com.fubang.video.adapter.RecentVisiterAdapter;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.BaseInfoEntity;
-import com.fubang.video.entity.PlayVideoEntity;
 import com.fubang.video.util.GlideImageLoader;
 import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.StringUtil;
@@ -78,6 +77,8 @@ public class UserInfoActivity extends BaseActivity {
     ImageView ivUserinfoSetting;
     @BindView(R.id.btn_userinfo_action)
     Button btnUserinfoAction;
+    @BindView(R.id.rll_userinfo_circle_list)
+    RelativeLayout rllUserinfoCircleList;
     private List<String> imags = new ArrayList<>();
     private int type = 0;// 0其他用户信息   1、自己的信息
     private Banner banner;
@@ -198,7 +199,8 @@ public class UserInfoActivity extends BaseActivity {
                 });
     }
 
-    @OnClick({R.id.iv_userinfo_self_video_play, R.id.iv_userinfo_back, R.id.iv_userinfo_setting, R.id.btn_userinfo_action})
+    @OnClick({R.id.iv_userinfo_self_video_play, R.id.iv_userinfo_back, R.id.iv_userinfo_setting, R.id.btn_userinfo_action
+            , R.id.rll_userinfo_circle_list})
     public void onViewClicked(View view) {
         Intent intent;
         switch (view.getId()) {
@@ -217,6 +219,11 @@ public class UserInfoActivity extends BaseActivity {
                     KLog.e(phone);
                     callVideo(phone);
                 }
+                break;
+            case R.id.rll_userinfo_circle_list:
+                intent = new Intent(context, CircleListActivity.class);
+                intent.putExtra(AppConstant.USERID, user_id);
+                startActivity(intent);
                 break;
         }
     }

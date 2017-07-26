@@ -147,9 +147,14 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
             @Override
             public void onSuccess() {
                 // 将自己服务器返回的环信账号、昵称和头像URL设置到帮助类中。
-                DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(String.valueOf(VMSPUtil.get(context, AppConstant.USERNAME,"")));
-                DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(context, AppConstant.USERPIC,"")));
-                VMLog.i("login success");
+                DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(String.valueOf(VMSPUtil.get(context, AppConstant.USERNAME, "")));
+                DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(context, AppConstant.USERPIC, "")));
+//                DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName("小新");
+//                DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar("https://imgsa.baidu.com/news/q%3D100/sign=0e6bf447c9cec3fd8d3ea375e689d4b6/0b55b319ebc4b745f4d0be9dc5fc1e178b8215f0.jpg");
+                DemoHelper.getInstance().setCurrentUserName(String.valueOf(VMSPUtil.get(context, AppConstant.PHONE, "")));
+                KLog.e(String.valueOf(VMSPUtil.get(context, AppConstant.USERNAME, "")));
+                KLog.e(String.valueOf(VMSPUtil.get(context, AppConstant.USERPIC, "")));
+                KLog.e(String.valueOf(VMSPUtil.get(context, AppConstant.PHONE, "")));
                 try {
                     EMClient.getInstance().groupManager().getJoinedGroupsFromServer();
                 } catch (HyphenateException e) {

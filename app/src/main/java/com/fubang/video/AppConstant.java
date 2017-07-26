@@ -53,5 +53,7 @@ public class AppConstant {
 
     public static final String URL_LIFE_HOME_DATE = "/index.php/LineApp/index_data";//首页数据获取
 
+    public static final String URL_PAY_INFO = "/index.php/LineApp/ali_pay";//支付宝获取订单信息
+
 
 }

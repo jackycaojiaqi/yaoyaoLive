@@ -23,3 +23,17 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+  # 定位
+    -keep class com.amap.api.location.**{*;}
+    -keep class com.amap.api.fence.**{*;}
+    -keep class com.autonavi.aps.amapapi.model.**{*;}
+
+    #支付宝
+    -libraryjars libs/alipaySDK-20150602.jar
+
+    -keep class com.alipay.android.app.IAlixPay{*;}
+    -keep class com.alipay.android.app.IAlixPay$Stub{*;}
+    -keep class com.alipay.android.app.IRemoteServiceCallback{*;}
+    -keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
+    -keep class com.alipay.sdk.app.PayTask{ public *;}
+    -keep class com.alipay.sdk.app.AuthTask{ public *;}

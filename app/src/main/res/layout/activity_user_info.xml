@@ -238,6 +238,41 @@
                 android:background="@color/gray_c" />
 
             <RelativeLayout
+                android:id="@+id/rll_userinfo_circle_list"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="生活圈"
+                    android:textColor="@color/gray_deep" />
+
+                <TextView
+                    android:id="@+id/tv_userinfo_circle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="80dp"
+                    android:text="各种澎湃各种骚"
+                    android:visibility="gone"
+                    android:textColor="@color/black_3a3a3a" />
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_arrow_right"/>
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray_c" />
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:paddingLeft="10dp"

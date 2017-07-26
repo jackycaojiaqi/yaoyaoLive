@@ -705,7 +705,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                     sendMessage(message);
                 }
             }
-
             @Override
             public void fail(String msg) {
                 Log.e(TAG, "fail");

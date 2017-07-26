@@ -75,6 +75,9 @@
         <activity
             android:name=".ui.NotifyActivity"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".ui.CircleListActivity"
+            android:launchMode="singleTask"></activity>
         <!--语音通话界面-->
         <activity
             android:name="com.vmloft.develop.app.demo.call.VoiceCallActivity"
@@ -134,7 +137,25 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="3ecea51f560650b1ed8a4b99808f52e8" />
-
+        <!--高德地图-->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="9d200eea997fbd046cc011231094b183"/>
+        <!--支付宝-->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.app.H5AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
     </application>
     <!--项目权限配置-->
     <!--相机-->

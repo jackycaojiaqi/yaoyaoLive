@@ -566,7 +566,6 @@ public class CallManager {
      */
     public void stopCallTime() {
         if (timer != null) {
-            timer.purge();
             timer.cancel();
             timer = null;
         }
