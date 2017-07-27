@@ -84,7 +84,7 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.android.support:percent:25.+'
     compile 'com.android.support:recyclerview-v7:25.2.0'
-    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.16'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.25'
     compile 'com.lovedise:permissiongen:0.0.6'
     compile files('libs/AMap_Location_V3.3.0_20170118.jar')
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'

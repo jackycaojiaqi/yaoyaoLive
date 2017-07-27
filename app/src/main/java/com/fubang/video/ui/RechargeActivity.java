@@ -150,27 +150,27 @@ public class RechargeActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.btn_recharge_1:
                 moneyB = 10;
-                getpayinfo(1);
+                getpayinfo(moneyB);
                 break;
             case R.id.btn_recharge_2:
                 moneyB = 30;
-                getpayinfo(1);
+                getpayinfo(moneyB);
                 break;
             case R.id.btn_recharge_3:
                 moneyB = 50;
-                getpayinfo(1);
+                getpayinfo(moneyB);
                 break;
             case R.id.btn_recharge_4:
                 moneyB = 98;
-                getpayinfo(1);
+                getpayinfo(moneyB);
                 break;
             case R.id.btn_recharge_5:
                 moneyB = 500;
-                getpayinfo(1);
+                getpayinfo(moneyB);
                 break;
             case R.id.btn_recharge_6:
                 moneyB = 998;
-                getpayinfo(1);
+                getpayinfo(moneyB);
                 break;
         }
     }
@@ -191,6 +191,7 @@ public class RechargeActivity extends BaseActivity {
                     if (TextUtils.equals(resultStatus, "9000")) {
                         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
                         Toast.makeText(context, "支付成功", Toast.LENGTH_SHORT).show();
+                        initdate();
                     } else {
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                         Toast.makeText(context, "支付失败", Toast.LENGTH_SHORT).show();

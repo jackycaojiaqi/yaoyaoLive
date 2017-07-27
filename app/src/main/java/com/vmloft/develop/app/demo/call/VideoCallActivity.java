@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +49,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,6 +108,9 @@ public class VideoCallActivity extends CallActivity {
     ImageView ivVideoCallGift;
     @BindView(R.id.iv_video_call_charge)
     ImageView ivVideoCallCharge;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+
     private Context context;
 
     @Override
@@ -114,7 +121,30 @@ public class VideoCallActivity extends CallActivity {
         ButterKnife.bind(this);
 
         initView();
+        timer.schedule(task, 1000, 1000);       // timeTask
     }
+
+    Timer timer = new Timer();
+    private int recLen = 100;
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+
+            runOnUiThread(new Runnable() {      // UI thread
+                @Override
+                public void run() {
+                    recLen = recLen - 5;
+                    progressBar.setProgress(recLen);
+                    if (recLen < 0) {
+                        timer.cancel();
+                        progressBar.setVisibility(View.GONE);
+                        ToastUtil.show(context, "对方没有接听，请稍后再拨");
+                        endCall();
+                    }
+                }
+            });
+        }
+    };
 
     /**
      * 重载父类方法,实现一些当前通话的操作，
@@ -122,7 +152,6 @@ public class VideoCallActivity extends CallActivity {
     @Override
     protected void initView() {
         super.initView();
-
         //礼物连击
         giftFrameLayout1 = (GiftFrameLayout) findViewById(R.id.gift_layout1);
         giftFrameLayout2 = (GiftFrameLayout) findViewById(R.id.gift_layout2);
@@ -221,6 +250,8 @@ public class VideoCallActivity extends CallActivity {
             case R.id.fab_answer_call:
                 // 接听通话
                 answerCall();
+                timer.cancel();
+                progressBar.setVisibility(View.GONE);
                 break;
             case R.id.iv_video_call_gift:
                 showPopupWindow(giftFrameLayout1);

@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by jacky on 2017/7/26.
@@ -42,9 +44,9 @@ public class CircleListActivity extends BaseActivity {
     RecyclerView rvCircleList;
     @BindView(R.id.srl_circle_list)
     SwipeRefreshLayout srlCircleListList;
+    @BindView(R.id.btn_goto_publish_circle_list)
+    Button btnGotoPublishCircleList;
     private String userid;
-    private int page = 1;
-    private int count = 10;
     private BaseQuickAdapter circleAdapter;
 
     @Override
@@ -61,9 +63,72 @@ public class CircleListActivity extends BaseActivity {
     private void initview() {
         back(ivBack);
         setText(tvTitle, "朋友圈列表");
+        srlCircleListList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                date_type = 1;
+                page = 1;
+                initdate();
+            }
+        });
+        //=========================recycleview
+        circleAdapter = new CircleListAdapter(R.layout.item_circle_list, list_circle);
+        rvCircleList.setLayoutManager(new GridLayoutManager(context, 1));
+        circleAdapter.openLoadAnimation();
+        circleAdapter.bindToRecyclerView(rvCircleList);
+        circleAdapter.setEmptyView(R.layout.empty_view);
+        rvCircleList.setAdapter(circleAdapter);
+        circleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(context, CircleInfoDetailActivity.class);
+                intent.putExtra(AppConstant.OBJECT, list_circle.get(position).getNid());
+                startActivity(intent);
+            }
+        });
+        circleAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (view.getId()) {
+                    case R.id.ll_circle_list_send_flower:
+                        send_flower(list_circle.get(position).getNid(), list_circle.get(position).getNuserid());
+                        break;
+                    case R.id.iv_circle_list_pic:
+                        Intent intent = new Intent(context, UserInfoActivity.class);
+                        if (list_circle.get(position).getNuserid().equals(VMSPUtil.get(context, AppConstant.USERID, ""))) {
+                            intent.putExtra(AppConstant.TYPE, 1);
+                        } else {
+                            intent.putExtra(AppConstant.TYPE, 0);
+                        }
+                        intent.putExtra(AppConstant.USERID, list_circle.get(position).getNuserid());
+                        startActivity(intent);
+                        break;
+                }
+
+            }
+        });
+        circleAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                page++;
+                date_type = 2;
+                initdate();
+            }
+        });
+
+        //水平分割线
+        rvCircleList.addItemDecoration(new DividerItemDecoration(
+                context, DividerItemDecoration.HORIZONTAL_LIST, 10, getResources().getColor(R.color.gray_c)));
+        rvCircleList.smoothScrollToPosition(0);
+        //=========================recycleview配置结束
     }
 
     private List<CircleListEntity.InfoBean> list_circle = new ArrayList<>();
+    private int page = 1;
+    private int count = 10;
+    private int date_type = 0;//0 首次加载数据  1、下拉刷新  2、上拉加载
+
     private void initdate() {
         OkGo.<CircleListEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_LIST)
                 .tag(this)
@@ -74,52 +139,30 @@ public class CircleListActivity extends BaseActivity {
                 .execute(new JsonCallBack<CircleListEntity>(CircleListEntity.class) {
                     @Override
                     public void onSuccess(Response<CircleListEntity> response) {
-                        srlCircleListList.setRefreshing(false);
                         if (response.body().getStatus().equals("success")) {
-                            list_circle = response.body().getInfo();
-                            //=========================recycleview
-                            circleAdapter = new CircleListAdapter(R.layout.item_circle_list, list_circle);
-                            rvCircleList.setLayoutManager(new GridLayoutManager(context, 1));
-                            circleAdapter.openLoadAnimation();
-                            circleAdapter.setAutoLoadMoreSize(5);
-                            circleAdapter.setEnableLoadMore(true);
-                            circleAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                                    Intent intent = new Intent(context, CircleInfoDetailActivity.class);
-                                    intent.putExtra(AppConstant.OBJECT, list_circle.get(position).getNid());
-                                    startActivity(intent);
+                            srlCircleListList.setRefreshing(false);
+                            if (date_type == 0) {
+                                circleAdapter.setEnableLoadMore(true);
+                                list_circle.clear();
+                                list_circle = response.body().getInfo();
+                                circleAdapter.setNewData(list_circle);
+                            } else if (date_type == 1) {
+                                circleAdapter.setEnableLoadMore(true);
+                                list_circle.clear();
+                                list_circle = response.body().getInfo();
+                                circleAdapter.setNewData(list_circle);
+                            } else if (date_type == 2) {
+                                if (response.body().getInfo().size() < 10) {//最后一页
+                                    list_circle.addAll(response.body().getInfo());
+                                    circleAdapter.notifyDataSetChanged();
+                                    circleAdapter.loadMoreComplete();
+                                    circleAdapter.loadMoreEnd();
+                                } else if (response.body().getInfo().size() >= 10) {//不是最后一页
+                                    list_circle.addAll(response.body().getInfo());
+                                    circleAdapter.notifyDataSetChanged();
+                                    circleAdapter.loadMoreComplete();
                                 }
-                            });
-                            circleAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
-
-                                @Override
-                                public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                                    switch (view.getId()) {
-                                        case R.id.ll_circle_list_send_flower:
-                                            send_flower(list_circle.get(position).getNid(), list_circle.get(position).getNuserid());
-                                            break;
-                                        case R.id.iv_circle_list_pic:
-                                            Intent intent = new Intent(context, UserInfoActivity.class);
-                                            if (list_circle.get(position).getNuserid().equals(VMSPUtil.get(context, AppConstant.USERID, ""))) {
-                                                intent.putExtra(AppConstant.TYPE, 1);
-                                            } else {
-                                                intent.putExtra(AppConstant.TYPE, 0);
-                                            }
-                                            intent.putExtra(AppConstant.USERID, list_circle.get(position).getNuserid());
-                                            startActivity(intent);
-                                            break;
-                                    }
-
-                                }
-                            });
-                            circleAdapter.bindToRecyclerView(rvCircleList);
-                            circleAdapter.setEmptyView(R.layout.empty_view);
-                            rvCircleList.setAdapter(circleAdapter);
-                            //水平分割线
-                            rvCircleList.addItemDecoration(new DividerItemDecoration(
-                                    context, DividerItemDecoration.HORIZONTAL_LIST, 10, getResources().getColor(R.color.gray_c)));
-                            rvCircleList.smoothScrollToPosition(0);
+                            }
                         }
                     }
 
@@ -127,6 +170,8 @@ public class CircleListActivity extends BaseActivity {
                     public void onError(Response<CircleListEntity> response) {
                         super.onError(response);
                         srlCircleListList.setRefreshing(false);
+                        circleAdapter.loadMoreComplete();
+                        circleAdapter.loadMoreEnd();
                     }
                 });
     }
@@ -158,5 +203,14 @@ public class CircleListActivity extends BaseActivity {
                         super.onError(response);
                     }
                 });
+    }
+
+    @OnClick({R.id.btn_goto_publish_circle_list})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_goto_publish_circle_list:
+                context.startActivity(new Intent(context, PublishCircleActivity.class));
+                break;
+        }
     }
 }

@@ -18,7 +18,6 @@
             app:layout_widthPercent="85%"
             android:layout_marginTop="200dp"
             android:orientation="vertical">
-
             <org.dync.giftlibrary.widget.GiftFrameLayout
                 android:id="@+id/gift_layout1"
                 android:layout_width="match_parent"
