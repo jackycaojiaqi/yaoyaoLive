@@ -158,7 +158,7 @@ public class CircleFragment extends BaseFragment {
     private void initdate() {
         OkGo.<CircleListEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_LIST)
                 .tag(this)
-//                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                .params("self_nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
                 .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
                 .params("page", page)
                 .params("count", count)

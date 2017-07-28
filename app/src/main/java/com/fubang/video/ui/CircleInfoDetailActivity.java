@@ -10,26 +10,21 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aliyun.vodplayerview.widget.AliyunVodPlayerView;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.adapter.CircleInfoReviewAdapter;
-import com.fubang.video.adapter.CircleReviewAdapter;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.CircleInfoEntity;
-import com.fubang.video.entity.CircleReviewEntity;
-import com.fubang.video.entity.PublishUpLoadEntity;
 import com.fubang.video.entity.ReviewEntity;
-import com.fubang.video.util.AndroidBug5497Workaround;
 import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.ToastUtil;
@@ -40,9 +35,7 @@ import com.socks.library.KLog;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
@@ -87,6 +80,10 @@ public class CircleInfoDetailActivity extends BaseActivity {
     RecyclerView rvCircleInfoReview;
     @BindView(R.id.et_circle_info)
     EditText etCircleInfo;
+    @BindView(R.id.tv_circle_detail_state)
+    TextView tvCircleDetailState;
+    @BindView(R.id.btn_circle_detail_state)
+    Button btnCircleDetailState;
     private JCVideoPlayerStandard jcVideoPlayerStandard;
     private Bitmap bitmap;
     private int page = 1;
@@ -110,7 +107,7 @@ public class CircleInfoDetailActivity extends BaseActivity {
     private void initdate() {
         OkGo.<CircleInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_DETAIL)
                 .tag(this)
-                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                .params("self_nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
                 .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
                 .params("nid", nid)
                 .params("page", page)
@@ -120,7 +117,7 @@ public class CircleInfoDetailActivity extends BaseActivity {
                     public void onSuccess(final Response<CircleInfoEntity> response) {
                         if (response.body().getStatus().equals("success")) {
                             if (!StringUtil.isEmptyandnull(response.body().getInfo().getCphoto()))//头像
-                                ImagUtil.set(context, AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivCircleInfoPic);
+                                ImagUtil.set(getApplicationContext(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivCircleInfoPic);
                             if (!StringUtil.isEmptyandnull(response.body().getInfo().getNgender()))//性别
                             {
                                 if (response.body().getInfo().getNgender().endsWith("0")) {//男性
@@ -131,6 +128,24 @@ public class CircleInfoDetailActivity extends BaseActivity {
                             }
                             //计算多久前发布
                             String interval = dataUtils.getInterval(Long.parseLong(response.body().getInfo().getDtime1()), System.currentTimeMillis() / 1000);
+                            //是否限时免费
+                            if (interval.contains("天")) {
+                                tvCircleDetailState.setText("送花看视频");
+                                if (response.body().getInfo().getNumber().equals("0")) {  //没有送过花
+                                    btnCircleDetailState.setVisibility(View.VISIBLE);
+                                    btnCircleDetailState.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            ToastUtil.show(context, "需要先送花再观看！");
+                                        }
+                                    });
+                                } else {//送过花
+                                    btnCircleDetailState.setVisibility(View.GONE);
+                                }
+                            } else {
+                                tvCircleDetailState.setText("限时公开中");
+                                btnCircleDetailState.setVisibility(View.GONE);
+                            }
                             tvCircleInfoName.setText(response.body().getInfo().getCalias() + "");//名字
                             tvCircleInfoAge.setText(StringUtil.isEmptyandnull(response.body().getInfo().getNage()) ? "未知" : response.body().getInfo().getNage() + "");//年龄
                             tvCircleInfoTimeslong.setText(interval + "前发布");//多久前发布

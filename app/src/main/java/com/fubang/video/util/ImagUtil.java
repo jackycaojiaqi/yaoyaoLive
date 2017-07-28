@@ -30,4 +30,7 @@ public class ImagUtil {
     public static void set(Context context, File url, View view) {
         Glide.with(context).load(url).error(R.drawable.ic_load_error).centerCrop().placeholder(R.drawable.ic_load_error).into((ImageView) view);
     }
+    public static void destroy(Context context){
+        Glide.with(context).onDestroy();
+    }
 }

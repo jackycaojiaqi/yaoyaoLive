@@ -70,12 +70,21 @@ public class CircleListEntity {
         private String nflowercount;
         private String dtime1;
         private String cphoto;
+        private String number;
         private String calias;
         private String nage;
         private String ngender;
         private String ccity;
         private String clabel;
         private ReviewListBean review_list;
+
+        public String getNumber() {
+            return number;
+        }
+
+        public void setNumber(String number) {
+            this.number = number;
+        }
 
         public String getCvideo_mp4() {
             return cvideo_mp4;

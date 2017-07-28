@@ -48,10 +48,10 @@ public class HomeLifeAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.LifeLi
         helper.setText(R.id.tv_home_life_name, item.getCalias() + "");
 
         if (!StringUtil.isEmptyandnull(item.getCvideophoto())) {
-            ImagUtil.setnoerror(mContext, AppConstant.BASE_IMG_URL + item.getCvideophoto(), helper.getView(R.id.iv_home_life_bg));
+            ImagUtil.setnoerror(mContext.getApplicationContext(), AppConstant.BASE_IMG_URL + item.getCvideophoto(), helper.getView(R.id.iv_home_life_bg));
         }
         if (!StringUtil.isEmptyandnull(item.getCphoto())) {
-            ImagUtil.setnoerror(mContext, AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_home_life_pic));
+            ImagUtil.setnoerror(mContext.getApplicationContext(), AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_home_life_pic));
         }
 
     }

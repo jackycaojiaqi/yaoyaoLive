@@ -64,6 +64,7 @@ public class CircleInfoEntity {
         private String nflower;
         private String dtime;
         private String nscan;
+        private String number;
         private String nreview;
         private String nflowercount;
         private String cvideo_mp4;
@@ -76,6 +77,14 @@ public class CircleInfoEntity {
         private String ccity;
         private String clabel;
         private List<ReviewListBean> review_list;
+
+        public String getNumber() {
+            return number;
+        }
+
+        public void setNumber(String number) {
+            this.number = number;
+        }
 
         public String getCvideo_mp4() {
             return cvideo_mp4;

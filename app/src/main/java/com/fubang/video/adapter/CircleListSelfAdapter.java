@@ -1,9 +1,7 @@
 package com.fubang.video.adapter;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,16 +12,12 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
-import com.fubang.video.entity.BaseInfoEntity;
 import com.fubang.video.entity.CircleListEntity;
 import com.fubang.video.entity.CircleReviewEntity;
-import com.fubang.video.ui.CircleInfoDetailActivity;
 import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.ToastUtil;
 import com.fubang.video.util.dataUtils;
-import com.fubang.video.widget.DividerItemDecoration;
-import com.socks.library.KLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,23 +50,25 @@ import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
  * ━━━━━━神兽出没━━━━━━
  * Created by jacky on 17/3/10.
  */
-public class CircleListAdapter extends BaseQuickAdapter<CircleListEntity.InfoBean, BaseViewHolder> {
+public class CircleListSelfAdapter extends BaseQuickAdapter<CircleListEntity.InfoBean, BaseViewHolder> {
     private List<CircleListEntity.InfoBean> list;
     private Bitmap bitmap;
     private JCVideoPlayerStandard videoPlayerStandard;
     private BaseQuickAdapter reviewAdapter;
     private List<CircleReviewEntity> list_review = new ArrayList<>();
+    private boolean is_self = false;
 
-    public CircleListAdapter(int layoutResId, List data) {
+    public CircleListSelfAdapter(int layoutResId, List data, boolean is_self) {
         super(layoutResId, data);
         list = data;
+        this.is_self = is_self;
     }
 
     @Override
     protected void convert(BaseViewHolder helper, final CircleListEntity.InfoBean item) {
 
         if (!StringUtil.isEmptyandnull(item.getCphoto()))//头像
-            ImagUtil.set(mContext.getApplicationContext().getApplicationContext(), AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_circle_list_pic));
+            ImagUtil.set(mContext.getApplicationContext(), AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_circle_list_pic));
         if (!StringUtil.isEmptyandnull(item.getNgender()))//性别
         {
             if (item.getNgender().endsWith("0")) {//男性
@@ -85,7 +81,10 @@ public class CircleListAdapter extends BaseQuickAdapter<CircleListEntity.InfoBea
         //计算多久前发布
         String interval = dataUtils.getInterval(Long.parseLong(item.getDtime1()), System.currentTimeMillis() / 1000);
         //是否限时免费
-        if (interval.contains("天")) {
+        if (is_self) {
+            helper.setText(R.id.tv_circle_list_state, "限时公开中");
+            helper.getView(R.id.btn_circle_list_state).setVisibility(View.GONE);
+        } else if (interval.contains("天")) {
             helper.setText(R.id.tv_circle_list_state, "送花看视频");
             if (item.getNumber().equals("0")) {  //没有送过花
                 helper.getView(R.id.btn_circle_list_state).setVisibility(View.VISIBLE);

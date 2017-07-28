@@ -47,7 +47,7 @@ public class AppConstant {
 
     public static final String URL_LIFE_ADD = "/index.php/LineApp/life_add";//生活圈发布
     public static final String URL_LIFE_LIST = "/index.php/LineApp/life_list";//朋友圈列表
-    public static final String URL_LIFE_DETAIL = "/index.php/LineApp/life_detail";//朋友圈列表
+    public static final String URL_LIFE_DETAIL = "/index.php/LineApp/life_detail";//朋友圈详情
     public static final String URL_LIFE_REVIEW = "/index.php/LineApp/life_review";//朋友圈评论
     public static final String URL_LIFE_FLOWER = "/index.php/LineApp/life_flower";//朋友圈鲜花
 

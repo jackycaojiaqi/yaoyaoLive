@@ -130,10 +130,32 @@
         android:textColor="@color/black_3a3a3a"
         android:textSize="14dp" />
 
-    <fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard
-        android:id="@+id/videoplayer"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="350dp" />
+        android:layout_height="350dp">
+
+        <fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard
+            android:id="@+id/videoplayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/tv_circle_list_state"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="260dp"
+            android:background="@drawable/ic_userinfo_trans_bg"
+            android:gravity="center"
+            android:text="限时公开中"
+            android:textColor="@color/white" />
+        <Button
+            android:id="@+id/btn_circle_list_state"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:background="@color/transparent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -196,9 +218,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_circle_review"
-        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"></android.support.v7.widget.RecyclerView>
 
     <TextView
         android:layout_width="match_parent"

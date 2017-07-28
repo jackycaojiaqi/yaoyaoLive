@@ -184,12 +184,12 @@ public class dataUtils {
     }
 
     public static String getInterval(long s1, long s2) {
-        int days = (int) ((s2 - s1) / ( 3600 * 24));
+        int days = (int) ((s2 - s1) / (3600 * 24));
         if (days <= 0) {
-            long betweenDays = (long) ((s2 - s1) / (60 * 60 * 24) + 0.5);
-            return String.valueOf(betweenDays)+"小时";
+            long betweenDays = (long) ((s2 - s1) / (60 * 60 ));
+            return String.valueOf(betweenDays) + "小时";
         } else {
-            return String.valueOf(days)+"天";
+            return String.valueOf(days) + "天";
         }
 
 

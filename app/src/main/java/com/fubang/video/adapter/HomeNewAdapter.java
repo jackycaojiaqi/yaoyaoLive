@@ -49,7 +49,7 @@ public class HomeNewAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.NewList
                 .setText(R.id.tv_item_home_online_city,item.getCcity()+"")
                 .setText(R.id.tv_item_home_online_name,item.getCalias()+"");
         if (!StringUtil.isEmptyandnull(item.getCphoto())){
-            ImagUtil.setwithbg(mContext, AppConstant.BASE_IMG_URL+item.getCphoto(),helper.getView(R.id.iv_item_home_online_bg));
+            ImagUtil.setwithbg(mContext.getApplicationContext(), AppConstant.BASE_IMG_URL+item.getCphoto(),helper.getView(R.id.iv_item_home_online_bg));
         }
         if (item.getNgender().equals("0")){
            helper.setImageResource(R.id.iv_item_home_online_gender,R.drawable.ic_register_male_checked);

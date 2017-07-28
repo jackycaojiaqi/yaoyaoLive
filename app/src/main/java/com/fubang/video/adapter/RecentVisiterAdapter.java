@@ -48,6 +48,6 @@ public class RecentVisiterAdapter extends BaseQuickAdapter<BaseInfoEntity.InfoBe
     @Override
     protected void convert(BaseViewHolder helper, BaseInfoEntity.InfoBean.RecentBean item) {
         if (!StringUtil.isEmptyandnull(item.getCphoto()))
-            ImagUtil.setnoerror(mContext, AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_item_recent_pic));
+            ImagUtil.setnoerror(mContext.getApplicationContext(), AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_item_recent_pic));
     }
 }

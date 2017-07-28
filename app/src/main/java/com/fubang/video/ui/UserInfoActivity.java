@@ -102,8 +102,14 @@ public class UserInfoActivity extends BaseActivity {
         initdate();
     }
 
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+    }
+
     private void initview() {
-        back(ivUserinfoBack);
+        ivUserinfoBack.setVisibility(View.VISIBLE);
         user_id = getIntent().getStringExtra(AppConstant.USERID);
         type = getIntent().getIntExtra(AppConstant.TYPE, 0);
         if (type == 1) {
@@ -161,7 +167,7 @@ public class UserInfoActivity extends BaseActivity {
 
                             }
                             tvUserinfoPrice.setText(response.body().getInfo().getNprice() + "金币/分钟");//每分钟价格
-                            ImagUtil.set(context, AppConstant.BASE_IMG_URL + response.body().getInfo().getCvideophoto(), ivUserinfoSelfVideo);//个人介绍视频图片
+                            ImagUtil.set(getApplicationContext(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCvideophoto(), ivUserinfoSelfVideo);//个人介绍视频图片
                             tvUserinfoSelfSign.setText(response.body().getInfo().getCidiograph() + " ");//签名
                             //处理最近观看的用户列表
                             final List<BaseInfoEntity.InfoBean.RecentBean> list_recent = response.body().getInfo().getRecent();
@@ -224,6 +230,10 @@ public class UserInfoActivity extends BaseActivity {
                 intent = new Intent(context, CircleListActivity.class);
                 intent.putExtra(AppConstant.USERID, user_id);
                 startActivity(intent);
+                break;
+            case R.id.iv_userinfo_back:
+                ImagUtil.destroy(context);
+                finish();
                 break;
         }
     }
