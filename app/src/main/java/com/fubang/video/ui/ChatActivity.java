@@ -97,7 +97,6 @@ public class ChatActivity extends BaseActivity {
     public void callVideo(String msg) {
         KLog.e("callVideo");
         callVideo();
-
     }
     @Subscriber(tag = "sendTextMessage")
     public void sendTextMessage(SelfMessageCallBack callBack) {

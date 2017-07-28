@@ -457,6 +457,7 @@ public class DemoHelper {
                 Intent intent = new Intent(appContext, ChatActivity.class);
                 // open calling activity if there is call
                 if (isVideoCalling) {
+                    intent.putExtra(AppConstant.OBJECT,"no_timer");
                     intent = new Intent(appContext, VideoCallActivity.class);
                 } else if (isVoiceCalling) {
                     intent = new Intent(appContext, VoiceCallActivity.class);

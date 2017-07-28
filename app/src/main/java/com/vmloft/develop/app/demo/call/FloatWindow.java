@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.hyphenate.chat.EMCallStateChangeListener;
 import com.hyphenate.chat.EMClient;
@@ -102,6 +103,7 @@ public class FloatWindow {
                 if (CallManager.getInstance().getCallType() == CallManager.CallType.VOICE) {
                     intent.setClass(context, VoiceCallActivity.class);
                 } else {
+                    intent.putExtra(AppConstant.OBJECT,"no_timer");
                     intent.setClass(context, VideoCallActivity.class);
                 }
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -244,7 +244,6 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                             } else {
                                 has_video = false;
                             }
-
                         } else {
                             startActivity(new Intent(context, LoginActivity.class));
                         }

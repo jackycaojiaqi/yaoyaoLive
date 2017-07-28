@@ -13,6 +13,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.support.v7.app.NotificationCompat;
 
+import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.hyphenate.chat.EMCallManager;
 import com.hyphenate.chat.EMClient;
@@ -158,7 +159,7 @@ public class CallManager {
         }
         switch (endType) {
             case NORMAL: // 正常结束通话
-                content = String.valueOf(getCallTime());
+                content = String.valueOf("通话时长"+getCallTime()+"秒");
                 break;
             case CANCEL: // 取消
                 content = context.getString(R.string.call_cancel);
@@ -201,7 +202,7 @@ public class CallManager {
             message.setAttribute("attr_call_voice", true);
         }
         message.setUnread(false);
-        // 调用sdk的保存消息方法
+//         调用sdk的保存消息方法
         EMClient.getInstance().chatManager().saveMessage(message);
     }
 
@@ -519,6 +520,7 @@ public class CallManager {
         builder.setContentTitle(context.getString(R.string.app_name));
         Intent intent = new Intent();
         if (callType == CallType.VIDEO) {
+            intent.putExtra(AppConstant.OBJECT,"no_timer");
             intent.setClass(context, VideoCallActivity.class);
         } else {
             intent.setClass(context, VoiceCallActivity.class);

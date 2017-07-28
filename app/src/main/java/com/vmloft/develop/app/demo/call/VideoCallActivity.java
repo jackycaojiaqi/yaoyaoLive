@@ -28,6 +28,7 @@ import com.fubang.video.adapter.GiftItemAdapter;
 import com.fubang.video.entity.GiftEntity;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.util.GiftUtil;
+import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.ToastUtil;
 import com.hyphenate.chat.EMCallManager;
 import com.hyphenate.chat.EMCallStateChangeListener;
@@ -121,7 +122,13 @@ public class VideoCallActivity extends CallActivity {
         ButterKnife.bind(this);
 
         initView();
-        timer.schedule(task, 1000, 1000);       // timeTask
+        String is_timer = getIntent().getStringExtra(AppConstant.OBJECT);
+        KLog.e(is_timer);
+        if (StringUtil.isEmptyandnull(is_timer)) {
+            timer.schedule(task, 1000, 1000);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     Timer timer = new Timer();
@@ -129,16 +136,18 @@ public class VideoCallActivity extends CallActivity {
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
-
             runOnUiThread(new Runnable() {      // UI thread
                 @Override
                 public void run() {
                     recLen = recLen - 5;
                     progressBar.setProgress(recLen);
                     if (recLen < 0) {
-                        timer.cancel();
+                        if (timer != null) {
+                            timer.cancel();
+                            timer = null;
+                        }
                         progressBar.setVisibility(View.GONE);
-                        ToastUtil.show(context, "对方没有接听，请稍后再拨");
+                        KLog.e("test_timer");
                         endCall();
                     }
                 }
@@ -188,7 +197,6 @@ public class VideoCallActivity extends CallActivity {
             // 通话已接通，修改画面显示
             onCallSurface();
         }
-
         try {
             // 设置默认摄像头为前置
             EMClient.getInstance().callManager().setCameraFacing(Camera.CameraInfo.CAMERA_FACING_FRONT);
@@ -250,7 +258,10 @@ public class VideoCallActivity extends CallActivity {
             case R.id.fab_answer_call:
                 // 接听通话
                 answerCall();
-                timer.cancel();
+                if (timer != null) {
+                    timer.cancel();
+                    timer = null;
+                }
                 progressBar.setVisibility(View.GONE);
                 break;
             case R.id.iv_video_call_gift:
@@ -547,6 +558,11 @@ public class VideoCallActivity extends CallActivity {
             case ACCEPTED: // 通话已接通
                 VMLog.i("通话已接通");
                 callStateView.setText(R.string.call_accepted);
+                if (timer != null) {
+                    timer.cancel();
+                    timer = null;
+                }
+                progressBar.setVisibility(View.GONE);
                 // 通话接通，更新界面 UI 显示
                 onCallSurface();
                 break;

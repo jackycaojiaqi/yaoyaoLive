@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.fubang.video.AppConstant;
 import com.hyphenate.chat.EMClient;
 
 /**
@@ -35,6 +36,7 @@ public class CallReceiver extends BroadcastReceiver {
         if (callType.equals("video")) {
             // 设置当前通话类型为视频通话
             CallManager.getInstance().setCallType(CallManager.CallType.VIDEO);
+            callIntent.putExtra(AppConstant.OBJECT,"no_timer");
             callIntent.setClass(context, VideoCallActivity.class);
         } else if (callType.equals("voice")) {
             // 设置当前通话类型为语音通话

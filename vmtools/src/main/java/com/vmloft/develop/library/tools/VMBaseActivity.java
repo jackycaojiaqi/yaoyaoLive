@@ -11,7 +11,9 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
 import com.vmloft.develop.library.tools.utils.VMLog;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +29,8 @@ public class VMBaseActivity extends AppCompatActivity {
     // 当前界面的上下文菜单对象
     protected VMBaseActivity activity;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VMLog.i("%s onCreate", className);
         activity = this;
@@ -35,32 +38,38 @@ public class VMBaseActivity extends AppCompatActivity {
         //activity.getWindow().setBackgroundDrawableResource(R.color.vm_transparent);
     }
 
-    @Override protected void onRestart() {
+    @Override
+    protected void onRestart() {
         super.onRestart();
         VMLog.i("%s onRestart", className);
     }
 
-    @Override protected void onStart() {
+    @Override
+    protected void onStart() {
         super.onStart();
         VMLog.i("%s onStart", className);
     }
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
         VMLog.i("%s onResume", className);
     }
 
-    @Override protected void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         VMLog.i("%s onPause", className);
     }
 
-    @Override protected void onStop() {
+    @Override
+    protected void onStop() {
         super.onStop();
         VMLog.i("%s onStop", className);
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         VMLog.i("%s onDestroy", className);
         activity = null;
@@ -71,7 +80,7 @@ public class VMBaseActivity extends AppCompatActivity {
      * 基类定义并实现的方法，为了以后方便扩展
      *
      * @param activity 当前 Activity 对象
-     * @param intent 界面跳转 Intent 实例对象
+     * @param intent   界面跳转 Intent 实例对象
      */
     public void onStartActivity(Activity activity, Intent intent) {
         //Pair<View, String>[] pairs = createSafeTransitionParticipants(this, true);
@@ -113,7 +122,7 @@ public class VMBaseActivity extends AppCompatActivity {
      * 创建界面切换共享元素数组
      */
     public static Pair<View, String>[] createSafeTransitionParticipants(@NonNull Activity activity,
-            boolean includeStatusBar, @Nullable Pair... otherParticipants) {
+                                                                        boolean includeStatusBar, @Nullable Pair... otherParticipants) {
         // Avoid system UI glitches as described here:
         // https://plus.google.com/+AlexLockwood/posts/RPtwZ5nNebb
         View decor = activity.getWindow().getDecorView();
@@ -142,6 +151,7 @@ public class VMBaseActivity extends AppCompatActivity {
      * 自定义 Activity 结束方法
      */
     protected void onFinish() {
-        activity.finish();
+        if (activity != null)
+            activity.finish();
     }
 }
