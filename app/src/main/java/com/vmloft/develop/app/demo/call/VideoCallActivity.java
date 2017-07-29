@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +34,7 @@ import com.hyphenate.chat.EMCallStateChangeListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.media.EMCallSurfaceView;
+import com.xlg.android.room.RoomMain;
 import com.socks.library.KLog;
 import com.superrtc.sdk.VideoView;
 import com.vmloft.develop.library.tools.utils.VMDimenUtil;
@@ -113,6 +113,7 @@ public class VideoCallActivity extends CallActivity {
     ProgressBar progressBar;
 
     private Context context;
+    private RoomMain roomMain = new RoomMain();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +130,7 @@ public class VideoCallActivity extends CallActivity {
         } else {
             progressBar.setVisibility(View.GONE);
         }
+
     }
 
     Timer timer = new Timer();
@@ -705,7 +707,7 @@ public class VideoCallActivity extends CallActivity {
 
     @Override
     protected void onUserLeaveHint() {
-        //super.onUserLeaveHint();
+//        super.onUserLeaveHint();
         exitFullScreen();
     }
 

@@ -123,4 +123,5 @@ dependencies {
     compile 'fm.jiecao:jiecaovideoplayer:5.7'
     compile project(':giftlibrary')
     compile files('libs/alipaySdk-20170710.jar')
+    compile 'com.skyfishjy.ripplebackground:library:1.0.1'
 }

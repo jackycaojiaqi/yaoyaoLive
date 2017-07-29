@@ -40,6 +40,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
+import com.skyfishjy.library.RippleBackground;
 import com.vmloft.develop.app.demo.call.CallManager;
 import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.app.demo.call.VoiceCallActivity;
@@ -91,6 +92,9 @@ public class HomeFragment extends BaseFragment {
     TextView tvHomeAction4;
     @BindView(R.id.rv_home_action4)
     RecyclerView rvHomeAction4;
+    @BindView(R.id.ripple_view)
+    RippleBackground rippleView;
+
     private String username;
     private String password;
     private String contacts;
@@ -124,6 +128,7 @@ public class HomeFragment extends BaseFragment {
                 .execute(new JsonCallBack<HomeEntity>(HomeEntity.class) {
                     @Override
                     public void onSuccess(Response<HomeEntity> response) {
+                        SwipeRefreshView.setRefreshing(false);
                         if (response.body().getStatus().equals("success")) {
                             list_action1 = response.body().getInfo().getOnline_list();
                             list_action2 = response.body().getInfo().getTuhao_list();
@@ -247,6 +252,7 @@ public class HomeFragment extends BaseFragment {
             }
         });
         SwipeRefreshView.setProgressViewOffset(true, 150, 250);
+
     }
 
 
@@ -294,11 +300,19 @@ public class HomeFragment extends BaseFragment {
         unbinder.unbind();
     }
 
+    private boolean is_call_start = false;
+
     @OnClick({R.id.tv_home_random_call, R.id.tv_home_action1, R.id.tv_home_action2, R.id.tv_home_action3, R.id.tv_home_action4,
             R.id.iv_action})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_home_random_call:
+                if (!is_call_start) {
+                    rippleView.startRippleAnimation();
+                } else {
+                    rippleView.stopRippleAnimation();
+                }
+                is_call_start = !is_call_start;
                 break;
             case R.id.tv_home_action1:
                 break;

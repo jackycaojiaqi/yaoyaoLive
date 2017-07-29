@@ -14,15 +14,12 @@ import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.alibaba.sdk.android.common.utils.DateUtil;
 import com.alibaba.sdk.android.vod.upload.VODUploadCallback;
 import com.alibaba.sdk.android.vod.upload.VODUploadClient;
 import com.alibaba.sdk.android.vod.upload.VODUploadClientImpl;
@@ -32,6 +29,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.TimePickerView;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
@@ -43,21 +41,15 @@ import com.fubang.video.entity.UploadPhotoEntity;
 import com.fubang.video.util.DialogFactory;
 import com.fubang.video.util.FileUtils;
 import com.fubang.video.util.GetPathFromUri4kitkat;
-import com.fubang.video.util.GlideImageLoader;
 import com.fubang.video.util.ImagUtil;
-import com.fubang.video.util.LocationUtil;
-import com.fubang.video.util.StartUtil;
 import com.fubang.video.util.StringUtil;
-import com.fubang.video.util.SystemStatusManager;
 import com.fubang.video.util.ToastUtil;
 import com.fubang.video.util.dataUtils;
 import com.jph.takephoto.app.TakePhoto;
-import com.jph.takephoto.app.TakePhotoActivity;
 import com.jph.takephoto.app.TakePhotoImpl;
 import com.jph.takephoto.model.CropOptions;
 import com.jph.takephoto.model.InvokeParam;
 import com.jph.takephoto.model.TContextWrap;
-import com.jph.takephoto.model.TImage;
 import com.jph.takephoto.model.TResult;
 import com.jph.takephoto.permission.InvokeListener;
 import com.jph.takephoto.permission.PermissionManager;
@@ -125,10 +117,10 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
     TextView tvEditinfoTab;
     @BindView(R.id.rll_editinfo_tab)
     RelativeLayout rllEditinfoTab;
-    @BindView(R.id.tv_editinfo_weichat)
-    TextView tvEditinfoWeichat;
-    @BindView(R.id.rll_editinfo_weichat)
-    RelativeLayout rllEditinfoWeichat;
+    @BindView(R.id.tv_editinfo_nk)
+    TextView tvEditinfoNk;
+    @BindView(R.id.rll_editinfo_nk)
+    RelativeLayout rllEditinfoNk;
     private String[] imagwall;
     private List<String> list_imagwall = new ArrayList<>();
     private boolean has_video = false;
@@ -144,6 +136,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
     private String pic_name;
     private String picwall_name;
     private int pic_type = 0;   // 1 头像  2 3 4 5  背景墙  10 生日    20 地址定位
+    private int extinfo_type = 0;
     private VODUploadClient uploader;
     private final int GET_VIDEP_FILE = 0X12;
     private Context context;
@@ -178,9 +171,32 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
         super.onSaveInstanceState(outState);
     }
 
+    private List<String> list_nk = new ArrayList<>();
+    private List<String> list_nk_name = new ArrayList<>();
     private void initview() {
         back(ivBack);
         tvTitle.setText("编辑信息");
+        list_nk.clear();
+        list_nk.add("2");
+        list_nk.add("4");
+        list_nk.add("6");
+        list_nk.add("8");
+        list_nk.add("10");
+        list_nk.add("12");
+        list_nk.add("14");
+        list_nk.add("16");
+        list_nk.add("18");
+        list_nk.add("20");
+        list_nk_name.add("2金币/分钟");
+        list_nk_name.add("4金币/分钟");
+        list_nk_name.add("6金币/分钟");
+        list_nk_name.add("8金币/分钟");
+        list_nk_name.add("10金币/分钟");
+        list_nk_name.add("12金币/分钟");
+        list_nk_name.add("14金币/分钟");
+        list_nk_name.add("16金币/分钟");
+        list_nk_name.add("18金币/分钟");
+        list_nk_name.add("20金币/分钟");
     }
 
     private void initdate() {
@@ -195,9 +211,13 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                         if (response.body().getStatus().equals("success")) {
                             if (response.body().getInfo().getNgender().equals("0")) {//性别
                                 tvEditinfoGender.setText("男");
+                                rllEditinfoNk.setVisibility(View.GONE);
                             } else if (response.body().getInfo().getNgender().equals("1")) {
                                 tvEditinfoGender.setText("女");
+                                rllEditinfoNk.setVisibility(View.VISIBLE);
                             }
+                            //每分钟金币数
+                            tvEditinfoNk.setText(response.body().getInfo().getNprice() + "金币/分钟");
                             tvEditinfoSign.setText(response.body().getInfo().getCidiograph() + " ");//签名
                             tvEditinfoName.setText(response.body().getInfo().getCalias() + " ");//姓名
                             tvEditinfoAddress.setText(response.body().getInfo().getCcity() + " ");//城市
@@ -281,7 +301,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
     @OnClick({R.id.iv_editinfo_pic1, R.id.iv_editinfo_pic2, R.id.iv_editinfo_pic3, R.id.iv_editinfo_pic4,
             R.id.iv_editinfo_pic5, R.id.iv_editinfo_video, R.id.rll_editinfo_sign, R.id.rll_editinfo_name,
             R.id.rll_editinfo_address, R.id.rll_editinfo_birth, R.id.rll_editinfo_tab,
-            R.id.iv_editinfo_video_play})
+            R.id.iv_editinfo_video_play, R.id.rll_editinfo_nk})
     public void onViewClicked(View view) {
         Intent intent;
         switch (view.getId()) {
@@ -413,6 +433,19 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                             .show();
                 }
 
+                break;
+            case R.id.rll_editinfo_nk:
+                extinfo_type = 1;
+                //条件选择器
+                OptionsPickerView pvOptions = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+                    @Override
+                    public void onOptionsSelect(int options1, int option2, int options3, View v) {
+                        tvEditinfoNk.setText(list_nk.get(options1) + "金币/分钟");
+                        update_et_to_server(list_nk.get(options1));
+                    }
+                }).build();
+                pvOptions.setPicker(list_nk_name);
+                pvOptions.show();
                 break;
         }
     }
@@ -793,7 +826,11 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
             map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
             map.put("cprovince", String.valueOf(VMSPUtil.get(context, AppConstant.PRIVINCE, "")));
             map.put("cdistrict", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
-        } else {
+        }  else if (pic_type == 30) {
+            map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
+            map.put("cprovince", String.valueOf(VMSPUtil.get(context, AppConstant.PRIVINCE, "")));
+            map.put("cdistrict", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
+        }else {
             map.put("cphotowall", pic_or_wall_name);
         }
         OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_INFO)
@@ -820,12 +857,18 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
     /**
      * 更新用户扩展
      */
-    private void update_et_to_server() {
+    private void update_et_to_server(String msg) {
         Map<String, String> map = new HashMap<>();
-        map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
-        map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
-        map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
-        map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
+        if (extinfo_type ==0){
+            map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
+            map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
+            map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
+            map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
+        }else if (extinfo_type ==1){
+            map.put("nprice", msg);
+        }
+
+
         OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_EXTINFO)
                 .tag(this)
                 .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
@@ -888,13 +931,14 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
+            extinfo_type = 0;
             KLog.e(aMapLocation.getCity());
             VMSPUtil.put(context, AppConstant.CITY, aMapLocation.getCity());
             VMSPUtil.put(context, AppConstant.PRIVINCE, aMapLocation.getProvince());
             VMSPUtil.put(context, AppConstant.ADDRDETAIL, aMapLocation.getAddress());
             VMSPUtil.put(context, AppConstant.LAT, aMapLocation.getLatitude());
             VMSPUtil.put(context, AppConstant.LON, aMapLocation.getLongitude());
-            update_et_to_server();
+            update_et_to_server("");
             update_imag_to_server("");
         }
     }

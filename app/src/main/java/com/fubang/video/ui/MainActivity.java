@@ -41,8 +41,8 @@ import com.hyphenate.EMCallBack;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
-import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.exceptions.HyphenateException;
+import com.xlg.android.room.RoomMain;
 import com.socks.library.KLog;
 import com.umeng.analytics.MobclickAgent;
 import com.vmloft.develop.library.tools.utils.VMLog;
@@ -101,7 +101,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     private Context context;
     private String phone;
     private String password;
-
+    private RoomMain roomMain = new RoomMain();
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
@@ -134,6 +134,16 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
         //环信登录
         loginHX();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                roomMain.Start(12, StringUtil.getMD5("123456"), 13, "42.121.57.170", 11444);
+//                roomMain.Start(13, StringUtil.encodeMD5("123456"), 12, "42.121.57.170", 11444);
+            }
+        }).start();
+
+//        roomMain.getRoom().getChannel().SendLoginRequest();
     }
 
     private void loginHX() {

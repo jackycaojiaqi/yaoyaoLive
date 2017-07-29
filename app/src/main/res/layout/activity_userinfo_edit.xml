@@ -345,28 +345,28 @@
                 android:background="@color/gray_c" />
 
             <RelativeLayout
-                android:id="@+id/rll_editinfo_weichat"
+                android:id="@+id/rll_editinfo_nk"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:visibility="gone">
+               >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="微信号"
+                    android:text="每分钟金币"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv_editinfo_weichat"
+                    android:id="@+id/tv_editinfo_nk"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="25dp"
-                    android:text="请填写真实微信号（需审核）"
+                    android:text="10金币/分钟"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
