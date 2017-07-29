@@ -28,15 +28,18 @@ import com.alibaba.sdk.android.vod.upload.common.utils.StringUtil;
 import com.alibaba.sdk.android.vod.upload.model.UploadFileInfo;
 import com.alibaba.sdk.android.vod.upload.model.VodInfo;
 import com.fubang.video.AppConstant;
+import com.fubang.video.DemoHelper;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
+import com.fubang.video.entity.BaseInfoEntity;
 import com.fubang.video.entity.PublishUpLoadEntity;
 import com.fubang.video.entity.UploadPhotoEntity;
 import com.fubang.video.entity.VideoInfoEntity;
 import com.fubang.video.util.DialogFactory;
 import com.fubang.video.util.FileUtils;
 import com.fubang.video.util.GetPathFromUri4kitkat;
+import com.fubang.video.util.ImagUtil;
 import com.fubang.video.util.ToastUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
@@ -100,7 +103,9 @@ public class PublishCircleActivity extends BaseActivity {
         setContentView(R.layout.activity_publish_circle);
         ButterKnife.bind(this);
         initview();
+        initdate();
     }
+
 
     private void initview() {
         back(ivBack);
@@ -145,6 +150,29 @@ public class PublishCircleActivity extends BaseActivity {
         });
     }
 
+    private int money = 0;
+    private int gender = 0;
+
+    private void initdate() {
+        OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
+                .tag(this)
+                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                .execute(new JsonCallBack<BaseInfoEntity>(BaseInfoEntity.class) {
+                    @Override
+                    public void onSuccess(Response<BaseInfoEntity> response) {
+                        if (response.body().getStatus().equals("success")) {
+                            money = Integer.parseInt(response.body().getInfo().getNmoney());
+                            gender = Integer.parseInt(response.body().getInfo().getNgender());
+                        }
+                    }
+                    @Override
+                    public void onError(Response<BaseInfoEntity> response) {
+                        super.onError(response);
+                    }
+                });
+    }
+
     private final int GET_VIDEP_FILE = 0X12;
 
     @OnClick({R.id.tv_submit, R.id.iv_publish_add_video})
@@ -153,6 +181,16 @@ public class PublishCircleActivity extends BaseActivity {
             case R.id.tv_submit:
                 if (StringUtil.isEmpty(path)) {
                     ToastUtil.show(context, "请选择视频文件");
+                    return;
+                }
+                if (gender == 1) {
+                    if (money < 30) {
+                        ToastUtil.show(context, "女性发朋友圈需要30金币");
+                        return;
+                    }
+                }
+                if (com.fubang.video.util.StringUtil.isEmptyandnull(etPublishContent.getText().toString().trim())){
+                    ToastUtil.show(context, "请输入朋友圈内容");
                     return;
                 }
                 DialogFactory.showRequestDialog(context);
@@ -369,6 +407,9 @@ public class PublishCircleActivity extends BaseActivity {
                                             if (response.body().getStatus().equals("success")) {
                                                 DialogFactory.hideRequestDialog();
                                                 finish();
+                                            }else {
+                                                DialogFactory.hideRequestDialog();
+                                                ToastUtil.show(context,"发送朋友圈失败");
                                             }
                                         }
 
