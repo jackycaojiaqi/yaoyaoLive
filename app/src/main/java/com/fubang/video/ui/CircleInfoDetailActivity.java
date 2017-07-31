@@ -288,6 +288,8 @@ public class CircleInfoDetailActivity extends BaseActivity {
                         if (response.body().getStatus().equals("success")) {
                             initdate();
                             ToastUtil.show(context, "送鲜花成功");
+                        } else {
+                            ToastUtil.show(context, "送鲜花失败");
                         }
                     }
 

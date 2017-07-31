@@ -182,6 +182,10 @@ public class ChatFragment extends EaseChatFragment implements EaseChatFragmentHe
         if (!TextUtils.isEmpty(userName)) {
             message.setAttribute(AppConstant.USERNAME, userName);
         }
+        String userid = (String) VMSPUtil.get(getActivity(), AppConstant.USERID, "");
+        if (!TextUtils.isEmpty(userid)) {
+            message.setAttribute(AppConstant.USERID, userid);
+        }
     }
 
     @Override

@@ -5,6 +5,5 @@ package com.hyphenate.easeui.callback;
  */
 public interface SelfMessageCallBack {
     void success(String msg);
-
     void fail(String msg);
 }

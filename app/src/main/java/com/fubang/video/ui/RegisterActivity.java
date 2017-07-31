@@ -148,11 +148,11 @@ public class RegisterActivity extends TakePhotoActivity {
                                 if (response.body().getStatus().equals("success")) {
                                     //本地存数据
                                     VMSPUtil.put(context, AppConstant.TOKEN, response.body().getInfo().getCtoken());
-                                    VMSPUtil.put(context, AppConstant.PASSWORD, password);
                                     VMSPUtil.put(context, AppConstant.USERID, response.body().getInfo().getNuserid());
                                     VMSPUtil.put(context, AppConstant.GENDER, String.valueOf(gender));
                                     VMSPUtil.put(context, AppConstant.USERNAME, calias);
                                     VMSPUtil.put(context, AppConstant.USERPIC, AppConstant.BASE_IMG_URL + photo_name);
+                                    VMSPUtil.put(context, AppConstant.PASSWORD, password);
                                     VMSPUtil.put(context, AppConstant.PHONE, phone);
                                     //去登录
 
@@ -266,7 +266,7 @@ public class RegisterActivity extends TakePhotoActivity {
         KLog.e(images.size());
         if (images.size() > 0) {
             KLog.e(images.get(0).getOriginalPath());
-            ImagUtil.set(context, new File(images.get(0).getOriginalPath()), ivRegisterPic);
+
 //            Glide.with(context).load(new File(images.get(0).getOriginalPath())).fitCenter().into(ivRegisterPic);
             cphoto = images.get(0).getOriginalPath();
             //上传图片
@@ -280,6 +280,7 @@ public class RegisterActivity extends TakePhotoActivity {
                         public void onSuccess(Response<UploadPhotoEntity> response) {
                             if (response.body().getStatus().equals("success")) {
                                 photo_name = response.body().getInfo().getFilename();
+                                ImagUtil.setnoerror(context, AppConstant.BASE_IMG_URL + photo_name, ivRegisterPic);
                             } else {
                                 ToastUtil.show(context, "上传头像失败");
                             }

@@ -6,8 +6,12 @@ import com.fubang.video.util.StringUtil;
 import com.xlg.android.protocol.Header;
 import com.xlg.android.protocol.Hello;
 import com.xlg.android.protocol.KeepLiveRepuest;
+import com.xlg.android.protocol.KickoutUserInfo;
 import com.xlg.android.protocol.LogonRequest;
 import com.xlg.android.protocol.Message;
+import com.xlg.android.protocol.TradeGiftNotify;
+import com.xlg.android.protocol.TradeGiftRecord;
+import com.xlg.android.protocol.UserPayRequest;
 import com.xlg.android.utils.ByteBuffer;
 import com.socks.library.KLog;
 
@@ -87,7 +91,24 @@ public class RoomChannel implements ClientSocketHandler {
                     mHandler.onLoginRequest(obj.getInt(0));
                 }
                 break;
-
+                case Header.MessageType_mxpTradeGiftError:
+                    ByteBuffer obj = Message.DecodeBody(mBuffer);
+                    mHandler.onTradeGiftError(obj.getInt(0));
+                    break;
+                case Header.MessageType_mxpTradeGiftNotify:
+                    TradeGiftNotify tradeGiftNotify = new TradeGiftNotify();
+                    Message.DecodeObject(mBuffer, tradeGiftNotify);
+                    mHandler.onTradeGiftNotify(tradeGiftNotify);
+                    break;
+                case Header.MessageType_mxpUserPayResponse:
+                    ByteBuffer obj_pay = Message.DecodeBody(mBuffer);
+                    mHandler.onUserPayResponse(obj_pay.getInt(0));
+                    break;
+                case Header.MessageType_mxpKickoutUserNotify:
+                    KickoutUserInfo kickoutUserInfo = new KickoutUserInfo();
+                    Message.DecodeObject(mBuffer, kickoutUserInfo);
+                    mHandler.onKickOut(kickoutUserInfo);
+                    break;
                 default:
                     break;
             }
@@ -104,13 +125,19 @@ public class RoomChannel implements ClientSocketHandler {
     }
 
 
-    private void sendPack(Header head, Object obj) {
-        ByteBuffer buf = new ByteBuffer();
-        if (Message.EncodePack(buf, head, obj, false)) {
-            byte[] data = new byte[buf.size()];
-            buf.getBytes(data, 0, buf.size());
-            mSocket.Send(data);
-        }
+    private void sendPack(final Header head, final Object obj) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ByteBuffer buf = new ByteBuffer();
+                if (Message.EncodePack(buf, head, obj, false)) {
+                    byte[] data = new byte[buf.size()];
+                    buf.getBytes(data, 0, buf.size());
+                    mSocket.Send(data);
+                }
+            }
+        }).start();
+
     }
 
     // 发送Hello
@@ -141,7 +168,6 @@ public class RoomChannel implements ClientSocketHandler {
 
     // 发起登录房间请求
     public void SendLoginRequest() {
-        KLog.e("SendLoginRequest");
         Header head = new Header();
         LogonRequest obj = new LogonRequest();
         obj.setDeviceid(1);
@@ -153,6 +179,44 @@ public class RoomChannel implements ClientSocketHandler {
         // 构建消息头
         head.setVersion((byte) 1);
         head.setCmd1(Header.MessageType_mxpLogonRequest);
+        sendPack(head, obj);
+    }
+
+    // 发送礼物请求
+    public void SendGift(int gift_id, int num) {
+        Header head = new Header();
+        head.setVersion((byte) 1);
+        TradeGiftRecord obj = new TradeGiftRecord();
+        obj.setUserid(mUserID);
+        obj.setBuddyid(mBbddyId);
+        obj.setGiftid(gift_id);
+        obj.setAmount(num);
+        head.setCmd1(Header.MessageType_mxpTradeGiftRequest);
+        sendPack(head, obj);
+    }
+
+    // 发起预扣币消息
+    public void SendUserPayRequest(int money, int type) {
+        Header head = new Header();
+        head.setVersion((byte) 1);
+        UserPayRequest obj = new UserPayRequest();
+        obj.setUserid(mUserID);
+        obj.setBuddyid(mBbddyId);
+        obj.setType(type);//3代表聊天
+        obj.setMoney(money);//一条一毛钱
+        head.setCmd1(Header.MessageType_mxpUserPayRequest);
+        sendPack(head, obj);
+    }
+
+    // 退出登录消息
+    public void SendKickOut() {
+        Header head = new Header();
+        head.setVersion((byte) 1);
+        KickoutUserInfo obj = new KickoutUserInfo();
+        obj.setUserid(mUserID);
+        obj.setBuddyid(mUserID);
+        obj.setReasonid((short) 103);//101-重复登录被请出;102-超时;103-自己退出
+        head.setCmd1(Header.MessageType_mxpKickoutUserRequest);
         sendPack(head, obj);
     }
 }

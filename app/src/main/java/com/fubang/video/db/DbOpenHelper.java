@@ -28,6 +28,7 @@ public class DbOpenHelper extends SQLiteOpenHelper{
 			+ UserDao.TABLE_NAME + " ("
 			+ UserDao.COLUMN_NAME_NICK + " TEXT, "
 			+ UserDao.COLUMN_NAME_AVATAR + " TEXT, "
+			+ UserDao.COLUMN_NAME_USERID + " TEXT, "
 			+ UserDao.COLUMN_NAME_ID + " TEXT PRIMARY KEY);";
 	
 	private static final String INIVTE_MESSAGE_TABLE_CREATE = "CREATE TABLE "
@@ -83,8 +84,9 @@ public class DbOpenHelper extends SQLiteOpenHelper{
 		if(oldVersion < 2){
 		    db.execSQL("ALTER TABLE "+ UserDao.TABLE_NAME +" ADD COLUMN "+ 
 		            UserDao.COLUMN_NAME_AVATAR + " TEXT ;");
+			db.execSQL("ALTER TABLE "+ UserDao.TABLE_NAME +" ADD COLUMN "+
+					UserDao.COLUMN_NAME_USERID + " TEXT ;");
 		}
-		
 		if(oldVersion < 3){
 		    db.execSQL(CREATE_PREF_TABLE);
         }

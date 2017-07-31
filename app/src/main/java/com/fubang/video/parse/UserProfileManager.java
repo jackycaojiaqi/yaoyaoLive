@@ -34,6 +34,16 @@ public class UserProfileManager {
 
     private EaseUser currentUser;
 
+    private int userid;
+
+    public int getUserid() {
+        return userid;
+    }
+
+    public void setUserid(int userid) {
+        this.userid = userid;
+    }
+
     public UserProfileManager() {
     }
 

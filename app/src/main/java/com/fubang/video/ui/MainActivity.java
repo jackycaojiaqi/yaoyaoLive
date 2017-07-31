@@ -102,6 +102,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     private String phone;
     private String password;
     private RoomMain roomMain = new RoomMain();
+
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
@@ -135,20 +136,12 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         //环信登录
         loginHX();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                roomMain.Start(12, StringUtil.getMD5("123456"), 13, "42.121.57.170", 11444);
-//                roomMain.Start(13, StringUtil.encodeMD5("123456"), 12, "42.121.57.170", 11444);
-            }
-        }).start();
-
-//        roomMain.getRoom().getChannel().SendLoginRequest();
     }
 
     private void loginHX() {
         phone = String.valueOf(VMSPUtil.get(context, AppConstant.PHONE, ""));
         password = String.valueOf(VMSPUtil.get(context, AppConstant.PASSWORD, ""));
+        KLog.e(phone+" "+password);
         if (phone.isEmpty() || password.isEmpty()) {
             ToastUtil.show(context, "username or password null");
             return;
@@ -161,6 +154,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
                 DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(context, AppConstant.USERPIC, "")));
 //                DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName("小新");
 //                DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar("https://imgsa.baidu.com/news/q%3D100/sign=0e6bf447c9cec3fd8d3ea375e689d4b6/0b55b319ebc4b745f4d0be9dc5fc1e178b8215f0.jpg");
+                DemoHelper.getInstance().getUserProfileManager().getCurrentUserInfo().setUserid((String) VMSPUtil.get(context, AppConstant.USERID, ""));
                 DemoHelper.getInstance().setCurrentUserName(String.valueOf(VMSPUtil.get(context, AppConstant.PHONE, "")));
                 KLog.e(String.valueOf(VMSPUtil.get(context, AppConstant.USERNAME, "")));
                 KLog.e(String.valueOf(VMSPUtil.get(context, AppConstant.USERPIC, "")));

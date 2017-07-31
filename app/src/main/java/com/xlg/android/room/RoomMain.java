@@ -1,5 +1,7 @@
 package com.xlg.android.room;
 
+import com.socks.library.KLog;
+
 public class RoomMain {
     private MyRoom room;
 
@@ -22,7 +24,7 @@ public class RoomMain {
         room.getChannel().setUserPwd(userPwd);
         room.getChannel().setmBbddyId(BbddyId);
         room.getChannel().Connect(ip, port);
-
+        KLog.e(userId+" "+userPwd+" "+BbddyId+" "+ip+port);
         try {
             for (int i = 0; true; i++) {
                 // 暂停10秒

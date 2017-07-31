@@ -1,8 +1,10 @@
 package com.fubang.video.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -11,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +73,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kr.co.namee.permissiongen.PermissionGen;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 /**
  * Created by jacky on 2017/7/18.
@@ -173,6 +179,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
 
     private List<String> list_nk = new ArrayList<>();
     private List<String> list_nk_name = new ArrayList<>();
+
     private void initview() {
         back(ivBack);
         tvTitle.setText("编辑信息");
@@ -197,6 +204,14 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
         list_nk_name.add("16金币/分钟");
         list_nk_name.add("18金币/分钟");
         list_nk_name.add("20金币/分钟");
+        //获取权限
+        if (ContextCompat.checkSelfPermission(UserinfoEditActivity.this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            PermissionGen.with(UserinfoEditActivity.this)
+                    .addRequestCode(200)
+                    .permissions(
+                            Manifest.permission.ACCESS_COARSE_LOCATION)
+                    .request();
+        }
     }
 
     private void initdate() {
@@ -293,7 +308,6 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
         // 在定位结束后，在合适的生命周期调用onDestroy()方法
         // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
         //启动定位
-
     }
 
     private int age = 18;
@@ -826,11 +840,11 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
             map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
             map.put("cprovince", String.valueOf(VMSPUtil.get(context, AppConstant.PRIVINCE, "")));
             map.put("cdistrict", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
-        }  else if (pic_type == 30) {
+        } else if (pic_type == 30) {
             map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
             map.put("cprovince", String.valueOf(VMSPUtil.get(context, AppConstant.PRIVINCE, "")));
             map.put("cdistrict", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
-        }else {
+        } else {
             map.put("cphotowall", pic_or_wall_name);
         }
         OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_INFO)
@@ -859,12 +873,12 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
      */
     private void update_et_to_server(String msg) {
         Map<String, String> map = new HashMap<>();
-        if (extinfo_type ==0){
+        if (extinfo_type == 0) {
             map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
             map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
             map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
             map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
-        }else if (extinfo_type ==1){
+        } else if (extinfo_type == 1) {
             map.put("nprice", msg);
         }
 
@@ -933,6 +947,10 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
         if (aMapLocation != null) {
             extinfo_type = 0;
             KLog.e(aMapLocation.getCity());
+            if (StringUtil.isEmptyandnull(aMapLocation.getCity())) {
+                ToastUtil.show(context, "定位失败");
+                return;
+            }
             VMSPUtil.put(context, AppConstant.CITY, aMapLocation.getCity());
             VMSPUtil.put(context, AppConstant.PRIVINCE, aMapLocation.getProvince());
             VMSPUtil.put(context, AppConstant.ADDRDETAIL, aMapLocation.getAddress());

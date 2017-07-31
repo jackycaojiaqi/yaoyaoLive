@@ -36,11 +36,11 @@ public class UserPayRequest {
         this.money = money;
     }
 
-    public int getAmount() {
+    public int getType() {
         return type;
     }
 
-    public void setAmount(int type) {
+    public void setType(int type) {
         this.type = type;
     }
 }

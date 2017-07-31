@@ -10,6 +10,9 @@ public class AppConstant {
     public static final String BASE_IMG_URL = "http://121.40.144.9:888/upload_pic/";//图片服务器前缀地址
     public static final String BASE_DOWNLOAD_MUSIC = "http://120.26.127.210:333/mp3_ge/";//音乐下载链接前缀
     public static final String BASE_DOWNLOAD_LRC = "http://120.26.127.210:333/mp3_lrc/";//音乐下载链接前缀
+    public static final String BASE_CONNECT_IP = "42.121.57.170";//音乐下载链接前缀
+    public static final int BASE_CONNECT_PORT = 11444;//音乐下载链接前缀
+
     public static final String USERNAME = "username";
     public static final String USERPIC = "userpic";
     public static final String OBJECT = "onject";
@@ -39,6 +42,8 @@ public class AppConstant {
     public static final String URL_CHECK_REG = "/index.php/LineApp/check_reg";//用户注册查询是否存在
     public static final String URL_LOGIN = "/index.php/LineApp/login";//用户登录
     public static final String URL_REGISTER = "/index.php/LineApp/reg";//用户注册
+    public static final String URL_UPDATE_PASSWORD = "/index.php/LineApp/update_password";//用户修改密码
+
 
     public static final String URL_BASE_INFO = "/index.php/LineApp/base_info";//获取用户基本信息
     public static final String URL_UPLOAD_PHOTO = "/index.php/LineApp/upload_pic";//上传图片和头像

@@ -35,8 +35,8 @@ public class WelcomeAtivity extends BaseActivity {
                     startActivity(new Intent(context, MainActivity.class));
                     finish();
                 }else {
-//                    Intent intent = new Intent(context,LoginPasswordActivity.class);
-//                    intent.putExtra(AppConstant.USERID,"15867083398");
+//                    Intent intent = new Intent(context,ForgetPasswordActivity.class);
+//                    intent.putExtra(AppConstant.PHONE,"15867083390");
 //                    startActivity(intent);
 //                    finish();
                     startActivity(new Intent(context, LoginActivity.class));

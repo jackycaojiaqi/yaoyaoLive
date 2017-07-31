@@ -2,8 +2,6 @@ package com.fubang.video.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -14,27 +12,29 @@ import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.adapter.GiftItemAdapter;
-import com.fubang.video.adapter.HomeLifeAdapter;
 import com.fubang.video.base.BaseActivity;
+import com.fubang.video.db.UserDao;
 import com.fubang.video.entity.GiftEntity;
 import com.fubang.video.ui.fragment.ChatFragment;
 import com.fubang.video.util.GiftUtil;
+import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.ToastUtil;
-import com.fubang.video.widget.DividerItemDecoration;
 import com.hyphenate.easeui.callback.SelfMessageCallBack;
+import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.ui.EaseChatFragment;
-import com.hyphenate.easeui.widget.EaseTitleBar;
 import com.hyphenate.util.EasyUtils;
 import com.socks.library.KLog;
 import com.vmloft.develop.app.demo.call.CallManager;
 import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
+import com.xlg.android.protocol.TradeGiftNotify;
+import com.xlg.android.room.RoomMain;
 
 import org.dync.giftlibrary.widget.GiftControl;
 import org.dync.giftlibrary.widget.GiftFrameLayout;
@@ -44,6 +44,7 @@ import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jacky on 2017/7/18.
@@ -51,7 +52,8 @@ import java.util.List;
 public class ChatActivity extends BaseActivity {
     public static ChatActivity activityInstance;
     private EaseChatFragment chatFragment;
-    String toChatUsername;
+    private String toChatUserPhone;
+    private String toChatUserNick;
     private PopupWindow pop_gift;
     private FrameLayout frameLayout;
     private BaseQuickAdapter adapter_gift;
@@ -59,6 +61,7 @@ public class ChatActivity extends BaseActivity {
     private GiftFrameLayout giftFrameLayout1;
     private GiftFrameLayout giftFrameLayout2;
     private GiftControl giftControl;
+    private RoomMain roomMain = new RoomMain();
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -66,8 +69,11 @@ public class ChatActivity extends BaseActivity {
         setContentView(R.layout.em_activity_chat);
         activityInstance = this;
         //get user id or group id
-        toChatUsername = getIntent().getExtras().getString("userId");
-
+        toChatUserPhone = getIntent().getExtras().getString("userId");
+        UserDao dao = new UserDao(APP.getContext());
+        Map<String, EaseUser> users = dao.getContactList();
+        final EaseUser user = users.get(toChatUserPhone);
+        toChatUserNick = user.getNick();
         //use EaseChatFratFragment
         chatFragment = new ChatFragment();
         //pass parameters to chat fragment
@@ -79,30 +85,112 @@ public class ChatActivity extends BaseActivity {
         giftFrameLayout1 = (GiftFrameLayout) findViewById(R.id.gift_layout1);
         giftFrameLayout2 = (GiftFrameLayout) findViewById(R.id.gift_layout2);
         giftControl = new GiftControl(giftFrameLayout1, giftFrameLayout2);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                roomMain.Start(Integer.parseInt((String) VMSPUtil.get(context, AppConstant.USERID, "0")),
+                        StringUtil.getMD5((String) VMSPUtil.get(context, AppConstant.PASSWORD, "0")),
+                        Integer.parseInt(user.getUserid()), AppConstant.BASE_CONNECT_IP, AppConstant.BASE_CONNECT_PORT);
+//                roomMain.Start(13, StringUtil.encodeMD5("123456"), 12, "42.121.57.170", 11444);
+            }
+        }).start();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         activityInstance = null;
+        roomMain.getRoom().getChannel().SendKickOut();
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
+    /**
+     * 登录回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "chat_login_msg")
+    public void chat_login_msg(int msg) {
+        if (msg == 0) {
+            KLog.e("登陆成功");
+        } else if (msg == 404) {
+            KLog.e("数据库操作失败");
+        } else if (msg == 405) {
+            KLog.e("用户名或密码错误");
+        }
+    }
+
+    /**
+     * 礼物弹窗回调
+     *
+     * @param msg
+     */
     @Subscriber(tag = "showPop")
     public void showPop(String msg) {
         KLog.e("showPop");
         showPopupWindow(giftFrameLayout2);
     }
+
+    /**
+     * 送礼物失败回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "onTradeGiftError")
+    public void onTradeGiftError(int msg) {
+        if (msg == 504) {
+            ToastUtil.show(context, "用户金币不足");
+        } else if (msg == 501) {
+            ToastUtil.show(context, "礼物未维护");
+        } else if (msg == 404) {
+            ToastUtil.show(context, "数据库操作失败");
+        }
+    }
+
+    /**
+     * 送礼物成功
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "onTradeGiftNotify")
+    public void onTradeGiftNotify(TradeGiftNotify obj) {
+        giftControl.loadGift(new GiftModel(String.valueOf(gift_id), "送出礼物：", 1,
+                String.valueOf(obj.getGiftid()), String.valueOf(obj.getUserid()), String.valueOf(obj.getUserid()),
+                AppConstant.BASE_IMG_URL + VMSPUtil.get(context, AppConstant.USERPIC, ""), System.currentTimeMillis()));
+    }
+
     @Subscriber(tag = "callVideo")
     public void callVideo(String msg) {
         KLog.e("callVideo");
         callVideo();
     }
+
+    //========================================文字聊天回调处理
+    private SelfMessageCallBack callBack;
+
     @Subscriber(tag = "sendTextMessage")
     public void sendTextMessage(SelfMessageCallBack callBack) {
-        callBack.success("成功");
+        this.callBack = callBack;
+        if ((VMSPUtil.get(context, AppConstant.GENDER, "")).equals("1")) {//女性不用扣币
+            callBack.success("成功");
+        } else {//男性先扣币再发送消息
+            roomMain.getRoom().getChannel().SendUserPayRequest(1, 3);
+        }
         KLog.e("sendTextMessage");
     }
+
+    @Subscriber(tag = "onUserPayResponse")
+    public void onUserPayResponse(int msg) {
+        if (msg == 0) {
+            callBack.success("成功");
+        } else if (msg == 504) {
+            callBack.fail("金币不足");
+        } else if (msg == 404) {
+            callBack.fail("数据库操作失败");
+        }
+    }
+    //========================================文字聊天回调处理结束
 
     @Subscriber(tag = "sendBigExpressionMessage")
     public void sendBigExpressionMessage(SelfMessageCallBack callBack) {
@@ -130,13 +218,12 @@ public class ChatActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         // make sure only one chat activity is opened
         String username = intent.getStringExtra("userId");
-        if (toChatUsername.equals(username))
+        if (toChatUserPhone.equals(username))
             super.onNewIntent(intent);
         else {
             finish();
             startActivity(intent);
         }
-
     }
 
     @Override
@@ -176,9 +263,7 @@ public class ChatActivity extends BaseActivity {
                     ToastUtil.show(context, "请先选择一种礼物");
                     return;
                 }
-                giftControl.loadGift(new GiftModel(String.valueOf(gift_id), "送出礼物：", 1,
-                        String.valueOf(gift_id), String.valueOf(toChatUsername), toChatUsername,
-                        AppConstant.BASE_IMG_URL + VMSPUtil.get(context, AppConstant.USERPIC, ""), System.currentTimeMillis()));
+                roomMain.getRoom().getChannel().SendGift(gift_id, 1);
                 gift_id = -1;
                 popupWindow.dismiss();
             }
@@ -203,13 +288,14 @@ public class ChatActivity extends BaseActivity {
         // 设置好参数之后再show
         popupWindow.showAtLocation(view, Gravity.CENTER_HORIZONTAL, 0, 0);
     }
+
     /**
      * 视频呼叫
      */
     private void callVideo() {
-        KLog.e(toChatUsername);
+        KLog.e(toChatUserPhone);
         Intent intent = new Intent(context, VideoCallActivity.class);
-        CallManager.getInstance().setChatId(toChatUsername);
+        CallManager.getInstance().setChatId(toChatUserPhone);
         CallManager.getInstance().setInComingCall(false);
         CallManager.getInstance().setCallType(CallManager.CallType.VIDEO);
         startActivity(intent);

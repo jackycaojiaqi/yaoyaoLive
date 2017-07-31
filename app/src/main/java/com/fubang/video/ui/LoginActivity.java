@@ -142,6 +142,8 @@ public class LoginActivity extends BaseActivity {
                             public void onSuccess(Response<SendMsgEntity> response) {
                                 if (response.body().getStatus().equals("success")) {
                                     ToastUtil.show(context, "发送短信成功，请查收");
+                                }else {
+                                    ToastUtil.show(context, "接受短信失败");
                                 }
                             }
 

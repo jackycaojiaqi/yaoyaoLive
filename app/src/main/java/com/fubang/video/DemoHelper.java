@@ -39,6 +39,7 @@ import com.fubang.video.domain.RobotUser;
 import com.fubang.video.parse.UserProfileManager;
 import com.fubang.video.ui.ChatActivity;
 import com.fubang.video.ui.MainActivity;
+import com.socks.library.KLog;
 import com.vmloft.develop.app.demo.call.CallReceiver;
 import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.app.demo.call.VoiceCallActivity;
@@ -91,7 +92,7 @@ public class DemoHelper {
 
     private Map<String, RobotUser> robotList;
 
-    private UserProfileManager userProManager;
+    private  UserProfileManager userProManager;
 
     private static DemoHelper instance = null;
 
@@ -965,10 +966,13 @@ public class DemoHelper {
                     //************接收并处理扩展消息***********************
                     String userName = message.getStringAttribute(AppConstant.USERNAME, "");
                     String userPic = message.getStringAttribute(AppConstant.USERPIC, "");
+                    String userid = message.getStringAttribute(AppConstant.USERID, "");
                     String hxIdFrom = message.getFrom();
                     EaseUser easeUser = new EaseUser(hxIdFrom);
                     easeUser.setAvatar(userPic);
                     easeUser.setNick(userName);
+                    easeUser.setUserid(userid);
+                    KLog.e(userid +" "+userName+" "+userPic);
                     // 存入内存
                     getContactList();
                     contactList.put(hxIdFrom, easeUser);

@@ -84,7 +84,6 @@ public class MineFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setText(tvTitle, "我的");
-
     }
 
     @Override
@@ -101,26 +100,29 @@ public class MineFragment extends BaseFragment {
                 .execute(new JsonCallBack<BaseInfoEntity>(BaseInfoEntity.class) {
                     @Override
                     public void onSuccess(Response<BaseInfoEntity> response) {
-                        if (response.body().getStatus().equals("success")) {
-                            user_id = response.body().getInfo().getNuserid();
-                            tvMineId.setText("妖妖ID:" + VMSPUtil.get(getActivity(), AppConstant.USERID, ""));//ID
-                            tvMineName.setText(response.body().getInfo().getCalias() + "");//姓名
-                            tvMineNkNum.setText("金币*" + response.body().getInfo().getNmoney() + " ");//金币
-                            ImagUtil.setnoerror(getActivity(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivMinePic);
-                            //本地存头像地址
-                            VMSPUtil.put(getActivity(), AppConstant.USERPIC, AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto());
-                            //本地存昵称
-                            VMSPUtil.put(getActivity(), AppConstant.USERNAME, response.body().getInfo().getCalias());
-                            DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERNAME, "")));
-                            DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERPIC, "")));
-                            if (response.body().getInfo().getNgender().equals("1")) {//性别
-                                ivMineGender.setImageResource(R.drawable.ic_register_female_checked);
-                            } else if (response.body().getInfo().getNgender().equals("0")) {
-                                ivMineGender.setImageResource(R.drawable.ic_register_male_checked);
+                        if (response.body() != null)
+                            if (response.body().getStatus().equals("success")) {
+                                user_id = response.body().getInfo().getNuserid();
+                                tvMineId.setText("妖妖ID:" + VMSPUtil.get(getActivity(), AppConstant.USERID, ""));//ID
+                                tvMineName.setText(response.body().getInfo().getCalias() + "");//姓名
+                                tvMineNkNum.setText("金币*" + response.body().getInfo().getNmoney() + " ");//金币
+                                ImagUtil.setnoerror(getActivity(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivMinePic);
+                                //本地存头像地址
+                                VMSPUtil.put(getActivity(), AppConstant.USERPIC, AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto());
+                                //本地行呗
+                                VMSPUtil.put(getActivity(), AppConstant.GENDER, response.body().getInfo().getNgender());
+                                //本地存昵称
+                                VMSPUtil.put(getActivity(), AppConstant.USERNAME, response.body().getInfo().getCalias());
+                                DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERNAME, "")));
+                                DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERPIC, "")));
+                                if (response.body().getInfo().getNgender().equals("1")) {//性别
+                                    ivMineGender.setImageResource(R.drawable.ic_register_female_checked);
+                                } else if (response.body().getInfo().getNgender().equals("0")) {
+                                    ivMineGender.setImageResource(R.drawable.ic_register_male_checked);
+                                }
+                            } else {//token失效
+                                startActivity(new Intent(getActivity(), LoginActivity.class));
                             }
-                        } else {//token失效
-                            startActivity(new Intent(getActivity(), LoginActivity.class));
-                        }
                     }
 
                     @Override

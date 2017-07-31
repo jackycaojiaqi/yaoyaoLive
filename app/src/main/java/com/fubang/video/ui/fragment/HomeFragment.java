@@ -120,11 +120,18 @@ public class HomeFragment extends BaseFragment {
         initdate();
     }
 
+    private String gender_post;
+
     private void initdate() {
+        if (String.valueOf(VMSPUtil.get(context, AppConstant.GENDER, "0")).equals("0")) {
+            gender_post = "1";
+        } else {
+            gender_post = "0";
+        }
         OkGo.<HomeEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_HOME_DATE)
                 .tag(this)
                 .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
-                .params("ngender", String.valueOf(VMSPUtil.get(context, AppConstant.GENDER, "0")))
+                .params("ngender", gender_post)//要传和该账号性别相反的参数
                 .execute(new JsonCallBack<HomeEntity>(HomeEntity.class) {
                     @Override
                     public void onSuccess(Response<HomeEntity> response) {

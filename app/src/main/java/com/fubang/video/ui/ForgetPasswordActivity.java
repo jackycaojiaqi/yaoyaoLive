@@ -12,7 +12,9 @@ import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
+import com.fubang.video.entity.ForgetPassEntity;
 import com.fubang.video.entity.LoginEntity;
+import com.fubang.video.entity.SendMsgEntity;
 import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.ToastUtil;
 import com.fubang.video.widget.ClearableEditText;
@@ -25,70 +27,70 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by jacky on 2017/7/19.
+ * Created by jacky on 2017/7/29.
  */
-public class LoginPasswordActivity extends BaseActivity {
+public class ForgetPasswordActivity extends BaseActivity {
     @BindView(R.id.iv_back)
     ImageView ivBack;
     @BindView(R.id.tv_title)
     TextView tvTitle;
-    @BindView(R.id.tv_submit)
-    TextView tvSubmit;
-    @BindView(R.id.iv_action)
-    ImageView ivAction;
-    @BindView(R.id.et_login_passowrd)
-    ClearableEditText etLoginPassowrd;
+    @BindView(R.id.et_change_passowrd_new)
+    ClearableEditText etChangePassowrdNew;
+    @BindView(R.id.et_change_passowrd_new_sure)
+    ClearableEditText etChangePassowrdNewSure;
     @BindView(R.id.btn_login_sign_in)
     Button btnLoginSignIn;
-    @BindView(R.id.btn_login_forget_password)
-    Button btnLoginForgetPassword;
-    private String phone, password;
+    private String phone;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTranslucentStatus();
-        setContentView(R.layout.activity_loginpassowrd);
+        setContentView(R.layout.activity_forget_password);
         ButterKnife.bind(this);
+        phone = getIntent().getStringExtra(AppConstant.PHONE);
         initview();
     }
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "登录");
-        phone = getIntent().getStringExtra(AppConstant.USERID);
+        setText(tvTitle, "修改密码");
     }
 
-    @OnClick({R.id.iv_back, R.id.btn_login_sign_in, R.id.btn_login_forget_password})
+    @OnClick({R.id.btn_login_sign_in})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_login_sign_in:
-                password = etLoginPassowrd.getText().toString().trim();
-                if (StringUtil.isEmptyandnull(password)) {
+                final String et_pass = etChangePassowrdNew.getText().toString().trim();
+                final String et_pass_sure = etChangePassowrdNewSure.getText().toString().trim();
+                if (StringUtil.isEmptyandnull(et_pass) || StringUtil.isEmptyandnull(et_pass_sure)) {
                     ToastUtil.show(context, "密码不能为空");
                     return;
                 }
-                OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_LOGIN)
+                if (!et_pass.equals(et_pass_sure)) {
+                    ToastUtil.show(context, "两次密码输入不一致");
+                    return;
+                }
+                OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_PASSWORD)
                         .tag(this)
                         .params("ctel", phone)
-                        .params("password", password)
+                        .params("cpassword", et_pass_sure)
                         .execute(new JsonCallBack<LoginEntity>(LoginEntity.class) {
                             @Override
                             public void onSuccess(Response<LoginEntity> response) {
-                                if (response.body().getStatus().equals("success")) {
-                                    VMSPUtil.put(context, AppConstant.USERID, response.body().getInfo().getNuserid());
+                                if (response.body().getStatus().equals("success")) {//不存在这个手机号码
                                     VMSPUtil.put(context, AppConstant.TOKEN, response.body().getInfo().getCtoken());
+                                    VMSPUtil.put(context, AppConstant.USERID, response.body().getInfo().getNuserid());
                                     VMSPUtil.put(context, AppConstant.GENDER, response.body().getInfo().getNgender());
                                     VMSPUtil.put(context, AppConstant.USERNAME, response.body().getInfo().getCalias());
                                     VMSPUtil.put(context, AppConstant.USERPIC, AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto());
-
+                                    VMSPUtil.put(context, AppConstant.PASSWORD, et_pass_sure);
                                     VMSPUtil.put(context, AppConstant.PHONE, phone);
-                                    VMSPUtil.put(context, AppConstant.PASSWORD, password);
                                     Intent intent = new Intent(context, MainActivity.class);
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    ToastUtil.show(context, "密码错误");
+                                    ToastUtil.show(context, "修改密码失败");
                                 }
                             }
 
@@ -98,13 +100,6 @@ public class LoginPasswordActivity extends BaseActivity {
                             }
                         });
                 break;
-            case R.id.btn_login_forget_password:
-                Intent intent = new Intent(context, ForgetPasswordActivity.class);
-                intent.putExtra(AppConstant.PHONE, phone);
-                startActivity(intent);
-                break;
         }
     }
-
-
 }

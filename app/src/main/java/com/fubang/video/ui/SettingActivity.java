@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.util.ToastUtil;
@@ -45,6 +46,12 @@ public class SettingActivity extends BaseActivity {
         setTranslucentStatus();
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
+        initview();
+    }
+
+    private void initview() {
+        back(ivBack);
+        setText(tvTitle, "设置中心");
     }
 
 
@@ -60,7 +67,10 @@ public class SettingActivity extends BaseActivity {
             case R.id.rll_setting_quit:
                 signOut();
                 VMSPUtil.clear(context);//清除用户信息缓存
-                startActivity(new Intent(context,LoginActivity.class));
+                Intent intent = new Intent(context, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
                 break;
         }
     }
