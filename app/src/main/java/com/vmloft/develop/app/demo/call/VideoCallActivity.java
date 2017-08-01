@@ -21,10 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.adapter.GiftItemAdapter;
 import com.fubang.video.entity.GiftEntity;
+import com.fubang.video.service.VideoCallService;
+import com.fubang.video.service.VideoService;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.util.GiftUtil;
 import com.fubang.video.util.StringUtil;
@@ -32,8 +35,11 @@ import com.fubang.video.util.ToastUtil;
 import com.hyphenate.chat.EMCallManager;
 import com.hyphenate.chat.EMCallStateChangeListener;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.callback.SelfMessageCallBack;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.media.EMCallSurfaceView;
+import com.xlg.android.protocol.KickoutUserInfo;
+import com.xlg.android.protocol.TradeGiftNotify;
 import com.xlg.android.room.RoomMain;
 import com.socks.library.KLog;
 import com.superrtc.sdk.VideoView;
@@ -46,6 +52,8 @@ import org.dync.giftlibrary.widget.GiftFrameLayout;
 import org.dync.giftlibrary.widget.GiftModel;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,6 +64,9 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.fubang.video.APP.is_FloatWindow;
+import static com.fubang.video.service.VideoCallService.roomMain;
 
 /**
  * Created by lzan13 on 2016/10/18.
@@ -113,7 +124,7 @@ public class VideoCallActivity extends CallActivity {
     ProgressBar progressBar;
 
     private Context context;
-    private RoomMain roomMain = new RoomMain();
+    private String toChatUserPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +132,7 @@ public class VideoCallActivity extends CallActivity {
         setContentView(R.layout.activity_video_call);
         context = this;
         ButterKnife.bind(this);
-
+        EventBus.getDefault().register(this);
         initView();
         String is_timer = getIntent().getStringExtra(AppConstant.OBJECT);
         KLog.e(is_timer);
@@ -130,7 +141,23 @@ public class VideoCallActivity extends CallActivity {
         } else {
             progressBar.setVisibility(View.GONE);
         }
+        toChatUserPhone = getIntent().getStringExtra("to");
+        if (toChatUserPhone.equals(VMSPUtil.get(context, AppConstant.PHONE, ""))) {
+            KLog.e(toChatUserPhone);
+            toChatUserPhone = getIntent().getStringExtra("from");
+            joinRoom();
+        } else {
+            KLog.e(toChatUserPhone);
+            joinRoom();
+        }
+    }
 
+    private void joinRoom() {
+        if (!APP.is_FloatWindow) {
+            Intent intent = new Intent(context, VideoCallService.class);
+            intent.putExtra(AppConstant.OBJECT, toChatUserPhone);
+            startService(intent);
+        }
     }
 
     Timer timer = new Timer();
@@ -156,6 +183,87 @@ public class VideoCallActivity extends CallActivity {
             });
         }
     };
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (is_FloatWindow) {
+
+        } else {
+            roomMain.getRoom().getChannel().SendKickOut();
+            roomMain.getRoom().getChannel().Close();
+            Intent intent = new Intent(context, VideoService.class);
+            stopService(intent);
+        }
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    /**
+     * 登录回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "onKickOut")
+    public void onKickOut(KickoutUserInfo msg) {
+        if (msg.getReasonid() == 101) {
+        } else if (msg.getReasonid() == 102) {
+            ToastUtil.show(getApplicationContext(), "提出超时");
+        } else if (msg.getReasonid() == 103) {
+            KLog.e("自己离开房间");
+        } else if (msg.getReasonid() == 104) {
+            KLog.e("对方已经离开");
+            ToastUtil.show(getApplicationContext(), "对方已经离开");
+            endCall();
+        }
+    }
+
+    /**
+     * 登录回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "chat_login_msg")
+    public void chat_login_msg(int msg) {
+        if (msg == 0) {
+            KLog.e("登陆成功");
+        } else if (msg == 404) {
+            KLog.e("数据库操作失败");
+        } else if (msg == 405) {
+            KLog.e("用户名或密码错误");
+        }
+    }
+
+    /**
+     * 送礼物失败回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "onTradeGiftError")
+    public void onTradeGiftError(int msg) {
+        if (msg == 504) {
+            ToastUtil.show(context, "用户金币不足");
+        } else if (msg == 501) {
+            ToastUtil.show(context, "礼物未维护");
+        } else if (msg == 404) {
+            ToastUtil.show(context, "数据库操作失败");
+        }
+    }
+
+    /**
+     * 送礼物成功
+     */
+    @Subscriber(tag = "onTradeGiftNotify")
+    public void onTradeGiftNotify(TradeGiftNotify obj) {
+        giftControl.loadGift(new GiftModel(String.valueOf(gift_id), "送出礼物：", 1,
+                String.valueOf(obj.getGiftid()), String.valueOf(obj.getUserid()), String.valueOf(obj.getUserid()),
+                AppConstant.BASE_IMG_URL + VMSPUtil.get(context, AppConstant.USERPIC, ""), System.currentTimeMillis()));
+    }
 
     /**
      * 重载父类方法,实现一些当前通话的操作，
@@ -270,6 +378,7 @@ public class VideoCallActivity extends CallActivity {
                 showPopupWindow(giftFrameLayout1);
                 break;
             case R.id.iv_video_call_charge:
+                exitFullScreen();
                 startActivity(new Intent(context, RechargeActivity.class));
                 break;
         }
@@ -290,6 +399,7 @@ public class VideoCallActivity extends CallActivity {
      * 退出全屏通话界面
      */
     private void exitFullScreen() {
+        is_FloatWindow = true;
         CallManager.getInstance().addFloatWindow();
         // 结束当前界面
         onFinish();
@@ -639,9 +749,7 @@ public class VideoCallActivity extends CallActivity {
                     ToastUtil.show(context, "请先选择一种礼物");
                     return;
                 }
-                giftControl.loadGift(new GiftModel(String.valueOf(gift_id), "送出礼物：", 1,
-                        String.valueOf(gift_id), CallManager.getInstance().getChatId(), CallManager.getInstance().getChatId(),
-                        AppConstant.BASE_IMG_URL + VMSPUtil.get(context, AppConstant.USERPIC, ""), System.currentTimeMillis()));
+                roomMain.getRoom().getChannel().SendGift(gift_id, 1);
                 gift_id = -1;
                 popupWindow.dismiss();
             }

@@ -58,6 +58,7 @@ import com.hyphenate.easeui.model.EaseNotifier.EaseNotificationInfoProvider;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +93,7 @@ public class DemoHelper {
 
     private Map<String, RobotUser> robotList;
 
-    private  UserProfileManager userProManager;
+    private UserProfileManager userProManager;
 
     private static DemoHelper instance = null;
 
@@ -458,7 +459,11 @@ public class DemoHelper {
                 Intent intent = new Intent(appContext, ChatActivity.class);
                 // open calling activity if there is call
                 if (isVideoCalling) {
-                    intent.putExtra(AppConstant.OBJECT,"no_timer");
+                    intent.putExtra(AppConstant.OBJECT, "no_timer");
+                    intent.putExtra("from", message.getFrom());
+                    intent.putExtra("to", message.getTo());
+                    VMSPUtil.put(appContext, AppConstant.CALLFROM, message.getFrom());
+                    VMSPUtil.put(appContext, AppConstant.CALLTO, message.getTo());
                     intent = new Intent(appContext, VideoCallActivity.class);
                 } else if (isVoiceCalling) {
                     intent = new Intent(appContext, VoiceCallActivity.class);
@@ -972,7 +977,7 @@ public class DemoHelper {
                     easeUser.setAvatar(userPic);
                     easeUser.setNick(userName);
                     easeUser.setUserid(userid);
-                    KLog.e(userid +" "+userName+" "+userPic);
+                    KLog.e(userid + " " + userName + " " + userPic);
                     // 存入内存
                     getContactList();
                     contactList.put(hxIdFrom, easeUser);

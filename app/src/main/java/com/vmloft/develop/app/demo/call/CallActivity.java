@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.WindowManager;
 
+import com.fubang.video.APP;
 import com.hyphenate.chat.EMClient;
 import com.vmloft.develop.library.tools.VMBaseActivity;
 
@@ -68,6 +69,7 @@ public class CallActivity extends VMBaseActivity {
      * 挂断通话
      */
     protected void endCall() {
+        APP.is_FloatWindow = false;
         CallManager.getInstance().endCall();
         onFinish();
     }

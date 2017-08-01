@@ -50,41 +50,43 @@ public class MyRoom implements RoomHandler {
     public void onConnectFailed() {
         EventBus.getDefault().post(false, "ConnectFailed");
         KLog.e("onConnectFailed: 连接失败");
+        isConnected = false;
     }
 
 
     @Override
     public void onDisconnected() {
-
+        KLog.e("onConnectFailed: 断开连接");
+        isConnected = false;
     }
 
     @Override
     public void onLoginRequest(int i) {
 
-        EventBus.getDefault().post(i,"chat_login_msg");
+        EventBus.getDefault().post(i, "chat_login_msg");
     }
 
     @Override
     public void onTradeGiftError(int i) {
-        KLog.e("onTradeGiftError"+i);
-        EventBus.getDefault().post(i,"onTradeGiftError");
+        KLog.e("onTradeGiftError" + i);
+        EventBus.getDefault().post(i, "onTradeGiftError");
     }
 
     @Override
     public void onTradeGiftNotify(TradeGiftNotify obj) {
         KLog.e("onTradeGiftNotify");
-        EventBus.getDefault().post(obj,"onTradeGiftNotify");
+        EventBus.getDefault().post(obj, "onTradeGiftNotify");
     }
 
     @Override
     public void onUserPayResponse(int i) {
-        KLog.e("onUserPayResponse"+i);
-        EventBus.getDefault().post(i,"onUserPayResponse");
+        KLog.e("onUserPayResponse" + i);
+        EventBus.getDefault().post(i, "onUserPayResponse");
     }
 
     @Override
     public void onKickOut(KickoutUserInfo obj) {
-        KLog.e("onKickOut"+obj.getReasonid());
-        EventBus.getDefault().post(obj,"onUserPayResponse");
+        KLog.e("onKickOut" + obj.getReasonid());
+        EventBus.getDefault().post(obj, "onKickOut");
     }
 }

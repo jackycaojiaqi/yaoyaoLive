@@ -19,9 +19,9 @@ import java.util.Map;
 /**
  * Created by jacky on 2017/7/29.
  */
-public class VideoService extends Service {
+public class VideoCallService extends Service {
     public static final String TAG = "VideoService";
-    public static  RoomMain roomMain = new RoomMain();
+    public static RoomMain roomMain = new RoomMain();
 
     @Override
     public void onCreate() {
@@ -33,7 +33,6 @@ public class VideoService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() executed");
-
         String toChatUserPhone = intent.getStringExtra(AppConstant.OBJECT);
         UserDao dao = new UserDao(APP.getContext());
         Map<String, EaseUser> users = dao.getContactList();

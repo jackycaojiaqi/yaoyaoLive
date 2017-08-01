@@ -12,6 +12,7 @@ import com.xlg.android.protocol.Message;
 import com.xlg.android.protocol.TradeGiftNotify;
 import com.xlg.android.protocol.TradeGiftRecord;
 import com.xlg.android.protocol.UserPayRequest;
+import com.xlg.android.room.RoomMain;
 import com.xlg.android.utils.ByteBuffer;
 import com.socks.library.KLog;
 

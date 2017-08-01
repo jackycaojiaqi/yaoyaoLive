@@ -20,6 +20,7 @@ import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.BaseInfoEntity;
 import com.fubang.video.entity.LoginEntity;
 import com.fubang.video.ui.CircleListActivity;
+import com.fubang.video.ui.FeedBackActivity;
 import com.fubang.video.ui.LoginActivity;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.ui.SettingActivity;
@@ -160,6 +161,8 @@ public class MineFragment extends BaseFragment {
             case R.id.rll_mine_vip:
                 break;
             case R.id.rll_mine_feedback:
+                intent = new Intent(getActivity(), FeedBackActivity.class);
+                startActivity(intent);
                 break;
             case R.id.rll_mine_setting:
                 startActivity(new Intent(getActivity(), SettingActivity.class));

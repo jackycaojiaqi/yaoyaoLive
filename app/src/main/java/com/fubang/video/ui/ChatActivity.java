@@ -21,6 +21,7 @@ import com.fubang.video.adapter.GiftItemAdapter;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.db.UserDao;
 import com.fubang.video.entity.GiftEntity;
+import com.fubang.video.service.VideoService;
 import com.fubang.video.ui.fragment.ChatFragment;
 import com.fubang.video.util.GiftUtil;
 import com.fubang.video.util.StringUtil;
@@ -33,6 +34,7 @@ import com.socks.library.KLog;
 import com.vmloft.develop.app.demo.call.CallManager;
 import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
+import com.xlg.android.protocol.KickoutUserInfo;
 import com.xlg.android.protocol.TradeGiftNotify;
 import com.xlg.android.room.RoomMain;
 
@@ -45,6 +47,8 @@ import org.simple.eventbus.Subscriber;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.fubang.video.service.VideoService.roomMain;
 
 /**
  * Created by jacky on 2017/7/18.
@@ -61,7 +65,6 @@ public class ChatActivity extends BaseActivity {
     private GiftFrameLayout giftFrameLayout1;
     private GiftFrameLayout giftFrameLayout2;
     private GiftControl giftControl;
-    private RoomMain roomMain = new RoomMain();
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -69,11 +72,12 @@ public class ChatActivity extends BaseActivity {
         setContentView(R.layout.em_activity_chat);
         activityInstance = this;
         //get user id or group id
-        toChatUserPhone = getIntent().getExtras().getString("userId");
-        UserDao dao = new UserDao(APP.getContext());
-        Map<String, EaseUser> users = dao.getContactList();
-        final EaseUser user = users.get(toChatUserPhone);
-        toChatUserNick = user.getNick();
+
+//        UserDao dao = new UserDao(APP.getContext());
+//        Map<String, EaseUser> users = dao.getContactList();
+//        final EaseUser user = users.get(toChatUserPhone);
+
+
         //use EaseChatFratFragment
         chatFragment = new ChatFragment();
         //pass parameters to chat fragment
@@ -86,23 +90,69 @@ public class ChatActivity extends BaseActivity {
         giftFrameLayout2 = (GiftFrameLayout) findViewById(R.id.gift_layout2);
         giftControl = new GiftControl(giftFrameLayout1, giftFrameLayout2);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                roomMain.Start(Integer.parseInt((String) VMSPUtil.get(context, AppConstant.USERID, "0")),
-                        StringUtil.getMD5((String) VMSPUtil.get(context, AppConstant.PASSWORD, "0")),
-                        Integer.parseInt(user.getUserid()), AppConstant.BASE_CONNECT_IP, AppConstant.BASE_CONNECT_PORT);
-//                roomMain.Start(13, StringUtil.encodeMD5("123456"), 12, "42.121.57.170", 11444);
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                roomMain.Start(Integer.parseInt((String) VMSPUtil.get(context, AppConstant.USERID, "0")),
+//                        StringUtil.getMD5((String) VMSPUtil.get(context, AppConstant.PASSWORD, "0")),
+//                        Integer.parseInt(user.getUserid()), AppConstant.BASE_CONNECT_IP, AppConstant.BASE_CONNECT_PORT);
+////                roomMain.Start(13, StringUtil.encodeMD5("123456"), 12, "42.121.57.170", 11444);
+//            }
+//        }).start();
     }
+
+    @Override
+    protected void onResume() {
+        joinRoom();
+        super.onResume();
+    }
+
+    private void joinRoom() {
+        toChatUserPhone = getIntent().getExtras().getString("userId");
+        Intent intent = new Intent(context, VideoService.class);
+        intent.putExtra(AppConstant.OBJECT, toChatUserPhone);
+        startService(intent);
+    }
+
+    private void quitRoom() {
+        roomMain.getRoom().getChannel().SendKickOut();
+        roomMain.getRoom().getChannel().Close();
+        Intent intent = new Intent(context, VideoService.class);
+        stopService(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        quitRoom();
+        super.onPause();
+    }
+
 
     @Override
     protected void onDestroy() {
         activityInstance = null;
-        roomMain.getRoom().getChannel().SendKickOut();
         EventBus.getDefault().unregister(this);
+        quitRoom();
         super.onDestroy();
+    }
+
+    /**
+     * 登录回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "onKickOut")
+    public void onKickOut(KickoutUserInfo msg) {
+        if (msg.getReasonid() == 101) {
+            KLog.e("重复登录被请出");
+            joinRoom();
+        } else if (msg.getReasonid() == 102) {
+            ToastUtil.show(getApplicationContext(), "提出超时");
+        } else if (msg.getReasonid() == 103) {
+            KLog.e("自己离开房间");
+        } else if (msg.getReasonid() == 104) {
+            KLog.e("对方已经离开");
+        }
     }
 
     /**
@@ -150,8 +200,6 @@ public class ChatActivity extends BaseActivity {
 
     /**
      * 送礼物成功
-     *
-     * @param msg
      */
     @Subscriber(tag = "onTradeGiftNotify")
     public void onTradeGiftNotify(TradeGiftNotify obj) {
@@ -190,8 +238,8 @@ public class ChatActivity extends BaseActivity {
             callBack.fail("数据库操作失败");
         }
     }
-    //========================================文字聊天回调处理结束
 
+    //========================================文字聊天回调处理结束
     @Subscriber(tag = "sendBigExpressionMessage")
     public void sendBigExpressionMessage(SelfMessageCallBack callBack) {
         callBack.success("success");
@@ -295,10 +343,15 @@ public class ChatActivity extends BaseActivity {
     private void callVideo() {
         KLog.e(toChatUserPhone);
         Intent intent = new Intent(context, VideoCallActivity.class);
+        intent.putExtra("from", (String) VMSPUtil.get(context, AppConstant.USERID, ""));
+        intent.putExtra("to", toChatUserPhone);
+        VMSPUtil.put(context, AppConstant.CALLFROM, (String) VMSPUtil.get(context, AppConstant.USERID, ""));
+        VMSPUtil.put(context, AppConstant.CALLTO, toChatUserPhone);
         CallManager.getInstance().setChatId(toChatUserPhone);
         CallManager.getInstance().setInComingCall(false);
         CallManager.getInstance().setCallType(CallManager.CallType.VIDEO);
         startActivity(intent);
+        finish();
     }
 
 }

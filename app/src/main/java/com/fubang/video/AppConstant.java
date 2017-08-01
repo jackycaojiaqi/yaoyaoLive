@@ -33,6 +33,10 @@ public class AppConstant {
     public static final String LON = "lon";
     public static final String GENDER = "gender";
 
+    public static final String CALLFROM = "callfrom";
+    public static final String CALLTO = "callto";
+
+
     public static final String URL_PUNLISH_UPLOAD = "/aliyun-php-sdk-vod/aliyun.php";//获取上传播放凭证
     public static final String URL_PLAY_VIDEO_INFO = "/aliyun-php-sdk-vod/aliyun_url.php";//获取播放地址
 
@@ -49,6 +53,8 @@ public class AppConstant {
     public static final String URL_UPLOAD_PHOTO = "/index.php/LineApp/upload_pic";//上传图片和头像
     public static final String URL_UPDATE_INFO = "/index.php/LineApp/update_info";//更新用户基本信息
     public static final String URL_UPDATE_EXTINFO = "/index.php/LineApp/update_extinfo";//更新用户扩展信息
+    public static final String URL_FEEDBACK = "/index.php/LineApp/feedback";//意见反馈
+
 
     public static final String URL_LIFE_ADD = "/index.php/LineApp/life_add";//生活圈发布
     public static final String URL_LIFE_LIST = "/index.php/LineApp/life_list";//朋友圈列表
@@ -59,6 +65,8 @@ public class AppConstant {
     public static final String URL_LIFE_HOME_DATE = "/index.php/LineApp/index_data";//首页数据获取
 
     public static final String URL_PAY_INFO = "/index.php/LineApp/ali_pay";//支付宝获取订单信息
+
+
 
 
 }

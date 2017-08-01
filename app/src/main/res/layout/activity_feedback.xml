@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="更多问题，请联系官方QQ：121212"
+        android:text="@string/app_contact_way"
         android:textColor="@color/gray_deep" />
 
 </LinearLayout>

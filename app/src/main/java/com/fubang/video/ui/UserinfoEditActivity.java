@@ -948,7 +948,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
             extinfo_type = 0;
             KLog.e(aMapLocation.getCity());
             if (StringUtil.isEmptyandnull(aMapLocation.getCity())) {
-                ToastUtil.show(context, "定位失败");
+                ToastUtil.show(context, "定位失败，请开启应用定位权限");
                 return;
             }
             VMSPUtil.put(context, AppConstant.CITY, aMapLocation.getCity());

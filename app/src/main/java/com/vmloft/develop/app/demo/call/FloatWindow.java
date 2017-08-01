@@ -19,6 +19,7 @@ import com.hyphenate.media.EMCallSurfaceView;
 import com.superrtc.sdk.VideoView;
 import com.vmloft.develop.library.tools.utils.VMDimenUtil;
 import com.vmloft.develop.library.tools.utils.VMLog;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,7 +27,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by lzan13 on 2017/3/27.
- *
+ * <p>
  * 音视频通话悬浮窗操作类
  */
 public class FloatWindow {
@@ -98,12 +99,15 @@ public class FloatWindow {
 
         // 当点击悬浮窗时，返回到通话界面
         floatView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 Intent intent = new Intent();
                 if (CallManager.getInstance().getCallType() == CallManager.CallType.VOICE) {
                     intent.setClass(context, VoiceCallActivity.class);
                 } else {
-                    intent.putExtra(AppConstant.OBJECT,"no_timer");
+                    intent.putExtra(AppConstant.OBJECT, "no_timer");
+                    intent.putExtra("from", (String) VMSPUtil.get(context, AppConstant.CALLFROM, ""));
+                    intent.putExtra("to", (String) VMSPUtil.get(context, AppConstant.CALLTO, ""));
                     intent.setClass(context, VideoCallActivity.class);
                 }
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -120,7 +124,8 @@ public class FloatWindow {
             float startX = 0;
             float startY = 0;
 
-            @Override public boolean onTouch(View v, MotionEvent event) {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         result = false;
@@ -142,7 +147,8 @@ public class FloatWindow {
                         // 根据当前触摸点 Y 坐标计算悬浮窗 Y 坐标，减25为状态栏的高度
                         layoutParams.y = (int) (event.getRawY() - y - 25);
                         // 刷新悬浮窗
-                        windowManager.updateViewLayout(floatView, layoutParams);
+                        if (floatView != null)
+                            windowManager.updateViewLayout(floatView, layoutParams);
                         break;
                     case MotionEvent.ACTION_UP:
                         break;
@@ -215,7 +221,8 @@ public class FloatWindow {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN) public void onEventBus(CallEvent event) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventBus(CallEvent event) {
         if (event.isState()) {
             refreshCallView(event);
         }

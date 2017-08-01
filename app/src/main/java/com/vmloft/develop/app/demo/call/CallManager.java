@@ -22,6 +22,7 @@ import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.exceptions.EMNoActiveCallException;
 import com.hyphenate.exceptions.EMServiceNotReadyException;
 import com.vmloft.develop.library.tools.utils.VMLog;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -521,6 +522,8 @@ public class CallManager {
         Intent intent = new Intent();
         if (callType == CallType.VIDEO) {
             intent.putExtra(AppConstant.OBJECT,"no_timer");
+            intent.putExtra("from", (String)VMSPUtil.get(context,AppConstant.CALLFROM,""));
+            intent.putExtra("to", (String)VMSPUtil.get(context,AppConstant.CALLTO,""));
             intent.setClass(context, VideoCallActivity.class);
         } else {
             intent.setClass(context, VoiceCallActivity.class);

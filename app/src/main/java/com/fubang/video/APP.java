@@ -47,6 +47,8 @@ public class APP extends VMApplication {
     public static APP getInstance() {
         return instance;
     }
+
+    public static boolean is_FloatWindow = false;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -68,8 +70,8 @@ public class APP extends VMApplication {
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.put("commonHeaderKey1", "commonHeaderValue1");    //header不支持中文
 //        headers.put("commonHeaderKey2", "commonHeaderValue2");
-        HttpParams params = new HttpParams();//公共token参数
-        params.put("token", String.valueOf(VMSPUtil.get(getApplicationContext(),"token","")));     //param支持中文,直接传,不要自己编码
+//        HttpParams params = new HttpParams();//公共token参数
+//        params.put("token", String.valueOf(VMSPUtil.get(getApplicationContext(),"token","")));     //param支持中文,直接传,不要自己编码
         //-----------------------------------------------------------------------------------//
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
