@@ -13,7 +13,7 @@ public class RoomMain {
         this.room = room;
     }
 
-    public void Start( int userId, String userPwd, int BbddyId,String ip, int port) {
+    public void Start( int userId, String userPwd, String ip, int port) {
         room = new MyRoom();
 
 //		room.getChannel().setRoomID(10000);
@@ -22,9 +22,8 @@ public class RoomMain {
 //		room.getChannel().Connect("121.43.63.101", 10927);
         room.getChannel().setUserID(userId);
         room.getChannel().setUserPwd(userPwd);
-        room.getChannel().setmBbddyId(BbddyId);
         room.getChannel().Connect(ip, port);
-        KLog.e(userId+" "+userPwd+" "+BbddyId+" "+ip+port);
+        KLog.e(userId+" "+userPwd+" "+ip+port);
         try {
             for (int i = 0; true; i++) {
                 // 暂停10秒

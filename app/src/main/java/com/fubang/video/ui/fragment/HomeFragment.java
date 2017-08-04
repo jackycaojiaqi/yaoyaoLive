@@ -13,11 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.fubang.video.AppConstant;
@@ -29,7 +28,6 @@ import com.fubang.video.adapter.HomeTuHaoAdapter;
 import com.fubang.video.base.BaseFragment;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.HomeEntity;
-import com.fubang.video.entity.ReviewEntity;
 import com.fubang.video.ui.CircleInfoDetailActivity;
 import com.fubang.video.ui.SearUserActivity;
 import com.fubang.video.ui.UserInfoActivity;
@@ -41,14 +39,8 @@ import com.hyphenate.chat.EMMessage;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.skyfishjy.library.RippleBackground;
-import com.vmloft.develop.app.demo.call.CallManager;
-import com.vmloft.develop.app.demo.call.VideoCallActivity;
-import com.vmloft.develop.app.demo.call.VoiceCallActivity;
 import com.vmloft.develop.library.tools.utils.VMLog;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +86,16 @@ public class HomeFragment extends BaseFragment {
     RecyclerView rvHomeAction4;
     @BindView(R.id.ripple_view)
     RippleBackground rippleView;
+
+    //女性开启接听、关闭接听界面
+    @BindView(R.id.btn_home_female_stop)
+    Button btnHomeFemaleStop;
+    @BindView(R.id.btn_home_female_start)
+    Button btnHomeFemaleStart;
+    @BindView(R.id.ll_home_female_control)
+    LinearLayout llHomeFemaleControl;
+    @BindView(R.id.imageView)
+    ImageView imageView;
 
     private String username;
     private String password;
@@ -259,7 +261,11 @@ public class HomeFragment extends BaseFragment {
             }
         });
         SwipeRefreshView.setProgressViewOffset(true, 150, 250);
-
+        if (VMSPUtil.get(context, AppConstant.GENDER, "").equals("1")) {
+            llHomeFemaleControl.setVisibility(View.VISIBLE);
+        } else {
+            llHomeFemaleControl.setVisibility(View.GONE);
+        }
     }
 
 
@@ -308,9 +314,10 @@ public class HomeFragment extends BaseFragment {
     }
 
     private boolean is_call_start = false;
+    private boolean is_female_control_start = false;
 
     @OnClick({R.id.tv_home_random_call, R.id.tv_home_action1, R.id.tv_home_action2, R.id.tv_home_action3, R.id.tv_home_action4,
-            R.id.iv_action})
+            R.id.iv_action, R.id.btn_home_female_start, R.id.btn_home_female_stop})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_home_random_call:
@@ -331,6 +338,16 @@ public class HomeFragment extends BaseFragment {
                 break;
             case R.id.iv_action:
                 startActivity(new Intent(context, SearUserActivity.class));
+                break;
+            case R.id.btn_home_female_start:
+                btnHomeFemaleStart.setBackgroundResource(R.drawable.ic_home_female_bg_select);
+                btnHomeFemaleStop.setBackgroundResource(R.drawable.ic_home_female_bg);
+                is_female_control_start = true;
+                break;
+            case R.id.btn_home_female_stop:
+                btnHomeFemaleStart.setBackgroundResource(R.drawable.ic_home_female_bg);
+                btnHomeFemaleStop.setBackgroundResource(R.drawable.ic_home_female_bg_select);
+                is_female_control_start = false;
                 break;
         }
     }

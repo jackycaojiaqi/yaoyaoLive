@@ -20,16 +20,21 @@ public class Header {
     public static final byte MessageType_mxpTradeGiftNotify = (byte) 14; // 14;赠送礼物失败返回
     public static final byte MessageType_mxpUserPayRequest = (byte) 15; // 15;预扣币消息 客户端发送扣币请求。
     public static final byte MessageType_mxpUserPayResponse = (byte) 16; // 16;预扣币返回
+    public static final byte MessageType_mxpUserPayError = (byte) 17; // 17;预扣币失败返回
+
 
 
     public static final byte MessageType_mxpKickoutUserRequest = (byte) 20; // 20;系统踢用户，或者用户自己退出
     public static final byte MessageType_mxpKickoutUserNotify = (byte) 21; // 21;系统踢用户，或者用户自己退出返回
 
 
-    public static final byte MessageType_mxpLogonError = (byte) 3; // 3;
-    public static final byte MessageType_mxpJoinRoomRequest = (byte) 4; // 4
-    public static final byte MessageType_mxpJoinRoomError = (byte) 5; // 5;
-    public static final byte MessageType_mxpJoinRoomResponse = (byte) 6; // 6
+    public static final byte MessageType_mxpUserLinkRequest = (byte) 50; // 	连接请求
+    public static final byte MessageType_mxpUserLinkResponse = (byte) 51; // 用户响应
+    public static final byte MessageType_mxpUserLinkNotify = (byte) 52; // 广播连接
+    public static final byte MessageType_mxpUserLinkCancelRequest = (byte) 53; //用户取消
+
+
+
 
 
     private int length;        //数据包总长

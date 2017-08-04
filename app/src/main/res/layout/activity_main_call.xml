@@ -45,9 +45,9 @@
                         android:id="@+id/ripple_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        app:rb_duration="6000"
                         app:rb_radius="32dp"
                         app:rb_rippleAmount="4"
-                        app:rb_duration="6000"
                         app:rb_scale="6">
 
                         <ImageView
@@ -67,6 +67,34 @@
                         android:text="当前在线1000人"
                         android:textColor="@color/white"
                         android:textSize="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_home_female_control"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="250dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_home_female_stop"
+                            android:layout_width="60dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/ic_home_female_bg"
+                            android:text="关闭"
+                            android:textColor="@color/white"
+                            android:textSize="12dp" />
+
+                        <Button
+                            android:id="@+id/btn_home_female_start"
+                            android:layout_width="60dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="20dp"
+                            android:background="@drawable/ic_home_female_bg"
+                            android:text="开启"
+                            android:textColor="@color/white"
+                            android:textSize="12dp" />
+                    </LinearLayout>
                 </RelativeLayout>
 
                 <RelativeLayout

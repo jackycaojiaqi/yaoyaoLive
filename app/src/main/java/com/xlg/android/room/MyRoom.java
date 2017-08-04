@@ -6,7 +6,11 @@ import com.xlg.android.RoomChannel;
 import com.xlg.android.RoomHandler;
 import com.socks.library.KLog;
 import com.xlg.android.protocol.KickoutUserInfo;
+import com.xlg.android.protocol.LogonResponse;
+import com.xlg.android.protocol.TradeGiftError;
 import com.xlg.android.protocol.TradeGiftNotify;
+import com.xlg.android.protocol.UserPayError;
+import com.xlg.android.protocol.UserPayResponse;
 
 import org.simple.eventbus.EventBus;
 
@@ -59,18 +63,17 @@ public class MyRoom implements RoomHandler {
         KLog.e("onConnectFailed: 断开连接");
         isConnected = false;
     }
-
+    //登陆成功回调
     @Override
-    public void onLoginRequest(int i) {
-
-        EventBus.getDefault().post(i, "chat_login_msg");
+    public void onLoginRequest(LogonResponse obj) {
+        EventBus.getDefault().post(obj, "chat_login_msg");
     }
 
     @Override
-    public void onTradeGiftError(int i) {
-        KLog.e("onTradeGiftError" + i);
-        EventBus.getDefault().post(i, "onTradeGiftError");
+    public void onTradeGiftError(TradeGiftError obj) {
+        EventBus.getDefault().post(obj, "onTradeGiftError");
     }
+
 
     @Override
     public void onTradeGiftNotify(TradeGiftNotify obj) {
@@ -79,10 +82,17 @@ public class MyRoom implements RoomHandler {
     }
 
     @Override
-    public void onUserPayResponse(int i) {
-        KLog.e("onUserPayResponse" + i);
-        EventBus.getDefault().post(i, "onUserPayResponse");
+    public void onUserPayResponse(UserPayResponse obj) {
+        KLog.e("onUserPayResponse" + obj.getType());
+        EventBus.getDefault().post(obj, "onUserPayResponse");
     }
+
+    @Override
+    public void onUserPayError(UserPayError obj) {
+        KLog.e("UserPayError" + obj.getErrorid());
+        EventBus.getDefault().post(obj, "onUserPayError");
+    }
+
 
     @Override
     public void onKickOut(KickoutUserInfo obj) {

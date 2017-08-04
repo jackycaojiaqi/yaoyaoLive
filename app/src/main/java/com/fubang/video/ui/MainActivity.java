@@ -28,6 +28,7 @@ import com.fubang.video.DemoHelper;
 import com.fubang.video.R;
 import com.fubang.video.adapter.FragmentTabAdapter;
 import com.fubang.video.base.BaseActivity;
+import com.fubang.video.service.VideoService;
 import com.fubang.video.ui.fragment.CircleFragment;
 import com.fubang.video.ui.fragment.FindFragment;
 import com.fubang.video.ui.fragment.HomeFragment;
@@ -42,11 +43,16 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
+import com.xlg.android.protocol.KickoutUserInfo;
+import com.xlg.android.protocol.LogonResponse;
 import com.xlg.android.room.RoomMain;
 import com.socks.library.KLog;
 import com.umeng.analytics.MobclickAgent;
 import com.vmloft.develop.library.tools.utils.VMLog;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
+
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +65,7 @@ import kr.co.namee.permissiongen.PermissionGen;
 import kr.co.namee.permissiongen.PermissionSuccess;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static com.fubang.video.service.VideoService.roomMain;
 
 public class MainActivity extends BaseActivity implements AMapLocationListener {
 
@@ -101,7 +108,6 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     private Context context;
     private String phone;
     private String password;
-    private RoomMain roomMain = new RoomMain();
 
     public void onResume() {
         super.onResume();
@@ -120,6 +126,8 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         if (mlocationClient != null) {
             mlocationClient.onDestroy();
         }
+        quitRoom();
+        EventBus.getDefault().unregister(this);
         EMClient.getInstance().chatManager().removeMessageListener(msgListener);
     }
 
@@ -130,18 +138,70 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         context = this;
+        EventBus.getDefault().register(this);
         initview();
+        joinRoom();
         //注册环信消息监听回调
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
         //环信登录
         loginHX();
 
     }
+    /**
+     * 用户被踢出回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "onKickOut")
+    public void onKickOut(KickoutUserInfo msg) {
+        if (!roomMain.getRoom().isOK()){
+            joinRoom();
+        }
+        if (msg.getReasonid() == 101) {
+            KLog.e("重复登录被请出");
+        } else if (msg.getReasonid() == 102) {
+            ToastUtil.show(getApplicationContext(), "提出超时");
+        } else if (msg.getReasonid() == 103) {
+            KLog.e("自己离开房间");
+        } else if (msg.getReasonid() == 104) {
+            KLog.e("对方已经离开");
+        }
+    }
+
+    /**
+     * 登录回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "chat_login_msg")
+    public void chat_login_msg(LogonResponse msg) {
+        if (msg.getErrorid() == 0) {
+            KLog.e("登陆成功");
+        } else if (msg.getErrorid() == 404) {
+            KLog.e("数据库操作失败");
+        } else if (msg.getErrorid() == 405) {
+            KLog.e("用户名或密码错误");
+        }
+    }
+
+    private void joinRoom() {
+        Intent intent = new Intent(context, VideoService.class);
+        startService(intent);
+    }
+
+    private void quitRoom() {
+        if (roomMain.getRoom().isOK()){
+            roomMain.getRoom().getChannel().SendKickOut();
+            roomMain.getRoom().getChannel().Close();
+        }
+        Intent intent = new Intent(context, VideoService.class);
+        stopService(intent);
+    }
 
     private void loginHX() {
         phone = String.valueOf(VMSPUtil.get(context, AppConstant.PHONE, ""));
         password = String.valueOf(VMSPUtil.get(context, AppConstant.PASSWORD, ""));
-        KLog.e(phone+" "+password);
+        KLog.e(phone + " " + password);
         if (phone.isEmpty() || password.isEmpty()) {
             ToastUtil.show(context, "username or password null");
             return;

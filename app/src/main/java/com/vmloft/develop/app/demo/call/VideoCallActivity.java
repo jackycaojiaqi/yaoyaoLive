@@ -25,8 +25,8 @@ import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.adapter.GiftItemAdapter;
+import com.fubang.video.db.UserDao;
 import com.fubang.video.entity.GiftEntity;
-import com.fubang.video.service.VideoCallService;
 import com.fubang.video.service.VideoService;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.util.GiftUtil;
@@ -36,11 +36,13 @@ import com.hyphenate.chat.EMCallManager;
 import com.hyphenate.chat.EMCallStateChangeListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.callback.SelfMessageCallBack;
+import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.media.EMCallSurfaceView;
 import com.xlg.android.protocol.KickoutUserInfo;
+import com.xlg.android.protocol.LogonResponse;
+import com.xlg.android.protocol.TradeGiftError;
 import com.xlg.android.protocol.TradeGiftNotify;
-import com.xlg.android.room.RoomMain;
 import com.socks.library.KLog;
 import com.superrtc.sdk.VideoView;
 import com.vmloft.develop.library.tools.utils.VMDimenUtil;
@@ -58,6 +60,7 @@ import org.simple.eventbus.Subscriber;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -66,7 +69,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.fubang.video.APP.is_FloatWindow;
-import static com.fubang.video.service.VideoCallService.roomMain;
 
 /**
  * Created by lzan13 on 2016/10/18.
@@ -124,7 +126,7 @@ public class VideoCallActivity extends CallActivity {
     ProgressBar progressBar;
 
     private Context context;
-    private String toChatUserPhone;
+    private String toChatUserPhone,toChatUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,21 +144,16 @@ public class VideoCallActivity extends CallActivity {
             progressBar.setVisibility(View.GONE);
         }
         toChatUserPhone = getIntent().getStringExtra("to");
-        if (toChatUserPhone.equals(VMSPUtil.get(context, AppConstant.PHONE, ""))) {
+        UserDao dao = new UserDao(APP.getContext());
+        Map<String, EaseUser> users = dao.getContactList();
+        final EaseUser user = users.get(toChatUserPhone);
+        toChatUserId = user.getUserid();
+        KLog.e("toChatUserId:"+toChatUserId);
+        if (toChatUserPhone.equals(VMSPUtil.get(context, AppConstant.PHONE, ""))) {//获取视频两天两个对象环信id   主要是为了根据环信id查询出appid
             KLog.e(toChatUserPhone);
             toChatUserPhone = getIntent().getStringExtra("from");
-            joinRoom();
         } else {
             KLog.e(toChatUserPhone);
-            joinRoom();
-        }
-    }
-
-    private void joinRoom() {
-        if (!APP.is_FloatWindow) {
-            Intent intent = new Intent(context, VideoCallService.class);
-            intent.putExtra(AppConstant.OBJECT, toChatUserPhone);
-            startService(intent);
         }
     }
 
@@ -192,14 +189,6 @@ public class VideoCallActivity extends CallActivity {
 
     @Override
     protected void onDestroy() {
-        if (is_FloatWindow) {
-
-        } else {
-            roomMain.getRoom().getChannel().SendKickOut();
-            roomMain.getRoom().getChannel().Close();
-            Intent intent = new Intent(context, VideoService.class);
-            stopService(intent);
-        }
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -229,12 +218,12 @@ public class VideoCallActivity extends CallActivity {
      * @param msg
      */
     @Subscriber(tag = "chat_login_msg")
-    public void chat_login_msg(int msg) {
-        if (msg == 0) {
+    public void chat_login_msg(LogonResponse msg) {
+        if (msg.getErrorid() == 0) {
             KLog.e("登陆成功");
-        } else if (msg == 404) {
+        } else if (msg.getErrorid() == 404) {
             KLog.e("数据库操作失败");
-        } else if (msg == 405) {
+        } else if (msg.getErrorid() == 405) {
             KLog.e("用户名或密码错误");
         }
     }
@@ -245,12 +234,12 @@ public class VideoCallActivity extends CallActivity {
      * @param msg
      */
     @Subscriber(tag = "onTradeGiftError")
-    public void onTradeGiftError(int msg) {
-        if (msg == 504) {
+    public void onTradeGiftError(TradeGiftError msg) {
+        if (msg.getErrorid() == 504) {
             ToastUtil.show(context, "用户金币不足");
-        } else if (msg == 501) {
+        } else if (msg.getErrorid() == 501) {
             ToastUtil.show(context, "礼物未维护");
-        } else if (msg == 404) {
+        } else if (msg.getErrorid() == 404) {
             ToastUtil.show(context, "数据库操作失败");
         }
     }
@@ -399,7 +388,7 @@ public class VideoCallActivity extends CallActivity {
      * 退出全屏通话界面
      */
     private void exitFullScreen() {
-        is_FloatWindow = true;
+        is_FloatWindow = true;//开启悬浮窗时，设置true值
         CallManager.getInstance().addFloatWindow();
         // 结束当前界面
         onFinish();
@@ -749,7 +738,8 @@ public class VideoCallActivity extends CallActivity {
                     ToastUtil.show(context, "请先选择一种礼物");
                     return;
                 }
-                roomMain.getRoom().getChannel().SendGift(gift_id, 1);
+                VideoService.roomMain.getRoom().getChannel().SendGift(Integer.parseInt(toChatUserId),gift_id, 1,
+                        (String) VMSPUtil.get(context,AppConstant.USERNAME,""),(String) VMSPUtil.get(context,AppConstant.USERPIC,""));
                 gift_id = -1;
                 popupWindow.dismiss();
             }

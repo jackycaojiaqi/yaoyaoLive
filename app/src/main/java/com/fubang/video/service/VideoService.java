@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class VideoService extends Service {
     public static final String TAG = "VideoService";
-    public static  RoomMain roomMain = new RoomMain();
+    public static RoomMain roomMain = new RoomMain();
 
     @Override
     public void onCreate() {
@@ -33,18 +33,11 @@ public class VideoService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() executed");
-
-        String toChatUserPhone = intent.getStringExtra(AppConstant.OBJECT);
-        UserDao dao = new UserDao(APP.getContext());
-        Map<String, EaseUser> users = dao.getContactList();
-        final EaseUser user = users.get(toChatUserPhone);
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 roomMain.Start(Integer.parseInt((String) VMSPUtil.get(getApplicationContext(), AppConstant.USERID, "0")),
-                        StringUtil.getMD5((String) VMSPUtil.get(getApplicationContext(), AppConstant.PASSWORD, "0")),
-                        Integer.parseInt(user.getUserid()), AppConstant.BASE_CONNECT_IP, AppConstant.BASE_CONNECT_PORT);
+                        StringUtil.getMD5((String) VMSPUtil.get(getApplicationContext(), AppConstant.PASSWORD, "0")), AppConstant.BASE_CONNECT_IP, AppConstant.BASE_CONNECT_PORT);
 //                roomMain.Start(13, StringUtil.encodeMD5("123456"), 12, "42.121.57.170", 11444);
             }
         }).start();

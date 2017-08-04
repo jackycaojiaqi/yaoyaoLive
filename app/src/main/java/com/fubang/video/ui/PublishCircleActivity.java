@@ -150,7 +150,7 @@ public class PublishCircleActivity extends BaseActivity {
         });
     }
 
-    private int money = 0;
+    private long money = 0;
     private int gender = 0;
 
     private void initdate() {
@@ -162,7 +162,7 @@ public class PublishCircleActivity extends BaseActivity {
                     @Override
                     public void onSuccess(Response<BaseInfoEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-                            money = Integer.parseInt(response.body().getInfo().getNmoney());
+                            money = Long.parseLong(response.body().getInfo().getNmoney());
                             gender = Integer.parseInt(response.body().getInfo().getNgender());
                         }
                     }

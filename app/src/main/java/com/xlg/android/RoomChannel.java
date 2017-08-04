@@ -8,10 +8,14 @@ import com.xlg.android.protocol.Hello;
 import com.xlg.android.protocol.KeepLiveRepuest;
 import com.xlg.android.protocol.KickoutUserInfo;
 import com.xlg.android.protocol.LogonRequest;
+import com.xlg.android.protocol.LogonResponse;
 import com.xlg.android.protocol.Message;
+import com.xlg.android.protocol.TradeGiftError;
 import com.xlg.android.protocol.TradeGiftNotify;
 import com.xlg.android.protocol.TradeGiftRecord;
+import com.xlg.android.protocol.UserPayError;
 import com.xlg.android.protocol.UserPayRequest;
+import com.xlg.android.protocol.UserPayResponse;
 import com.xlg.android.room.RoomMain;
 import com.xlg.android.utils.ByteBuffer;
 import com.socks.library.KLog;
@@ -22,7 +26,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class RoomChannel implements ClientSocketHandler {
     private int mUserID; // 用户ID
-    private int mBbddyId; // 连麦用户ID
     private String mUserPwd; // 用户密码
 
     // 客户端回调
@@ -37,13 +40,6 @@ public class RoomChannel implements ClientSocketHandler {
         mHandler = handler;
     }
 
-    public int getmBbddyId() {
-        return mBbddyId;
-    }
-
-    public void setmBbddyId(int mBbddyId) {
-        this.mBbddyId = mBbddyId;
-    }
 
     public void setUserID(int userID) {
         mUserID = userID;
@@ -87,14 +83,15 @@ public class RoomChannel implements ClientSocketHandler {
             }
 
             switch (head.getCmd1()) {
-                case Header.MessageType_mxpLogonResponse: {
-                    ByteBuffer obj = Message.DecodeBody(mBuffer);
-                    mHandler.onLoginRequest(obj.getInt(0));
-                }
-                break;
+                case Header.MessageType_mxpLogonResponse:
+                    LogonResponse logonResponse = new LogonResponse();
+                    Message.DecodeObject(mBuffer, logonResponse);
+                    mHandler.onLoginRequest(logonResponse);
+                    break;
                 case Header.MessageType_mxpTradeGiftError:
-                    ByteBuffer obj = Message.DecodeBody(mBuffer);
-                    mHandler.onTradeGiftError(obj.getInt(0));
+                    TradeGiftError tradeGiftError = new TradeGiftError();
+                    Message.DecodeObject(mBuffer, tradeGiftError);
+                    mHandler.onTradeGiftError(tradeGiftError);
                     break;
                 case Header.MessageType_mxpTradeGiftNotify:
                     TradeGiftNotify tradeGiftNotify = new TradeGiftNotify();
@@ -102,8 +99,14 @@ public class RoomChannel implements ClientSocketHandler {
                     mHandler.onTradeGiftNotify(tradeGiftNotify);
                     break;
                 case Header.MessageType_mxpUserPayResponse:
-                    ByteBuffer obj_pay = Message.DecodeBody(mBuffer);
-                    mHandler.onUserPayResponse(obj_pay.getInt(0));
+                    UserPayResponse userPayResponse = new UserPayResponse();
+                    Message.DecodeObject(mBuffer, userPayResponse);
+                    mHandler.onUserPayResponse(userPayResponse);
+                    break;
+                case Header.MessageType_mxpUserPayError:
+                    UserPayError userPayError = new UserPayError();
+                    Message.DecodeObject(mBuffer, userPayError);
+                    mHandler.onUserPayError(userPayError);
                     break;
                 case Header.MessageType_mxpKickoutUserNotify:
                     KickoutUserInfo kickoutUserInfo = new KickoutUserInfo();
@@ -175,8 +178,6 @@ public class RoomChannel implements ClientSocketHandler {
         obj.setUserid(mUserID);
         obj.setCuserpwd(mUserPwd);
         KLog.e(mUserPwd);
-        obj.setBuddyid(mBbddyId);
-        obj.setNconnid(1);
         // 构建消息头
         head.setVersion((byte) 1);
         head.setCmd1(Header.MessageType_mxpLogonRequest);
@@ -184,25 +185,28 @@ public class RoomChannel implements ClientSocketHandler {
     }
 
     // 发送礼物请求
-    public void SendGift(int gift_id, int num) {
+    public void SendGift(int toid,int gift_id, int num, String alias, String photo) {
+        KLog.e("SendGift" + gift_id + " " + num + " " + alias + " " + photo);
         Header head = new Header();
         head.setVersion((byte) 1);
         TradeGiftRecord obj = new TradeGiftRecord();
         obj.setUserid(mUserID);
-        obj.setBuddyid(mBbddyId);
+        obj.setToid(toid);
         obj.setGiftid(gift_id);
         obj.setAmount(num);
+        obj.setAlias(alias);
+        obj.setPhoto(photo);
         head.setCmd1(Header.MessageType_mxpTradeGiftRequest);
         sendPack(head, obj);
     }
 
     // 发起预扣币消息
-    public void SendUserPayRequest(int money, int type) {
+    public void SendUserPayRequest(int toid,int money, int type) {
         Header head = new Header();
         head.setVersion((byte) 1);
         UserPayRequest obj = new UserPayRequest();
         obj.setUserid(mUserID);
-        obj.setBuddyid(mBbddyId);
+        obj.setBuddyid(toid);
         obj.setType(type);//3代表聊天
         obj.setMoney(money);//一条一毛钱
         head.setCmd1(Header.MessageType_mxpUserPayRequest);

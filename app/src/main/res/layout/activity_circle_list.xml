@@ -27,8 +27,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_margin="20dp"
-                android:background="@drawable/shap_rec_30dp_login_next"
-                android:text="发布"
+                android:background="@drawable/ic_publish_circle"
                 android:textColor="@color/white" />
         </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>

@@ -7,9 +7,10 @@ public class UserPayRequest {
     @StructOrder(1)
     private int buddyid;            //接收者ID
     @StructOrder(2)
-    private long money;        //预扣金额
-    @StructOrder(3)
     private int type;        //3-聊天
+    @StructOrder(3)
+    private long money;        //预扣金额
+
 
 
     public int getUserid() {

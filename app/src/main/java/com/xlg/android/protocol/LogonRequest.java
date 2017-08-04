@@ -10,10 +10,7 @@ public class LogonRequest {
     private int userid;//登录用户id
     @StructOrder(2)
     private byte[] cuserpwd = new byte[34];        //密码
-    @StructOrder(3)
-    private int buddyid; // 连麦用户ID
-    @StructOrder(4)
-    private int nconnid; //当前连麦标识符
+
 
     public int getDeviceid() {
         return deviceid;
@@ -31,21 +28,6 @@ public class LogonRequest {
         this.userid = userid;
     }
 
-    public int getBuddyid() {
-        return buddyid;
-    }
-
-    public void setBuddyid(int buddyid) {
-        this.buddyid = buddyid;
-    }
-
-    public int getNconnid() {
-        return nconnid;
-    }
-
-    public void setNconnid(int nconnid) {
-        this.nconnid = nconnid;
-    }
 
     public String getCuserpwd() {
         byte[] data = new byte[cuserpwd.length];

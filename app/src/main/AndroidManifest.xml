@@ -161,7 +161,6 @@
         </activity>
 
         <service android:name=".service.VideoService" />
-        <service android:name=".service.VideoCallService" />
     </application>
     <!--项目权限配置-->
     <!--相机-->

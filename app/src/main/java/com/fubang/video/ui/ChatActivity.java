@@ -35,7 +35,11 @@ import com.vmloft.develop.app.demo.call.CallManager;
 import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
 import com.xlg.android.protocol.KickoutUserInfo;
+import com.xlg.android.protocol.LogonResponse;
+import com.xlg.android.protocol.TradeGiftError;
 import com.xlg.android.protocol.TradeGiftNotify;
+import com.xlg.android.protocol.UserPayError;
+import com.xlg.android.protocol.UserPayResponse;
 import com.xlg.android.room.RoomMain;
 
 import org.dync.giftlibrary.widget.GiftControl;
@@ -57,6 +61,7 @@ public class ChatActivity extends BaseActivity {
     public static ChatActivity activityInstance;
     private EaseChatFragment chatFragment;
     private String toChatUserPhone;
+    private String toChatUserId;
     private String toChatUserNick;
     private PopupWindow pop_gift;
     private FrameLayout frameLayout;
@@ -71,13 +76,12 @@ public class ChatActivity extends BaseActivity {
         super.onCreate(arg0);
         setContentView(R.layout.em_activity_chat);
         activityInstance = this;
-        //get user id or group id
-
-//        UserDao dao = new UserDao(APP.getContext());
-//        Map<String, EaseUser> users = dao.getContactList();
-//        final EaseUser user = users.get(toChatUserPhone);
-
-
+        toChatUserPhone = getIntent().getExtras().getString("userId");
+        UserDao dao = new UserDao(APP.getContext());
+        Map<String, EaseUser> users = dao.getContactList();
+        final EaseUser user = users.get(toChatUserPhone);
+        toChatUserId = user.getUserid();
+        KLog.e("toChatUserId:"+toChatUserId);
         //use EaseChatFratFragment
         chatFragment = new ChatFragment();
         //pass parameters to chat fragment
@@ -101,38 +105,11 @@ public class ChatActivity extends BaseActivity {
 //        }).start();
     }
 
-    @Override
-    protected void onResume() {
-        joinRoom();
-        super.onResume();
-    }
-
-    private void joinRoom() {
-        toChatUserPhone = getIntent().getExtras().getString("userId");
-        Intent intent = new Intent(context, VideoService.class);
-        intent.putExtra(AppConstant.OBJECT, toChatUserPhone);
-        startService(intent);
-    }
-
-    private void quitRoom() {
-        roomMain.getRoom().getChannel().SendKickOut();
-        roomMain.getRoom().getChannel().Close();
-        Intent intent = new Intent(context, VideoService.class);
-        stopService(intent);
-    }
-
-    @Override
-    protected void onPause() {
-        quitRoom();
-        super.onPause();
-    }
-
 
     @Override
     protected void onDestroy() {
         activityInstance = null;
         EventBus.getDefault().unregister(this);
-        quitRoom();
         super.onDestroy();
     }
 
@@ -145,7 +122,6 @@ public class ChatActivity extends BaseActivity {
     public void onKickOut(KickoutUserInfo msg) {
         if (msg.getReasonid() == 101) {
             KLog.e("重复登录被请出");
-            joinRoom();
         } else if (msg.getReasonid() == 102) {
             ToastUtil.show(getApplicationContext(), "提出超时");
         } else if (msg.getReasonid() == 103) {
@@ -161,12 +137,12 @@ public class ChatActivity extends BaseActivity {
      * @param msg
      */
     @Subscriber(tag = "chat_login_msg")
-    public void chat_login_msg(int msg) {
-        if (msg == 0) {
+    public void chat_login_msg(LogonResponse msg) {
+        if (msg.getErrorid() == 0) {
             KLog.e("登陆成功");
-        } else if (msg == 404) {
+        } else if (msg.getErrorid() == 404) {
             KLog.e("数据库操作失败");
-        } else if (msg == 405) {
+        } else if (msg.getErrorid() == 405) {
             KLog.e("用户名或密码错误");
         }
     }
@@ -188,12 +164,12 @@ public class ChatActivity extends BaseActivity {
      * @param msg
      */
     @Subscriber(tag = "onTradeGiftError")
-    public void onTradeGiftError(int msg) {
-        if (msg == 504) {
+    public void onTradeGiftError(TradeGiftError msg) {
+        if (msg.getErrorid() == 504) {
             ToastUtil.show(context, "用户金币不足");
-        } else if (msg == 501) {
+        } else if (msg.getErrorid() == 501) {
             ToastUtil.show(context, "礼物未维护");
-        } else if (msg == 404) {
+        } else if (msg.getErrorid() == 404) {
             ToastUtil.show(context, "数据库操作失败");
         }
     }
@@ -223,18 +199,23 @@ public class ChatActivity extends BaseActivity {
         if ((VMSPUtil.get(context, AppConstant.GENDER, "")).equals("1")) {//女性不用扣币
             callBack.success("成功");
         } else {//男性先扣币再发送消息
-            roomMain.getRoom().getChannel().SendUserPayRequest(1, 3);
+            roomMain.getRoom().getChannel().SendUserPayRequest(Integer.parseInt(toChatUserId), 1, 3);
         }
         KLog.e("sendTextMessage");
     }
 
+    //扣币成功
     @Subscriber(tag = "onUserPayResponse")
-    public void onUserPayResponse(int msg) {
-        if (msg == 0) {
-            callBack.success("成功");
-        } else if (msg == 504) {
+    public void onUserPayResponse(UserPayResponse msg) {
+        callBack.success("成功");
+    }
+
+    //扣币失败
+    @Subscriber(tag = "onUserPayError")
+    public void onUserPayError(UserPayError msg) {
+        if (msg.getErrorid() == 504) {
             callBack.fail("金币不足");
-        } else if (msg == 404) {
+        } else if (msg.getErrorid() == 404) {
             callBack.fail("数据库操作失败");
         }
     }
@@ -311,7 +292,8 @@ public class ChatActivity extends BaseActivity {
                     ToastUtil.show(context, "请先选择一种礼物");
                     return;
                 }
-                roomMain.getRoom().getChannel().SendGift(gift_id, 1);
+                roomMain.getRoom().getChannel().SendGift(Integer.parseInt(toChatUserId), gift_id, 1,
+                        (String) VMSPUtil.get(context, AppConstant.USERNAME, ""), (String) VMSPUtil.get(context, AppConstant.USERPIC, ""));
                 gift_id = -1;
                 popupWindow.dismiss();
             }
