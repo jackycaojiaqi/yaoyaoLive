@@ -2,7 +2,7 @@ package com.xlg.android;
 
 import android.util.Log;
 
-import com.fubang.video.util.StringUtil;
+import com.socks.library.KLog;
 import com.xlg.android.protocol.Header;
 import com.xlg.android.protocol.Hello;
 import com.xlg.android.protocol.KeepLiveRepuest;
@@ -19,30 +19,23 @@ import com.xlg.android.protocol.UserPayRequest;
 import com.xlg.android.protocol.UserPayResponse;
 import com.xlg.android.protocol.VideoConnectRequest;
 import com.xlg.android.protocol.VideoDisConnectRequest;
-import com.xlg.android.room.RoomMain;
 import com.xlg.android.utils.ByteBuffer;
-import com.socks.library.KLog;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-public class RoomChannel implements ClientSocketHandler {
+public class RoomPoolChannel implements ClientSocketHandler {
     private int mUserID; // 用户ID
     private String mUserPwd; // 用户密码
 
     // 客户端回调
-    private RoomHandler mHandler;
+    private RoomPoolHandler mHandler;
     // 新的socket对像
-    private ClientSocket mSocket = new ClientSocket(this);
+    private ClientPoolSocket mSocket = new ClientPoolSocket(this);
     // 接收缓冲区
     private ByteBuffer mBuffer = new ByteBuffer();
 
 
-    public RoomChannel(RoomHandler handler) {
+    public RoomPoolChannel(RoomPoolHandler handler) {
         mHandler = handler;
     }
-
 
     public void setUserID(int userID) {
         mUserID = userID;
@@ -91,44 +84,11 @@ public class RoomChannel implements ClientSocketHandler {
                     Message.DecodeObject(mBuffer, logonResponse);
                     mHandler.onLoginRequest(logonResponse);
                     break;
-                case Header.MessageType_mxpTradeGiftError:
-                    TradeGiftError tradeGiftError = new TradeGiftError();
-                    Message.DecodeObject(mBuffer, tradeGiftError);
-                    mHandler.onTradeGiftError(tradeGiftError);
-                    break;
-                case Header.MessageType_mxpTradeGiftNotify:
-                    TradeGiftNotify tradeGiftNotify = new TradeGiftNotify();
-                    Message.DecodeObject(mBuffer, tradeGiftNotify);
-                    mHandler.onTradeGiftNotify(tradeGiftNotify);
-                    break;
-                case Header.MessageType_mxpUserPayResponse:
-                    UserPayResponse userPayResponse = new UserPayResponse();
-                    Message.DecodeObject(mBuffer, userPayResponse);
-                    mHandler.onUserPayResponse(userPayResponse);
-                    break;
-                case Header.MessageType_mxpUserPayError:
-                    UserPayError userPayError = new UserPayError();
-                    Message.DecodeObject(mBuffer, userPayError);
-                    mHandler.onUserPayError(userPayError);
-                    break;
                 case Header.MessageType_mxpKickoutUserNotify:
                     KickoutUserInfo kickoutUserInfo = new KickoutUserInfo();
                     Message.DecodeObject(mBuffer, kickoutUserInfo);
                     mHandler.onKickOut(kickoutUserInfo);
                     break;
-
-                case Header.MessageType_mxpVideoConnectResponse:////开始视频连接的反馈
-                    VideoConnectRequest videoConnectRequest = new VideoConnectRequest();
-                    Message.DecodeObject(mBuffer, videoConnectRequest);
-                    mHandler.VideoConnectResponse(videoConnectRequest);
-                    break;
-
-                case Header.MessageType_mxpVideoDisConnectRequest://断开视频连接的反馈
-                    VideoDisConnectRequest videoDConnectRequest = new VideoDisConnectRequest();
-                    Message.DecodeObject(mBuffer, videoDConnectRequest);
-                    mHandler.VideoDisConnectResponse(videoDConnectRequest);
-                    break;
-
                 case Header.MessageType_mxpUserLinkRequest://女性被安排到 需要弹窗  让女性处理
                     UserLinkInfo userLinkInfo = new UserLinkInfo();
                     Message.DecodeObject(mBuffer, userLinkInfo);
@@ -144,6 +104,7 @@ public class RoomChannel implements ClientSocketHandler {
                     Message.DecodeObject(mBuffer, userLinkInfo1);
                     mHandler.onUserLinkNotify(userLinkInfo1);
                     break;
+
                 default:
                     break;
             }
@@ -217,7 +178,7 @@ public class RoomChannel implements ClientSocketHandler {
 
     // 发送礼物请求
     public void SendGift(int toid, int gift_id, int num, String alias, String photo) {
-        KLog.e("SendGift "+ toid+" " + gift_id + " " + num + " " + alias + " " + photo);
+        KLog.e("SendGift " + toid + " " + gift_id + " " + num + " " + alias + " " + photo);
         Header head = new Header();
         head.setVersion((byte) 1);
         TradeGiftRecord obj = new TradeGiftRecord();
@@ -279,6 +240,7 @@ public class RoomChannel implements ClientSocketHandler {
 
     // 男性用户发起链接请求
     public void SendUserLinkRequest() {
+        KLog.e("SendUserLinkRequest");
         Header head = new Header();
         head.setVersion((byte) 1);
         UserLinkInfo obj = new UserLinkInfo();
@@ -287,6 +249,7 @@ public class RoomChannel implements ClientSocketHandler {
         head.setCmd1(Header.MessageType_mxpUserLinkRequest);
         sendPack(head, obj);
     }
+
     // 男性用户取消链接请求
     public void SendUserDisLinkRequest() {
         Header head = new Header();
@@ -299,11 +262,12 @@ public class RoomChannel implements ClientSocketHandler {
     }
 
     //女性用户响应接受还是取消请求
-    public void SendFemaleRequest(int type) {
+    public void SendFemaleRequest(int type,int male_id) {
         Header head = new Header();
         head.setVersion((byte) 1);
         UserLinkInfo obj = new UserLinkInfo();
-        obj.setUserid(mUserID);
+        obj.setUserid(male_id);
+        obj.setBuddyid(mUserID);
         obj.setType(type);//由女性发起  1、用户同意  2、用户拒绝
         head.setCmd1(Header.MessageType_mxpUserLinkResponse);
         sendPack(head, obj);

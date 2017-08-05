@@ -4,3 +4,4 @@ easeui/build
 build
 .gradle
 *.iml
+*.apk

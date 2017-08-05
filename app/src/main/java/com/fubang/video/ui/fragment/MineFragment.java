@@ -116,9 +116,9 @@ public class MineFragment extends BaseFragment {
                                 VMSPUtil.put(getActivity(), AppConstant.USERNAME, response.body().getInfo().getCalias());
                                 DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERNAME, "")));
                                 DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERPIC, "")));
-                                if (response.body().getInfo().getNgender().equals("1")) {//性别
+                                if (response.body().getInfo().getNgender().equals("0")) {//性别
                                     ivMineGender.setImageResource(R.drawable.ic_register_female_checked);
-                                } else if (response.body().getInfo().getNgender().equals("0")) {
+                                } else if (response.body().getInfo().getNgender().equals("1")) {
                                     ivMineGender.setImageResource(R.drawable.ic_register_male_checked);
                                 }
                             } else {//token失效

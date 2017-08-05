@@ -150,9 +150,9 @@ public class UserInfoActivity extends BaseActivity {
                                 }
                             }
                             banner.setImages(imags).setImageLoader(new GlideImageLoader()).start();//头像照片墙
-                            if (response.body().getInfo().getNgender().equals("0")) {//性别
+                            if (response.body().getInfo().getNgender().equals("1")) {//性别
                                 ivUserinfoGender.setImageResource(R.drawable.ic_register_male_checked);
-                            } else if (response.body().getInfo().getNgender().equals("1")) {
+                            } else if (response.body().getInfo().getNgender().equals("0")) {
                                 ivUserinfoGender.setImageResource(R.drawable.ic_register_female_checked);
                             }
                             tvUserinfoAddress.setText(response.body().getInfo().getCcity() + " ");//定位地址

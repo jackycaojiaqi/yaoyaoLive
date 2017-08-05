@@ -39,4 +39,6 @@
     <string name="edit_name">有趣的昵称会给别人留下深刻的印象（10字以内）</string>
     <string name="app_contact_way">更多问题，请联系官方QQ：121212</string>
     <string name="no_content">内容不能为空</string>
+    <string name="pick_call_title">有人想要和你视频聊天</string>
+    <string name="pick_call_content">是否接听？</string>
 </resources>

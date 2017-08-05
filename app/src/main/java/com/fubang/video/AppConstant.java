@@ -10,9 +10,9 @@ public class AppConstant {
     public static final String BASE_IMG_URL = "http://121.40.144.9:888/upload_pic/";//图片服务器前缀地址
     public static final String BASE_DOWNLOAD_MUSIC = "http://120.26.127.210:333/mp3_ge/";//音乐下载链接前缀
     public static final String BASE_DOWNLOAD_LRC = "http://120.26.127.210:333/mp3_lrc/";//音乐下载链接前缀
-    public static final String BASE_CONNECT_IP = "42.121.57.170";//音乐下载链接前缀
-    public static final int BASE_CONNECT_PORT = 11444;//音乐下载链接前缀
-
+    public static final String BASE_CONNECT_IP = "42.121.57.170";//c++服务器ip
+    public static final int BASE_CONNECT_PORT = 11444;//文字、礼物、扣币端口
+    public static final int BASE_POOL_CONNECT_PORT = 11445;//pool端口
     public static final String USERNAME = "username";
     public static final String USERPIC = "userpic";
     public static final String OBJECT = "onject";

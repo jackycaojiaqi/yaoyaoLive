@@ -71,7 +71,7 @@ public class CircleListSelfAdapter extends BaseQuickAdapter<CircleListEntity.Inf
             ImagUtil.set(mContext.getApplicationContext(), AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_circle_list_pic));
         if (!StringUtil.isEmptyandnull(item.getNgender()))//性别
         {
-            if (item.getNgender().endsWith("0")) {//男性
+            if (item.getNgender().endsWith("1")) {//男性
                 helper.setImageResource(R.id.iv_circle_list_gender, R.drawable.ic_register_male_checked);
             } else {//女性
                 helper.setImageResource(R.id.iv_circle_list_gender, R.drawable.ic_register_female_checked);

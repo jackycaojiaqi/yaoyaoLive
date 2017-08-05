@@ -51,9 +51,9 @@ public class HomeTuHaoAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.Tuhao
         if (!StringUtil.isEmptyandnull(item.getCphoto())){
             ImagUtil.setwithbg(mContext.getApplicationContext(), AppConstant.BASE_IMG_URL+item.getCphoto(),helper.getView(R.id.iv_item_home_online_bg));
         }
-        if (item.getNgender().equals("0")){
+        if (item.getNgender().equals("1")){
            helper.setImageResource(R.id.iv_item_home_online_gender,R.drawable.ic_register_male_checked);
-        }else if (item.getNgender().equals("1")){
+        }else if (item.getNgender().equals("0")){
             helper.setImageResource(R.id.iv_item_home_online_gender,R.drawable.ic_register_female_checked);
         }
 

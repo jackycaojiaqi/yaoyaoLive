@@ -13,7 +13,7 @@ import com.xlg.android.protocol.UserPayResponse;
 import com.xlg.android.protocol.VideoConnectRequest;
 import com.xlg.android.protocol.VideoDisConnectRequest;
 
-public interface RoomHandler {
+public interface RoomPoolHandler {
     // 连接成功
     public void onConnectSuccessed();
 
@@ -26,26 +26,10 @@ public interface RoomHandler {
     // 登录回调
     public void onLoginRequest(LogonResponse obj);
 
-    // 送礼物失败回调
-    public void onTradeGiftError(TradeGiftError obj);
-
-    // 送礼物成功回调
-    public void onTradeGiftNotify(TradeGiftNotify obj);
-
-    //发聊天信息扣金币回调
-    public void onUserPayResponse(UserPayResponse obj);
-
-    //发聊天信息扣金币失败回调
-    public void onUserPayError(UserPayError obj);
 
     //提出用户回调
     public void onKickOut(KickoutUserInfo obj);
 
-    //开始视频连接的反馈
-    public void VideoConnectResponse(VideoConnectRequest obj);
-
-    //断开视频连接的反馈
-    public void VideoDisConnectResponse(VideoDisConnectRequest obj);
 
     //msgid ==50  女性接收到 男性的发起  然后弹窗
     public void onUserLinkRequest(UserLinkInfo obj);

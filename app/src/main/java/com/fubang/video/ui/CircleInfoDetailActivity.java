@@ -120,7 +120,7 @@ public class CircleInfoDetailActivity extends BaseActivity {
                                 ImagUtil.set(getApplicationContext(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivCircleInfoPic);
                             if (!StringUtil.isEmptyandnull(response.body().getInfo().getNgender()))//性别
                             {
-                                if (response.body().getInfo().getNgender().endsWith("0")) {//男性
+                                if (response.body().getInfo().getNgender().endsWith("1")) {//男性
                                     ivCircleInfoGender.setImageResource(R.drawable.ic_register_male_checked);
                                 } else {//女性
                                     ivCircleInfoGender.setImageResource(R.drawable.ic_register_female_checked);

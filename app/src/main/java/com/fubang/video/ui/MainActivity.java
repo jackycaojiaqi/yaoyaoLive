@@ -28,7 +28,8 @@ import com.fubang.video.DemoHelper;
 import com.fubang.video.R;
 import com.fubang.video.adapter.FragmentTabAdapter;
 import com.fubang.video.base.BaseActivity;
-import com.fubang.video.service.VideoService;
+import com.fubang.video.callback.JsonCallBack;
+import com.fubang.video.entity.PublishUpLoadEntity;
 import com.fubang.video.ui.fragment.CircleFragment;
 import com.fubang.video.ui.fragment.FindFragment;
 import com.fubang.video.ui.fragment.HomeFragment;
@@ -43,6 +44,8 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.exceptions.HyphenateException;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 import com.xlg.android.protocol.KickoutUserInfo;
 import com.xlg.android.protocol.LogonResponse;
 import com.xlg.android.room.RoomMain;
@@ -55,7 +58,9 @@ import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +70,6 @@ import kr.co.namee.permissiongen.PermissionGen;
 import kr.co.namee.permissiongen.PermissionSuccess;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static com.fubang.video.service.VideoService.roomMain;
 
 public class MainActivity extends BaseActivity implements AMapLocationListener {
 
@@ -108,7 +112,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     private Context context;
     private String phone;
     private String password;
-
+    public static RoomMain roomMain = new RoomMain();
+    public static boolean is_video_call = false;
+    public static boolean is_male_pick_up_auto = false;
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
@@ -185,8 +191,14 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     }
 
     private void joinRoom() {
-        Intent intent = new Intent(context, VideoService.class);
-        startService(intent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                roomMain.Start(Integer.parseInt((String) VMSPUtil.get(getApplicationContext(), AppConstant.USERID, "0")),
+                        StringUtil.getMD5((String) VMSPUtil.get(getApplicationContext(), AppConstant.PASSWORD, "0")), AppConstant.BASE_CONNECT_IP, AppConstant.BASE_CONNECT_PORT);
+//                roomMain.Start(13, StringUtil.encodeMD5("123456"), 12, "42.121.57.170", 11444);
+            }
+        }).start();
     }
 
     private void quitRoom() {
@@ -194,8 +206,6 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
             roomMain.getRoom().getChannel().SendKickOut();
             roomMain.getRoom().getChannel().Close();
         }
-        Intent intent = new Intent(context, VideoService.class);
-        stopService(intent);
     }
 
     private void loginHX() {
@@ -292,22 +302,6 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         public void onMessageChanged(EMMessage message, Object change) {
         }
     };
-    private BroadcastReceiver broadcastReceiver;
-    private LocalBroadcastManager broadcastManager;
-
-    private void registerBroadcastReceiver() {
-        broadcastManager = LocalBroadcastManager.getInstance(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constant.ACTION_CONTACT_CHANAGED);
-        intentFilter.addAction(Constant.ACTION_GROUP_CHANAGED);
-        broadcastReceiver = new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-            }
-        };
-        broadcastManager.registerReceiver(broadcastReceiver, intentFilter);
-    }
 
     //定位权限请求成功
     @PermissionSuccess(requestCode = 200)
@@ -451,13 +445,42 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
             if (StringUtil.isEmptyandnull(StartUtil.getCity(context))) {//为空表示用户没有手动设置区域，则定位填充数据，如果有数据，则不填充
                 StartUtil.putCity(context, aMapLocation.getCity());
             }
-            StartUtil.putLAT(context, String.valueOf(aMapLocation.getLatitude()));
-            StartUtil.putLNG(context, String.valueOf(aMapLocation.getLongitude()));
-            LocationUtil.uploadLatLng(context, String.valueOf(aMapLocation.getLatitude()),
-                    String.valueOf(aMapLocation.getLongitude()));
+            VMSPUtil.put(context, AppConstant.CITY, aMapLocation.getCity());
+            VMSPUtil.put(context, AppConstant.PRIVINCE, aMapLocation.getProvince());
+            VMSPUtil.put(context, AppConstant.ADDRDETAIL, aMapLocation.getAddress());
+            VMSPUtil.put(context, AppConstant.LAT, aMapLocation.getLatitude());
+            VMSPUtil.put(context, AppConstant.LON, aMapLocation.getLongitude());
+            update_et_to_server("");
         }
     }
+    /**
+     * 更新用户扩展
+     */
+    private void update_et_to_server(String msg) {
+        Map<String, String> map = new HashMap<>();
+            map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
+            map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
+            map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
+            map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
 
+        OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_EXTINFO)
+                .tag(this)
+                .params("nuserid", String.valueOf(VMSPUtil.get(context, AppConstant.USERID, "")))
+                .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
+                .params(map)
+                .execute(new JsonCallBack<PublishUpLoadEntity>(PublishUpLoadEntity.class) {
+                    @Override
+                    public void onSuccess(Response<PublishUpLoadEntity> response) {
+                        if (response.body().getStatus().equals("success")) {
+                            KLog.e( "上传位置信息成功");
+                        }
+                    }
+                    @Override
+                    public void onError(Response<PublishUpLoadEntity> response) {
+                        super.onError(response);
+                    }
+                });
+    }
     @Override
     public void onBackPressed() {
         if (JCVideoPlayer.backPress()) {

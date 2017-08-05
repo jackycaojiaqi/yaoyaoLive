@@ -19,9 +19,10 @@ import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.adapter.GiftItemAdapter;
 import com.fubang.video.base.BaseActivity;
+import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.db.UserDao;
 import com.fubang.video.entity.GiftEntity;
-import com.fubang.video.service.VideoService;
+import com.fubang.video.entity.SendMsgEntity;
 import com.fubang.video.ui.fragment.ChatFragment;
 import com.fubang.video.util.GiftUtil;
 import com.fubang.video.util.StringUtil;
@@ -30,6 +31,8 @@ import com.hyphenate.easeui.callback.SelfMessageCallBack;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.hyphenate.util.EasyUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
 import com.vmloft.develop.app.demo.call.CallManager;
 import com.vmloft.develop.app.demo.call.VideoCallActivity;
@@ -52,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.fubang.video.service.VideoService.roomMain;
+import static com.fubang.video.ui.MainActivity.roomMain;
 
 /**
  * Created by jacky on 2017/7/18.
@@ -78,10 +81,25 @@ public class ChatActivity extends BaseActivity {
         activityInstance = this;
         EventBus.getDefault().register(this);
         toChatUserPhone = getIntent().getExtras().getString("userId");
-        UserDao dao = new UserDao(APP.getContext());
-        Map<String, EaseUser> users = dao.getContactList();
-        final EaseUser user = users.get(toChatUserPhone);
-        toChatUserId = user.getUserid();
+
+        OkGo.<SendMsgEntity>post(AppConstant.BASE_URL + AppConstant.URL_CHECK_REG)
+                .tag(this)
+                .params("ctel", toChatUserPhone)
+                .execute(new JsonCallBack<SendMsgEntity>(SendMsgEntity.class) {
+                    @Override
+                    public void onSuccess(Response<SendMsgEntity> response) {
+                        if (response.body().getStatus().equals("fail")) {//不存在这个手机号码
+                            toChatUserId = response.body().getInfo().getNuserid();
+                        } else {//存在这个手机号码
+                            ToastUtil.show(context, "对方帐号不存在");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<SendMsgEntity> response) {
+                        super.onError(response);
+                    }
+                });
         KLog.e("toChatUserId:" + toChatUserId);
         //use EaseChatFratFragment
         chatFragment = new ChatFragment();
@@ -198,7 +216,7 @@ public class ChatActivity extends BaseActivity {
     @Subscriber(tag = "sendTextMessage")
     public void sendTextMessage(SelfMessageCallBack callBack) {
         this.callBack = callBack;
-        if ((VMSPUtil.get(context, AppConstant.GENDER, "")).equals("1")) {//女性不用扣币
+        if ((VMSPUtil.get(context, AppConstant.GENDER, "")).equals("0")) {//女性不用扣币
             callBack.success("成功");
         } else {//男性先扣币再发送消息
             roomMain.getRoom().getChannel().SendUserPayRequest(Integer.parseInt(toChatUserId), 1, 3);

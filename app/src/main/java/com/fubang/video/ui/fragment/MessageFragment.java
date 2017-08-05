@@ -28,7 +28,6 @@ import com.fubang.video.R;
 import com.fubang.video.base.BaseFragment;
 import com.fubang.video.db.InviteMessgeDao;
 import com.fubang.video.domain.InviteMessage;
-import com.fubang.video.service.VideoService;
 import com.fubang.video.ui.ChatActivity;
 import com.fubang.video.ui.NotifyActivity;
 import com.hyphenate.EMConnectionListener;

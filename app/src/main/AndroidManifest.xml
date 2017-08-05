@@ -143,24 +143,23 @@
         <!--高德地图-->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="9d200eea997fbd046cc011231094b183"/>
+            android:value="9d200eea997fbd046cc011231094b183" />
         <!--支付宝-->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <activity
             android:name="com.alipay.sdk.app.H5AuthActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
 
-        <service android:name=".service.VideoService" />
+        <!--<service android:name=".service.VideoService" />-->
+        <service android:name=".service.PoolService" />
     </application>
     <!--项目权限配置-->
     <!--相机-->

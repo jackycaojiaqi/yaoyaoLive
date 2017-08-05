@@ -3,6 +3,8 @@ package com.fubang.video.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,8 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.fubang.video.AppConstant;
+import com.fubang.video.DemoHelper;
 import com.fubang.video.R;
 import com.fubang.video.adapter.HomeLifeAdapter;
 import com.fubang.video.adapter.HomeNewAdapter;
@@ -27,10 +32,16 @@ import com.fubang.video.adapter.HomeOnlineAdapter;
 import com.fubang.video.adapter.HomeTuHaoAdapter;
 import com.fubang.video.base.BaseFragment;
 import com.fubang.video.callback.JsonCallBack;
+import com.fubang.video.entity.BaseInfoEntity;
 import com.fubang.video.entity.HomeEntity;
+import com.fubang.video.service.PoolService;
 import com.fubang.video.ui.CircleInfoDetailActivity;
+import com.fubang.video.ui.LoginActivity;
+import com.fubang.video.ui.MainActivity;
 import com.fubang.video.ui.SearUserActivity;
 import com.fubang.video.ui.UserInfoActivity;
+import com.fubang.video.util.ImagUtil;
+import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.ToastUtil;
 import com.fubang.video.widget.DividerItemDecoration;
 import com.hyphenate.EMCallBack;
@@ -39,8 +50,17 @@ import com.hyphenate.chat.EMMessage;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.skyfishjy.library.RippleBackground;
+import com.socks.library.KLog;
+import com.vmloft.develop.app.demo.call.CallManager;
+import com.vmloft.develop.app.demo.call.VideoCallActivity;
 import com.vmloft.develop.library.tools.utils.VMLog;
 import com.vmloft.develop.library.tools.utils.VMSPUtil;
+import com.xlg.android.protocol.LogonResponse;
+import com.xlg.android.protocol.UserLinkInfo;
+import com.xlg.android.room.RoomPoolMain;
+
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +69,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
 
 /**
  * Created by jacky on 2017/7/11.
@@ -106,12 +127,14 @@ public class HomeFragment extends BaseFragment {
     private List<HomeEntity.InfoBean.TuhaoListBean> list_action2 = new ArrayList<>();
     private List<HomeEntity.InfoBean.NewListBean> list_action3 = new ArrayList<>();
     private List<HomeEntity.InfoBean.LifeListBean> list_action4 = new ArrayList<>();
+    private RoomPoolMain roomMain = new RoomPoolMain();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_main_call, container, false);
         context = getActivity();
+        EventBus.getDefault().register(this);
         unbinder = ButterKnife.bind(this, view);
         init();
         return view;
@@ -120,6 +143,154 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initdate();
+    }
+
+    /**
+     * 登录回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "chat_login_pool_msg")
+    public void chat_login_pool_msg(LogonResponse msg) {
+        if (msg.getErrorid() == 0) {
+            KLog.e("POOL登陆成功");
+        } else if (msg.getErrorid() == 404) {
+            KLog.e("POOL数据库操作失败");
+        } else if (msg.getErrorid() == 405) {
+            KLog.e("POOL用户名或密码错误");
+        }
+    }
+
+    private MaterialDialog dialog;
+
+    /**
+     * 女性接收到视频请求弹窗，并处理接收还是取消 msgid ==50
+     */
+    @Subscriber(tag = "onUserLinkRequest")
+    public void onUserLinkRequest(final UserLinkInfo msg) {
+        if (msg.getType() == 0) {//男主播请求
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                    .title(R.string.pick_call_title)
+                    .content(R.string.pick_call_content)
+                    .positiveText("接听")
+                    .negativeText("取消")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            roomMain.getRoom().getChannel().SendFemaleRequest(1, msg.getUserid());//同意
+                            dialog.dismiss();
+                        }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            roomMain.getRoom().getChannel().SendFemaleRequest(2, msg.getUserid());//拒绝
+                            dialog.dismiss();
+                        }
+                    });
+            dialog = builder.build();
+            dialog.show();
+        }
+    }
+
+    /**
+     * 男性处理 没有匹配的用户  msgid ==51
+     */
+    @Subscriber(tag = "onUserLinkResponse")
+    public void onUserLinkResponse(UserLinkInfo msg) {
+        if (msg.getType() == 3) {//男主播请求
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                    .title("没有匹配到可用的女主播")
+                    .positiveText("确定")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                        }
+                    });
+            MaterialDialog dialog = builder.build();
+            dialog.show();
+        }
+    }
+
+    /**
+     * 广播  msgid ==52
+     */
+    @Subscriber(tag = "onUserLinkNotify")
+    public void onUserLinkNotify(UserLinkInfo msg) {
+        if (msg.getType() == 5) {//表示已经抢单成功,男性就是发起人 女性就是女主播
+            if (VMSPUtil.get(context, AppConstant.GENDER, "").equals("0")) {//女性
+                OkGo.<BaseInfoEntity>post(AppConstant.BASE_URL + AppConstant.URL_BASE_INFO)
+                        .tag(this)
+                        .params("nuserid", msg.getUserid())
+                        .params("ctoken", String.valueOf(VMSPUtil.get(getActivity(), AppConstant.TOKEN, "")))
+                        .execute(new JsonCallBack<BaseInfoEntity>(BaseInfoEntity.class) {
+                            @Override
+                            public void onSuccess(Response<BaseInfoEntity> response) {
+                                if (response.body() != null)
+                                    if (response.body().getStatus().equals("success")) {
+                                        //配对成功先把自己踢出  并置按钮为取消状态
+                                        btnHomeFemaleStart.setBackgroundResource(R.drawable.ic_home_female_bg);
+                                        btnHomeFemaleStop.setBackgroundResource(R.drawable.ic_home_female_bg_select);
+                                        is_female_control_start = false;
+                                        roomMain.getRoom().getChannel().SendKickOut();
+                                        roomMain.getRoom().getChannel().Close();
+                                        callVideo(response.body().getInfo().getCtel());//获取到手机号码后发起通话
+                                    } else {//token失效
+                                        startActivity(new Intent(getActivity(), LoginActivity.class));
+                                    }
+                            }
+
+                            @Override
+                            public void onError(Response<BaseInfoEntity> response) {
+                                super.onError(response);
+                            }
+                        });
+            } else {//男性
+                //置男性为自动接起主播的视频聊天
+                MainActivity.is_male_pick_up_auto = true;
+                roomMain.getRoom().getChannel().SendKickOut();
+                roomMain.getRoom().getChannel().Close();
+                //重置按钮动画状态
+                rippleView.stopRippleAnimation();
+                //等待视频聊天界面的呼起
+            }
+        } else if (msg.getType() == 4) {//用户取消或者已有人抢单取消
+            if (dialog != null) {
+                if (dialog.isShowing()){
+                    dialog.dismiss();
+                }
+            }
+            if (VMSPUtil.get(context, AppConstant.GENDER, "").equals("0")) {//女性
+                ToastUtil.show(context, "该聊天已经被抢接，还请下次加油！");
+            } else {
+                ToastUtil.show(context, "已经取消配对视频");
+            }
+        }
+    }
+
+    /**
+     * 视频呼叫
+     */
+
+    private void callVideo(String contacts) {
+        Intent intent = new Intent(context, VideoCallActivity.class);
+        intent.putExtra("from", (String) VMSPUtil.get(context, AppConstant.PHONE, ""));
+        intent.putExtra("to", contacts);
+        VMSPUtil.put(context, AppConstant.CALLFROM, (String) VMSPUtil.get(context, AppConstant.PHONE, ""));
+        VMSPUtil.put(context, AppConstant.CALLTO, contacts);
+        CallManager.getInstance().setChatId(contacts);
+        CallManager.getInstance().setInComingCall(false);
+        CallManager.getInstance().setCallType(CallManager.CallType.VIDEO);
+        startActivity(intent);
+    }
+
+    /**
+     * pool男性用户取消
+     */
+    @Subscriber(tag = "onUserLinkCancelRequest")
+    public void onUserLinkCancelRequest(UserLinkInfo msg) {
+
     }
 
     private String gender_post;
@@ -261,7 +432,7 @@ public class HomeFragment extends BaseFragment {
             }
         });
         SwipeRefreshView.setProgressViewOffset(true, 150, 250);
-        if (VMSPUtil.get(context, AppConstant.GENDER, "").equals("1")) {
+        if (VMSPUtil.get(context, AppConstant.GENDER, "").equals("0")) {
             llHomeFemaleControl.setVisibility(View.VISIBLE);
         } else {
             llHomeFemaleControl.setVisibility(View.GONE);
@@ -269,47 +440,10 @@ public class HomeFragment extends BaseFragment {
     }
 
 
-    /**
-     * 最终调用发送信息方法
-     *
-     * @param message 需要发送的消息
-     */
-    private void sendMessage(final EMMessage message) {
-        /**
-         *  调用sdk的消息发送方法发送消息，发送消息时要尽早的设置消息监听，防止消息状态已经回调，
-         *  但是自己没有注册监听，导致检测不到消息状态的变化
-         *  所以这里在发送之前先设置消息的状态回调
-         */
-        message.setMessageStatusCallback(new EMCallBack() {
-            @Override
-            public void onSuccess() {
-                String str = String.format("消息发送成功 msgId %s, content %s", message.getMsgId(),
-                        message.getBody());
-                ToastUtil.show(context, str);
-                VMLog.i(str);
-            }
-
-            @Override
-            public void onError(final int i, final String s) {
-                String str = String.format("消息发送失败 code: %d, error: %s", i, s);
-                ToastUtil.show(context, str);
-                VMLog.i(str);
-            }
-
-            @Override
-            public void onProgress(int i, String s) {
-                VMLog.i("消息发送中 progress: %d, %s", i, s);
-            }
-        });
-        // 发送消息
-        EMClient.getInstance().chatManager().sendMessage(message);
-
-    }
-
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        EventBus.getDefault().unregister(this);
         unbinder.unbind();
     }
 
@@ -319,11 +453,32 @@ public class HomeFragment extends BaseFragment {
     @OnClick({R.id.tv_home_random_call, R.id.tv_home_action1, R.id.tv_home_action2, R.id.tv_home_action3, R.id.tv_home_action4,
             R.id.iv_action, R.id.btn_home_female_start, R.id.btn_home_female_stop})
     public void onViewClicked(View view) {
+        Intent intent;
         switch (view.getId()) {
             case R.id.tv_home_random_call:
+                if (VMSPUtil.get(context, AppConstant.GENDER, "").equals("0")) {//女性不能发起一对多通话
+                    return;
+                }
                 if (!is_call_start) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            roomMain.Start(Integer.parseInt((String) VMSPUtil.get(getActivity(), AppConstant.USERID, "0")),
+                                    StringUtil.getMD5((String) VMSPUtil.get(getActivity(), AppConstant.PASSWORD, "0")), AppConstant.BASE_CONNECT_IP, AppConstant.BASE_POOL_CONNECT_PORT);
+                        }
+                    }).start();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            roomMain.getRoom().getChannel().SendUserLinkRequest();//男性的话  开启 服务 直接默认发起配对请求
+                        }
+                    }, 1000);
+                    //在服务中开启配对
                     rippleView.startRippleAnimation();
                 } else {
+                    roomMain.getRoom().getChannel().SendUserDisLinkRequest();
+                    roomMain.getRoom().getChannel().SendKickOut();
+                    roomMain.getRoom().getChannel().Close();
                     rippleView.stopRippleAnimation();
                 }
                 is_call_start = !is_call_start;
@@ -340,6 +495,13 @@ public class HomeFragment extends BaseFragment {
                 startActivity(new Intent(context, SearUserActivity.class));
                 break;
             case R.id.btn_home_female_start:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        roomMain.Start(Integer.parseInt((String) VMSPUtil.get(getActivity(), AppConstant.USERID, "0")),
+                                StringUtil.getMD5((String) VMSPUtil.get(getActivity(), AppConstant.PASSWORD, "0")), AppConstant.BASE_CONNECT_IP, AppConstant.BASE_POOL_CONNECT_PORT);
+                    }
+                }).start();
                 btnHomeFemaleStart.setBackgroundResource(R.drawable.ic_home_female_bg_select);
                 btnHomeFemaleStop.setBackgroundResource(R.drawable.ic_home_female_bg);
                 is_female_control_start = true;
@@ -348,7 +510,18 @@ public class HomeFragment extends BaseFragment {
                 btnHomeFemaleStart.setBackgroundResource(R.drawable.ic_home_female_bg);
                 btnHomeFemaleStop.setBackgroundResource(R.drawable.ic_home_female_bg_select);
                 is_female_control_start = false;
+                roomMain.getRoom().getChannel().SendKickOut();
+                roomMain.getRoom().getChannel().Close();
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (roomMain.getRoom().getChannel() != null) {
+            roomMain.getRoom().getChannel().SendKickOut();
+            roomMain.getRoom().getChannel().Close();
+        }
+        super.onDestroy();
     }
 }

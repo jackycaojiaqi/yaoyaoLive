@@ -30,8 +30,8 @@ import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.db.UserDao;
 import com.fubang.video.entity.GiftEntity;
 import com.fubang.video.entity.SendMsgEntity;
-import com.fubang.video.service.VideoService;
 import com.fubang.video.ui.LoginPasswordActivity;
+import com.fubang.video.ui.MainActivity;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.ui.RegisterActivity;
 import com.fubang.video.util.GiftUtil;
@@ -78,8 +78,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.fubang.video.APP.is_FloatWindow;
-import static com.fubang.video.service.VideoService.TAG;
-import static com.fubang.video.service.VideoService.roomMain;
+import static com.fubang.video.ui.MainActivity.roomMain;
 
 /**
  * Created by lzan13 on 2016/10/18.
@@ -677,6 +676,10 @@ public class VideoCallActivity extends CallActivity {
                 } else {
                     callStateView.setText(R.string.call_connected);
                 }
+                if (MainActivity.is_male_pick_up_auto) {//如果男性和女主播通话链接成功则自动接起视屏聊天
+                    answerCall();
+                }
+                MainActivity.is_male_pick_up_auto = false;//将自动接听状态重置
                 break;
             case ACCEPTED: // 通话已接通
                 VMLog.i("通话已接通");
@@ -686,7 +689,7 @@ public class VideoCallActivity extends CallActivity {
                     timer.cancel();
                     timer = null;
                 }
-                VideoService.is_video_call = true;
+                MainActivity.is_video_call = true;
                 roomMain.getRoom().getChannel().SendVideoConnect(Integer.parseInt(toChatUserId));
                 progressBar.setVisibility(View.GONE);
                 // 通话接通，更新界面 UI 显示
