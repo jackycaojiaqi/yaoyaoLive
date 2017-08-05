@@ -6,8 +6,11 @@ import android.os.Vibrator;
 import android.view.WindowManager;
 
 import com.fubang.video.APP;
+import com.fubang.video.AppConstant;
+import com.fubang.video.service.VideoService;
 import com.hyphenate.chat.EMClient;
 import com.vmloft.develop.library.tools.VMBaseActivity;
+import com.vmloft.develop.library.tools.utils.VMSPUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -70,6 +73,10 @@ public class CallActivity extends VMBaseActivity {
      * 挂断通话
      */
     protected void endCall() {
+        if (VideoService.is_video_call) {
+            VideoService.roomMain.getRoom().getChannel().SendVideoDisConnect(Integer.parseInt((String) VMSPUtil.get(getApplicationContext(), AppConstant.USERID, "")));
+        }
+        VideoService.is_video_call = false;
         APP.is_FloatWindow = false;//设置悬浮窗状态为关闭
         CallManager.getInstance().endCall();
         onFinish();

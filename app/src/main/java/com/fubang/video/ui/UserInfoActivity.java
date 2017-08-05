@@ -243,11 +243,10 @@ public class UserInfoActivity extends BaseActivity {
      */
     private void callVideo(String contacts) {
         Intent intent = new Intent(context, VideoCallActivity.class);
-        intent.putExtra(AppConstant.OBJECT, (String)VMSPUtil.get(context,AppConstant.USERID,""));
-        intent.putExtra("from", (String)VMSPUtil.get(context,AppConstant.USERID,""));
-        intent.putExtra("to",user_id);
-        VMSPUtil.put(context, AppConstant.CALLFROM, (String)VMSPUtil.get(context, AppConstant.USERID, ""));
-        VMSPUtil.put(context, AppConstant.CALLTO, user_id);
+        intent.putExtra("from", (String)VMSPUtil.get(context,AppConstant.PHONE,""));
+        intent.putExtra("to",phone);
+        VMSPUtil.put(context, AppConstant.CALLFROM, (String)VMSPUtil.get(context, AppConstant.PHONE, ""));
+        VMSPUtil.put(context, AppConstant.CALLTO, phone);
         CallManager.getInstance().setChatId(contacts);
         CallManager.getInstance().setInComingCall(false);
         CallManager.getInstance().setCallType(CallManager.CallType.VIDEO);

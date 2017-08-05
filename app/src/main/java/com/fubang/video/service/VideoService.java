@@ -22,7 +22,7 @@ import java.util.Map;
 public class VideoService extends Service {
     public static final String TAG = "VideoService";
     public static RoomMain roomMain = new RoomMain();
-
+    public static boolean is_video_call = false;
     @Override
     public void onCreate() {
         super.onCreate();

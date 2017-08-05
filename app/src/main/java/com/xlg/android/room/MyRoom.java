@@ -11,6 +11,8 @@ import com.xlg.android.protocol.TradeGiftError;
 import com.xlg.android.protocol.TradeGiftNotify;
 import com.xlg.android.protocol.UserPayError;
 import com.xlg.android.protocol.UserPayResponse;
+import com.xlg.android.protocol.VideoConnectRequest;
+import com.xlg.android.protocol.VideoDisConnectRequest;
 
 import org.simple.eventbus.EventBus;
 
@@ -98,5 +100,17 @@ public class MyRoom implements RoomHandler {
     public void onKickOut(KickoutUserInfo obj) {
         KLog.e("onKickOut" + obj.getReasonid());
         EventBus.getDefault().post(obj, "onKickOut");
+    }
+
+    @Override
+    public void VideoConnectResponse(VideoConnectRequest obj) {
+        KLog.e("VideoConnectResponse" + obj.getUserid());
+        EventBus.getDefault().post(obj, "VideoConnectResponse");
+    }
+
+    @Override
+    public void VideoDisConnectResponse(VideoDisConnectRequest obj) {
+        KLog.e("VideoDisConnectResponse" + obj.getUserid());
+        EventBus.getDefault().post(obj, "VideoDisConnectResponse");
     }
 }

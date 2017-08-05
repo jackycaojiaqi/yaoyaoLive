@@ -15,7 +15,7 @@ public class TradeGiftRecord {
     @StructOrder(4)
     private byte[] alias = new byte[32];        //发送者昵称
     @StructOrder(5)
-    private byte[] photo = new byte[32];       //发送者头像
+    private byte[] photo = new byte[128];       //发送者头像
 
     public int getUserid() {
         return userid;

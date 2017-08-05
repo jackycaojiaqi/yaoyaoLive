@@ -16,6 +16,8 @@ import com.xlg.android.protocol.TradeGiftRecord;
 import com.xlg.android.protocol.UserPayError;
 import com.xlg.android.protocol.UserPayRequest;
 import com.xlg.android.protocol.UserPayResponse;
+import com.xlg.android.protocol.VideoConnectRequest;
+import com.xlg.android.protocol.VideoDisConnectRequest;
 import com.xlg.android.room.RoomMain;
 import com.xlg.android.utils.ByteBuffer;
 import com.socks.library.KLog;
@@ -113,6 +115,18 @@ public class RoomChannel implements ClientSocketHandler {
                     Message.DecodeObject(mBuffer, kickoutUserInfo);
                     mHandler.onKickOut(kickoutUserInfo);
                     break;
+
+                case Header.MessageType_mxpVideoConnectResponse:////开始视频连接的反馈
+                    VideoConnectRequest videoConnectRequest = new VideoConnectRequest();
+                    Message.DecodeObject(mBuffer, videoConnectRequest);
+                    mHandler.VideoConnectResponse(videoConnectRequest);
+                    break;
+
+                case Header.MessageType_mxpVideoDisConnectRequest://断开视频连接的反馈
+                    VideoDisConnectRequest videoDConnectRequest = new VideoDisConnectRequest();
+                    Message.DecodeObject(mBuffer, videoDConnectRequest);
+                    mHandler.VideoDisConnectResponse(videoDConnectRequest);
+                    break;
                 default:
                     break;
             }
@@ -185,8 +199,8 @@ public class RoomChannel implements ClientSocketHandler {
     }
 
     // 发送礼物请求
-    public void SendGift(int toid,int gift_id, int num, String alias, String photo) {
-        KLog.e("SendGift" + gift_id + " " + num + " " + alias + " " + photo);
+    public void SendGift(int toid, int gift_id, int num, String alias, String photo) {
+        KLog.e("SendGift "+ toid+" " + gift_id + " " + num + " " + alias + " " + photo);
         Header head = new Header();
         head.setVersion((byte) 1);
         TradeGiftRecord obj = new TradeGiftRecord();
@@ -201,7 +215,7 @@ public class RoomChannel implements ClientSocketHandler {
     }
 
     // 发起预扣币消息
-    public void SendUserPayRequest(int toid,int money, int type) {
+    public void SendUserPayRequest(int toid, int money, int type) {
         Header head = new Header();
         head.setVersion((byte) 1);
         UserPayRequest obj = new UserPayRequest();
@@ -222,6 +236,27 @@ public class RoomChannel implements ClientSocketHandler {
         obj.setBuddyid(mUserID);
         obj.setReasonid((short) 103);//101-重复登录被请出;102-超时;103-自己退出
         head.setCmd1(Header.MessageType_mxpKickoutUserRequest);
+        sendPack(head, obj);
+    }
+
+    // 开始视频连接的请求
+    public void SendVideoConnect(int buddyid) {
+        Header head = new Header();
+        head.setVersion((byte) 1);
+        VideoConnectRequest obj = new VideoConnectRequest();
+        obj.setUserid(mUserID);
+        obj.setBuddyid(buddyid);
+        head.setCmd1(Header.MessageType_mxpVideoConnectRequest);
+        sendPack(head, obj);
+    }
+
+    // 断开视频连接的请求
+    public void SendVideoDisConnect(int buddyid) {
+        Header head = new Header();
+        head.setVersion((byte) 1);
+        VideoDisConnectRequest obj = new VideoDisConnectRequest();
+        obj.setUserid(mUserID);
+        head.setCmd1(Header.MessageType_mxpVideoDisConnectRequest);
         sendPack(head, obj);
     }
 }

@@ -27,6 +27,11 @@ public class Header {
     public static final byte MessageType_mxpKickoutUserRequest = (byte) 20; // 20;系统踢用户，或者用户自己退出
     public static final byte MessageType_mxpKickoutUserNotify = (byte) 21; // 21;系统踢用户，或者用户自己退出返回
 
+    public static final byte MessageType_mxpVideoConnectRequest = (byte) 22; 	//开始视频连接的请求
+    public static final byte MessageType_mxpVideoConnectResponse = (byte) 23; //开始视频连接的反馈
+    public static final byte MessageType_mxpVideoDisConnectRequest = (byte) 24; 	//断开视频连接的请求
+
+
 
     public static final byte MessageType_mxpUserLinkRequest = (byte) 50; // 	连接请求
     public static final byte MessageType_mxpUserLinkResponse = (byte) 51; // 用户响应

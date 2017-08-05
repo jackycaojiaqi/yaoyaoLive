@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:id="@+id/infoRl"
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:layout_marginLeft="8dp"
@@ -28,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
+            android:singleLine="true"
             android:layout_marginTop="4dp"
             android:layout_toRightOf="@id/headIv"
             android:text="nickName"
@@ -54,7 +55,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="6dp"
-            android:layout_toRightOf="@id/nickNameTv"
+            android:layout_alignParentRight="true"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_gift_21" />
     </RelativeLayout>

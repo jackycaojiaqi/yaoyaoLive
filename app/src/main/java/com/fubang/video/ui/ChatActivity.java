@@ -76,19 +76,19 @@ public class ChatActivity extends BaseActivity {
         super.onCreate(arg0);
         setContentView(R.layout.em_activity_chat);
         activityInstance = this;
+        EventBus.getDefault().register(this);
         toChatUserPhone = getIntent().getExtras().getString("userId");
         UserDao dao = new UserDao(APP.getContext());
         Map<String, EaseUser> users = dao.getContactList();
         final EaseUser user = users.get(toChatUserPhone);
         toChatUserId = user.getUserid();
-        KLog.e("toChatUserId:"+toChatUserId);
+        KLog.e("toChatUserId:" + toChatUserId);
         //use EaseChatFratFragment
         chatFragment = new ChatFragment();
         //pass parameters to chat fragment
         chatFragment.setArguments(getIntent().getExtras());
         frameLayout = (FrameLayout) findViewById(R.id.container);
         getSupportFragmentManager().beginTransaction().add(R.id.container, chatFragment).commit();
-        EventBus.getDefault().register(this);
         //礼物连击
         giftFrameLayout1 = (GiftFrameLayout) findViewById(R.id.gift_layout1);
         giftFrameLayout2 = (GiftFrameLayout) findViewById(R.id.gift_layout2);
@@ -104,6 +104,7 @@ public class ChatActivity extends BaseActivity {
 //            }
 //        }).start();
     }
+
 
 
     @Override
@@ -179,9 +180,10 @@ public class ChatActivity extends BaseActivity {
      */
     @Subscriber(tag = "onTradeGiftNotify")
     public void onTradeGiftNotify(TradeGiftNotify obj) {
+        KLog.e(obj.getPhoto());
         giftControl.loadGift(new GiftModel(String.valueOf(gift_id), "送出礼物：", 1,
-                String.valueOf(obj.getGiftid()), String.valueOf(obj.getUserid()), String.valueOf(obj.getUserid()),
-                AppConstant.BASE_IMG_URL + VMSPUtil.get(context, AppConstant.USERPIC, ""), System.currentTimeMillis()));
+                String.valueOf(obj.getGiftid()), String.valueOf(obj.getUserid()), obj.getAlias(),
+                obj.getPhoto(), System.currentTimeMillis()));
     }
 
     @Subscriber(tag = "callVideo")
@@ -207,7 +209,14 @@ public class ChatActivity extends BaseActivity {
     //扣币成功
     @Subscriber(tag = "onUserPayResponse")
     public void onUserPayResponse(UserPayResponse msg) {
-        callBack.success("成功");
+        if (callBack != null) {//放置礼物扣费 也走这个回调
+            if (msg.getType() == 1) {
+                callBack.success("成功");
+            } else {
+                ToastUtil.show(context, "扣币操作失败");
+            }
+            callBack = null;//用完之后重置
+        }
     }
 
     //扣币失败
@@ -325,9 +334,9 @@ public class ChatActivity extends BaseActivity {
     private void callVideo() {
         KLog.e(toChatUserPhone);
         Intent intent = new Intent(context, VideoCallActivity.class);
-        intent.putExtra("from", (String) VMSPUtil.get(context, AppConstant.USERID, ""));
+        intent.putExtra("from", (String) VMSPUtil.get(context, AppConstant.PHONE, ""));
         intent.putExtra("to", toChatUserPhone);
-        VMSPUtil.put(context, AppConstant.CALLFROM, (String) VMSPUtil.get(context, AppConstant.USERID, ""));
+        VMSPUtil.put(context, AppConstant.CALLFROM, (String) VMSPUtil.get(context, AppConstant.PHONE, ""));
         VMSPUtil.put(context, AppConstant.CALLTO, toChatUserPhone);
         CallManager.getInstance().setChatId(toChatUserPhone);
         CallManager.getInstance().setInComingCall(false);

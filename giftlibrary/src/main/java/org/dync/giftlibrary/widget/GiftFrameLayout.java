@@ -377,6 +377,7 @@ public class GiftFrameLayout extends FrameLayout implements Handler.Callback {
                 isShowing = true;
                 isEnd = false;
                 if (mGift.getSendUserPic().equals("")) {
+
                     Glide.with(mContext).load(R.mipmap.ic_user_pic).error(R.mipmap.ic_user_pic).transform(new GlideCircleTransform(mContext)).into(anim_header);
                 } else {
                     Glide.with(mContext).load(mGift.getSendUserPic()).error(R.mipmap.ic_user_pic).transform(new GlideCircleTransform(mContext)).into(anim_header);

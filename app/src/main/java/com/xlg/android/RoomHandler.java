@@ -9,6 +9,8 @@ import com.xlg.android.protocol.TradeGiftError;
 import com.xlg.android.protocol.TradeGiftNotify;
 import com.xlg.android.protocol.UserPayError;
 import com.xlg.android.protocol.UserPayResponse;
+import com.xlg.android.protocol.VideoConnectRequest;
+import com.xlg.android.protocol.VideoDisConnectRequest;
 
 public interface RoomHandler {
 	// 连接成功
@@ -35,4 +37,10 @@ public interface RoomHandler {
 
 	//提出用户回调
 	public void onKickOut(KickoutUserInfo obj);
+
+	//开始视频连接的反馈
+	public void VideoConnectResponse(VideoConnectRequest obj);
+
+	//断开视频连接的反馈
+	public void VideoDisConnectResponse(VideoDisConnectRequest obj);
 }
