@@ -35,16 +35,16 @@ import java.util.List;
  * ━━━━━━神兽出没━━━━━━
  * Created by jacky on 17/3/10.
  */
-public class HomeTuHaoAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.TuhaoListBean, BaseViewHolder> {
-    private List<HomeEntity.InfoBean.TuhaoListBean> list;
+public class HomeNvShengAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.NvShengListBean, BaseViewHolder> {
+    private List<HomeEntity.InfoBean.NvShengListBean> list;
 
-    public HomeTuHaoAdapter(int layoutResId, List data) {
+    public HomeNvShengAdapter(int layoutResId, List data) {
         super(layoutResId, data);
         list = data;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, HomeEntity.InfoBean.TuhaoListBean item) {
+    protected void convert(BaseViewHolder helper, HomeEntity.InfoBean.NvShengListBean item) {
         helper.setText(R.id.tv_item_home_online_age,item.getNage()+"")
                 .setText(R.id.tv_item_home_online_city,item.getCcity()+"")
                 .setText(R.id.tv_item_home_online_name,item.getCalias()+"");

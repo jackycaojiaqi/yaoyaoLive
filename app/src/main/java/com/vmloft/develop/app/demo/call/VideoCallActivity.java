@@ -666,7 +666,7 @@ public class VideoCallActivity extends CallActivity {
         EMCallStateChangeListener.CallError callError = event.getCallError();
         EMCallStateChangeListener.CallState callState = event.getCallState();
         switch (callState) {
-            case CONNECTING: // 正在呼叫对方，TODO 没见回调过
+            case CONNECTING: // 正在呼叫对方，
                 VMLog.i("正在呼叫对方" + callError);
                 break;
             case CONNECTED: // 正在等待对方接受呼叫申请（对方申请与你进行通话）

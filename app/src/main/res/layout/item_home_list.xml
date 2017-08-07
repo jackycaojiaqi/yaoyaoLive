@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="175dp"
+    android:layout_height="230dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="175dp">
+
+        <ImageView
+            android:id="@+id/iv_home_list_pic"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
+            android:background="@drawable/ic_load_error"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/tv_home_list_state"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/shap_rec_30dp_login_next"
+            android:gravity="center"
+            android:text="空闲"
+            android:textColor="@color/white"
+            android:textSize="14dp" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_home_list_bg"
+            android:layout_alignParentBottom="true"/>
+        <TextView
+            android:id="@+id/tv_home_list_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentBottom="true"
+            android:text="20金币/分钟" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:id="@+id/tv_home_list_name"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="嘿咻嘿咻"
+            android:textColor="@color/black_3a3a3a"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:singleLine="true"
+            android:text="接听率"
+            android:textColor="@color/gray_deep" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shap_rec_30dp_gender_bg"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_home_list_gender"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/ic_home_female" />
+
+            <TextView
+                android:id="@+id/tv_home_list_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="25"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_home_list_city"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="22dp"
+            android:singleLine="true"
+            android:text="台州"
+            android:textColor="@color/black_3a3a3a"
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/tv_home_list_pickup_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tv_home_list_city"
+            android:layout_marginLeft="60dp"
+            android:text="96%"
+            android:textColor="@color/gray_deep"
+            android:textSize="14dp" />
+    </RelativeLayout>
+</LinearLayout>

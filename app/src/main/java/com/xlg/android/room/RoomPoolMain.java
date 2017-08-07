@@ -15,7 +15,6 @@ public class RoomPoolMain {
 
     public void Start( int userId, String userPwd, String ip, int port) {
         room = new MyPoolRoom();
-
 //		room.getChannel().setRoomID(10000);
 //		room.getChannel().setUserID(18);
 //		room.getChannel().setUserPwd("723105");

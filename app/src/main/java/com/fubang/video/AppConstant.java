@@ -67,6 +67,12 @@ public class AppConstant {
     public static final String URL_PAY_INFO = "/index.php/LineApp/ali_pay";//支付宝获取订单信息
 
 
+    //列表接口
+    public static final String URL_LIST_MAIN = "/index.php/LineApp/main_list";//更多查询列表
+    public static final String URL_LIST_SONG = "/index.php/LineApp/chao_song";//超能送
+    public static final String URL_LIST_LIAO= "/index.php/LineApp/chao_liao";//超能聊
+
+
 
 
 }

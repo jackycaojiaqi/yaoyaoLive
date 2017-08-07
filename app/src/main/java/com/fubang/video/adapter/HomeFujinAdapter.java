@@ -35,16 +35,16 @@ import java.util.List;
  * ━━━━━━神兽出没━━━━━━
  * Created by jacky on 17/3/10.
  */
-public class HomeNewAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.NewListBean, BaseViewHolder> {
-    private List<HomeEntity.InfoBean.NewListBean> list;
+public class HomeFujinAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.FuJinListBean, BaseViewHolder> {
+    private List<HomeEntity.InfoBean.FuJinListBean> list;
 
-    public HomeNewAdapter(int layoutResId, List data) {
+    public HomeFujinAdapter(int layoutResId, List data) {
         super(layoutResId, data);
         list = data;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, HomeEntity.InfoBean.NewListBean item) {
+    protected void convert(BaseViewHolder helper, HomeEntity.InfoBean.FuJinListBean item) {
         helper.setText(R.id.tv_item_home_online_age,item.getNage()+"")
                 .setText(R.id.tv_item_home_online_city,item.getCcity()+"")
                 .setText(R.id.tv_item_home_online_name,item.getCalias()+"");
@@ -56,5 +56,6 @@ public class HomeNewAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.NewList
         }else if (item.getNgender().equals("0")){
             helper.setImageResource(R.id.iv_item_home_online_gender,R.drawable.ic_register_female_checked);
         }
+
     }
 }

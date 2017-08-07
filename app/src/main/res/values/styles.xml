@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:listDivider">@drawable/divider_bg</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
@@ -19,4 +20,5 @@
         <item name="android:backgroundDimEnabled">false</item>
         <!-- 设置屏幕变暗 -->
     </style>
+
 </resources>

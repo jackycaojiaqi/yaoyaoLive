@@ -136,7 +136,7 @@ public class UserInfoActivity extends BaseActivity {
                             VideoId = response.body().getInfo().getCprofile();
                             phone = response.body().getInfo().getCtel();
                             VideoCover = response.body().getInfo().getCvideophoto();
-                            tvUserinfoId.setText("ID:" + VMSPUtil.get(context, AppConstant.USERID, ""));//ID
+                            tvUserinfoId.setText("ID:" + response.body().getInfo().getNuserid());//ID
                             tvUserinfoName.setText(response.body().getInfo().getCalias() + "");//姓名
                             imags.clear();
                             imags.add(AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto());
@@ -243,9 +243,9 @@ public class UserInfoActivity extends BaseActivity {
      */
     private void callVideo(String contacts) {
         Intent intent = new Intent(context, VideoCallActivity.class);
-        intent.putExtra("from", (String)VMSPUtil.get(context,AppConstant.PHONE,""));
-        intent.putExtra("to",phone);
-        VMSPUtil.put(context, AppConstant.CALLFROM, (String)VMSPUtil.get(context, AppConstant.PHONE, ""));
+        intent.putExtra("from", (String) VMSPUtil.get(context, AppConstant.PHONE, ""));
+        intent.putExtra("to", phone);
+        VMSPUtil.put(context, AppConstant.CALLFROM, (String) VMSPUtil.get(context, AppConstant.PHONE, ""));
         VMSPUtil.put(context, AppConstant.CALLTO, phone);
         CallManager.getInstance().setChatId(contacts);
         CallManager.getInstance().setInComingCall(false);

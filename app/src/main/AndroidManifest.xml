@@ -81,6 +81,12 @@
         <activity
             android:name=".ui.ForgetPasswordActivity"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".ui.HomeListActivity"
+            android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".ui.HomeListBigPicActivity"
+            android:launchMode="singleTask"></activity>
         <!--语音通话界面-->
         <activity
             android:name="com.vmloft.develop.app.demo.call.VoiceCallActivity"
