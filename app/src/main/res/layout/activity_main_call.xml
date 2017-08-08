@@ -372,9 +372,8 @@
                         android:layout_width="30dp"
                         android:layout_height="20dp"
                         android:layout_alignParentTop="true"
-                        android:visibility="gone"
                         android:layout_marginRight="20dp"
-                        android:layout_toStartOf="@+id/imageView"
+                        android:layout_alignParentRight="true"
                         android:text="更多"
                         android:textColor="@color/gray_deep"
                         android:textSize="14dp" />
@@ -383,7 +382,6 @@
                         android:id="@+id/imageView"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:visibility="gone"
                         android:layout_alignParentRight="true"
                         android:layout_marginTop="1dp"
                         android:padding="2dp"

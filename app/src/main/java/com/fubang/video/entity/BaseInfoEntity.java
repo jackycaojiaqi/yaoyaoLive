@@ -92,7 +92,7 @@ public class BaseInfoEntity {
         private String cidcard;
         private String cregisterip;
         private String dregisterdate;
-        private String nmoney;
+        private long nmoney = 0;
         private String dviptime;
         private String nstatus;
         private String nprice;
@@ -288,11 +288,11 @@ public class BaseInfoEntity {
             this.dregisterdate = dregisterdate;
         }
 
-        public String getNmoney() {
+        public long getNmoney() {
             return nmoney;
         }
 
-        public void setNmoney(String nmoney) {
+        public void setNmoney(long nmoney) {
             this.nmoney = nmoney;
         }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.fubang.video">
 
 
@@ -90,6 +91,9 @@
         <activity
             android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".ui.CircleHotActivity"
+            android:launchMode="singleTask"></activity>
 
         <!--语音通话界面-->
         <activity
@@ -168,6 +172,12 @@
             android:screenOrientation="behind"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
 
+        <receiver android:name=".receive.UpdataBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <!--<action android:name="android.intent.action.PACKAGE_INSTALL" />-->
+            </intent-filter>
+        </receiver>
         <!--<service android:name=".service.VideoService" />-->
         <service android:name=".service.PoolService" />
     </application>
@@ -207,4 +217,5 @@
     <!--悬浮窗权限-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 </manifest>

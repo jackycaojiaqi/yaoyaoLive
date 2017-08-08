@@ -114,6 +114,8 @@ public class MineFragment extends BaseFragment {
                                 VMSPUtil.put(getActivity(), AppConstant.GENDER, response.body().getInfo().getNgender());
                                 //本地存昵称
                                 VMSPUtil.put(getActivity(), AppConstant.USERNAME, response.body().getInfo().getCalias());
+                                //本地金币
+                                VMSPUtil.put(getActivity(), AppConstant.NKNUM, response.body().getInfo().getNmoney());
                                 DemoHelper.getInstance().getUserProfileManager().updateCurrentUserNickName(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERNAME, "")));
                                 DemoHelper.getInstance().getUserProfileManager().uploadUserAvatar(String.valueOf(VMSPUtil.get(getActivity(), AppConstant.USERPIC, "")));
                                 if (response.body().getInfo().getNgender().equals("0")) {//性别
@@ -125,7 +127,6 @@ public class MineFragment extends BaseFragment {
                                 startActivity(new Intent(getActivity(), LoginActivity.class));
                             }
                     }
-
                     @Override
                     public void onError(Response<BaseInfoEntity> response) {
                         super.onError(response);

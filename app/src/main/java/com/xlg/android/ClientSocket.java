@@ -1,5 +1,8 @@
 package com.xlg.android;
 
+import com.fubang.video.ui.MainActivity;
+import com.fubang.video.util.StringUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,7 +15,7 @@ public class ClientSocket {
     // 线程事件
     private Thread mThread;
     private String mSvrIP;
-    private int mSvrPort;
+    private int mSvrPort = 0;
     private Socket mSocket;
     private OutputStream mOutput;
 
@@ -120,7 +123,6 @@ public class ClientSocket {
 
     // 发送信息到服务器
     public int Send(byte[] data) {
-
         synchronized (this) {
             if (null == mOutput) {
                 return -1;
@@ -129,7 +131,12 @@ public class ClientSocket {
                 mOutput.write(data);
                 return 0;
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                //捕获发送异常  则关闭重连
+                if (!StringUtil.isEmptyandnull(mSvrIP) && mSvrPort != 0) {
+                    Close();
+                    Connect(mSvrIP, mSvrPort);
+                }
+
                 e.printStackTrace();
             }
         }

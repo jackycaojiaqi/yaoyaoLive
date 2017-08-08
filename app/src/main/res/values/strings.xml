@@ -41,4 +41,8 @@
     <string name="no_content">内容不能为空</string>
     <string name="pick_call_title">有人想要和你视频聊天</string>
     <string name="pick_call_content">是否接听？</string>
+    <string name="has_new_apk">有新版本可以下载</string>
+    <string name="has_new_download_or_not">是否下载？</string>
+    <string name="nk_not_enough20">金币不足20，请先前往充值</string>
+    <string name="nk_not_enough">金币不足20，请先前往充值</string>
 </resources>

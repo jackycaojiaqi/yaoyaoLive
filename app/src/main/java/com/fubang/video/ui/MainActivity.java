@@ -5,8 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -35,6 +41,7 @@ import com.fubang.video.ui.fragment.FindFragment;
 import com.fubang.video.ui.fragment.HomeFragment;
 import com.fubang.video.ui.fragment.MessageFragment;
 import com.fubang.video.ui.fragment.MineFragment;
+import com.fubang.video.util.DownloadAppUtils;
 import com.fubang.video.util.LocationUtil;
 import com.fubang.video.util.StartUtil;
 import com.fubang.video.util.StringUtil;
@@ -115,6 +122,9 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     public static RoomMain roomMain = new RoomMain();
     public static boolean is_video_call = false;
     public static boolean is_male_pick_up_auto = false;
+    private PackageManager manager;
+    private PackageInfo info = null;
+
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
@@ -153,6 +163,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         loginHX();
 
     }
+
     /**
      * 用户被踢出回调
      *
@@ -160,7 +171,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
      */
     @Subscriber(tag = "onKickOut")
     public void onKickOut(KickoutUserInfo msg) {
-        if (!roomMain.getRoom().isOK()){
+        if (!roomMain.getRoom().isOK()) {
             joinRoom();
         }
         if (msg.getReasonid() == 101) {
@@ -183,6 +194,53 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     public void chat_login_msg(LogonResponse msg) {
         if (msg.getErrorid() == 0) {
             KLog.e("登陆成功");
+            VMSPUtil.put(context, AppConstant.NKNUM, msg.getKmoney()); //每次登录存一遍金币
+            VMSPUtil.put(context, AppConstant.VERSION, msg.getVerison()); //每次登录存一遍金币
+            //======================版本更新操作
+            try {
+                manager = this.getPackageManager();
+                try {
+                    info = manager.getPackageInfo(this.getPackageName(), 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                String versionName = info.versionName;
+                KLog.e("me:" + versionName + " server:" + msg.getVerison());
+                if (!versionName.equals(msg.getVerison())) {//当前版本号名称和服务器版本号不一致
+                    MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+                            .title(R.string.has_new_apk)
+                            .content(R.string.has_new_download_or_not)
+                            .positiveText("下载")
+                            .negativeText("取消")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    if (Build.VERSION.SDK_INT < 23) {
+                                        KLog.e("<23");
+                                        DownloadAppUtils.downloadForAutoInstall(context, AppConstant.DOWNLOAD_URL, "yaoyao", "妖妖直播下载中");
+                                    } else {
+                                        KLog.e(">=23");
+                                        String url = AppConstant.DOWNLOAD_URL;
+                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                        intent.setData(Uri.parse(url));
+                                        context.startActivity(intent);
+                                    }
+
+                                    dialog.dismiss();
+                                }
+                            })
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    MaterialDialog dialog = builder.build();
+                    dialog.show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if (msg.getErrorid() == 404) {
             KLog.e("数据库操作失败");
         } else if (msg.getErrorid() == 405) {
@@ -202,7 +260,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     }
 
     private void quitRoom() {
-        if (roomMain.getRoom().isOK()){
+        if (roomMain.getRoom().isOK()) {
             roomMain.getRoom().getChannel().SendKickOut();
             roomMain.getRoom().getChannel().Close();
         }
@@ -270,7 +328,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
                 for (EMMessage message : messages) {//分发消息
                     DemoHelper.getInstance().getNotifier().onNewMsg(message);
                     KLog.e(message.toString());
-                    EventBus.getDefault().post("refresh_content_list","refresh_content_list");//去更新消息联系人列表
+                    EventBus.getDefault().post("refresh_content_list", "refresh_content_list");//去更新消息联系人列表
                 }
             }
         }
@@ -454,15 +512,16 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
             update_et_to_server("");
         }
     }
+
     /**
      * 更新用户扩展
      */
     private void update_et_to_server(String msg) {
         Map<String, String> map = new HashMap<>();
-            map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
-            map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
-            map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
-            map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
+        map.put("ccity", String.valueOf(VMSPUtil.get(context, AppConstant.CITY, "")));
+        map.put("clocation", String.valueOf(VMSPUtil.get(context, AppConstant.ADDRDETAIL, "")));
+        map.put("nlongitude", String.valueOf(VMSPUtil.get(context, AppConstant.LON, "")));
+        map.put("nlatitude", String.valueOf(VMSPUtil.get(context, AppConstant.LAT, "")));
 
         OkGo.<PublishUpLoadEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_EXTINFO)
                 .tag(this)
@@ -473,15 +532,17 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
                     @Override
                     public void onSuccess(Response<PublishUpLoadEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-                            KLog.e( "上传位置信息成功");
+                            KLog.e("上传位置信息成功");
                         }
                     }
+
                     @Override
                     public void onError(Response<PublishUpLoadEntity> response) {
                         super.onError(response);
                     }
                 });
     }
+
     @Override
     public void onBackPressed() {
         if (JCVideoPlayer.backPress()) {

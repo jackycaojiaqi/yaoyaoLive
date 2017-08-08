@@ -162,10 +162,11 @@ public class PublishCircleActivity extends BaseActivity {
                     @Override
                     public void onSuccess(Response<BaseInfoEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-                            money = Long.parseLong(response.body().getInfo().getNmoney());
+                            money = response.body().getInfo().getNmoney();
                             gender = Integer.parseInt(response.body().getInfo().getNgender());
                         }
                     }
+
                     @Override
                     public void onError(Response<BaseInfoEntity> response) {
                         super.onError(response);
@@ -189,7 +190,7 @@ public class PublishCircleActivity extends BaseActivity {
                         return;
                     }
                 }
-                if (com.fubang.video.util.StringUtil.isEmptyandnull(etPublishContent.getText().toString().trim())){
+                if (com.fubang.video.util.StringUtil.isEmptyandnull(etPublishContent.getText().toString().trim())) {
                     ToastUtil.show(context, "请输入朋友圈内容");
                     return;
                 }
@@ -407,9 +408,9 @@ public class PublishCircleActivity extends BaseActivity {
                                             if (response.body().getStatus().equals("success")) {
                                                 DialogFactory.hideRequestDialog();
                                                 finish();
-                                            }else {
+                                            } else {
                                                 DialogFactory.hideRequestDialog();
-                                                ToastUtil.show(context,"发送朋友圈失败");
+                                                ToastUtil.show(context, "发送朋友圈失败");
                                             }
                                         }
 

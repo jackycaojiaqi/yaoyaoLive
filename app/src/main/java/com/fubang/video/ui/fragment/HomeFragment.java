@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.adapter.HomeFujinAdapter;
@@ -34,13 +35,16 @@ import com.fubang.video.base.BaseFragment;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.BaseInfoEntity;
 import com.fubang.video.entity.HomeEntity;
+import com.fubang.video.ui.CircleHotActivity;
 import com.fubang.video.ui.CircleInfoDetailActivity;
 import com.fubang.video.ui.HomeListActivity;
 import com.fubang.video.ui.HomeListBigPicActivity;
 import com.fubang.video.ui.LoginActivity;
 import com.fubang.video.ui.MainActivity;
+import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.ui.SearUserActivity;
 import com.fubang.video.ui.UserInfoActivity;
+import com.fubang.video.util.DownloadAppUtils;
 import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.ToastUtil;
 import com.fubang.video.widget.DividerItemDecoration;
@@ -130,7 +134,7 @@ public class HomeFragment extends BaseFragment {
     private String password;
     private String contacts;
     private Context context;
-    private BaseQuickAdapter adapter_1, adapter_2, adapter_3, adapter_4,adapter_5;
+    private BaseQuickAdapter adapter_1, adapter_2, adapter_3, adapter_4, adapter_5;
     private List<HomeEntity.InfoBean.OnlineListBean> list_action1 = new ArrayList<>();
     private List<HomeEntity.InfoBean.NvShengListBean> list_action2 = new ArrayList<>();
     private List<HomeEntity.InfoBean.NewListBean> list_action3 = new ArrayList<>();
@@ -215,6 +219,7 @@ public class HomeFragment extends BaseFragment {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             dialog.dismiss();
+
                         }
                     });
             MaterialDialog dialog = builder.build();
@@ -480,7 +485,7 @@ public class HomeFragment extends BaseFragment {
     private boolean is_call_start = false;
     private boolean is_female_control_start = false;
 
-    @OnClick({R.id.tv_home_random_call, R.id.tv_home_action1, R.id.tv_home_action2, R.id.tv_home_action3, R.id.tv_home_action4,R.id.tv_home_action5,
+    @OnClick({R.id.tv_home_random_call, R.id.tv_home_action1, R.id.tv_home_action2, R.id.tv_home_action3, R.id.tv_home_action4, R.id.tv_home_action5,
             R.id.iv_action, R.id.btn_home_female_start, R.id.btn_home_female_stop, R.id.iv_home_goto_list_nvshen, R.id.iv_home_goto_list_tuhao,
             R.id.iv_home_goto_list_song, R.id.iv_home_goto_list_liao})
     public void onViewClicked(View view) {
@@ -488,6 +493,29 @@ public class HomeFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.tv_home_random_call:
                 if (VMSPUtil.get(context, AppConstant.GENDER, "").equals("0")) {//女性不能发起一对多通话
+                    return;
+                }
+                if ((long) VMSPUtil.get(context, AppConstant.NKNUM, (long) 0) < 20) {
+                    ToastUtil.show(context, "");
+                    MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+                            .title(R.string.nk_not_enough)
+                            .positiveText("充值")
+                            .negativeText("取消")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    startActivity(new Intent(context, RechargeActivity.class));
+                                    dialog.dismiss();
+                                }
+                            })
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    MaterialDialog dialog = builder.build();
+                    dialog.show();
                     return;
                 }
                 if (!is_call_start) {
@@ -527,6 +555,10 @@ public class HomeFragment extends BaseFragment {
             case R.id.tv_home_action3:
                 intent = new Intent(context, HomeListActivity.class);
                 intent.putExtra(AppConstant.TYPE, "新人");
+                startActivity(intent);
+                break;
+            case R.id.tv_home_action4:
+                intent = new Intent(context, CircleHotActivity.class);
                 startActivity(intent);
                 break;
             case R.id.tv_home_action5:

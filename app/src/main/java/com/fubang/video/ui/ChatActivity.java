@@ -100,7 +100,6 @@ public class ChatActivity extends BaseActivity {
                         super.onError(response);
                     }
                 });
-        KLog.e("toChatUserId:" + toChatUserId);
         //use EaseChatFratFragment
         chatFragment = new ChatFragment();
         //pass parameters to chat fragment

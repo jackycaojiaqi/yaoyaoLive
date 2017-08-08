@@ -13,6 +13,9 @@ public class AppConstant {
     public static final String BASE_CONNECT_IP = "42.121.57.170";//c++服务器ip
     public static final int BASE_CONNECT_PORT = 11444;//文字、礼物、扣币端口
     public static final int BASE_POOL_CONNECT_PORT = 11445;//pool端口
+
+    public static final String DOWNLOAD_URL = "121.43.153.125:92/download/yaoyao.apk";//下载最新app地址
+
     public static final String USERNAME = "username";
     public static final String USERPIC = "userpic";
     public static final String OBJECT = "onject";
@@ -21,6 +24,9 @@ public class AppConstant {
     public static final String PHONE = "phone";
     public static final String PASSWORD = "password";
     public static final String VIDEOID = "videoid";
+    public static final String NKNUM = "nknum";
+    public static final String APK_DOWN_LOAD_ID = "apk_id";
+    public static final String VERSION = "version";
     public static final String COUNT = "count";
     public static final String CONTENT = "content";
     public static final String PAGE = "page";
@@ -76,8 +82,6 @@ public class AppConstant {
     public static final String URL_TUHAO_YUE= "/index.php/LineApp/tu_hao_yue";//土豪月排行
     public static final String URL_NVSHENG_YUE= "/index.php/LineApp/nv_sheng_yue";//女神月排行
     public static final String URL_LIWU= "/index.php/LineApp/liwu_bang";//礼物排行
-
-
 
 
 
