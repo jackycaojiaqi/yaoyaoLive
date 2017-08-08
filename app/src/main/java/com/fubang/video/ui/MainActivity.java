@@ -270,6 +270,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
                 for (EMMessage message : messages) {//分发消息
                     DemoHelper.getInstance().getNotifier().onNewMsg(message);
                     KLog.e(message.toString());
+                    EventBus.getDefault().post("refresh_content_list","refresh_content_list");//去更新消息联系人列表
                 }
             }
         }

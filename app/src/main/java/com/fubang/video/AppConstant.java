@@ -73,6 +73,12 @@ public class AppConstant {
     public static final String URL_LIST_LIAO= "/index.php/LineApp/chao_liao";//超能聊
 
 
+    public static final String URL_TUHAO_YUE= "/index.php/LineApp/tu_hao_yue";//土豪月排行
+    public static final String URL_NVSHENG_YUE= "/index.php/LineApp/nv_sheng_yue";//女神月排行
+    public static final String URL_LIWU= "/index.php/LineApp/liwu_bang";//礼物排行
+
+
+
 
 
 }

@@ -87,6 +87,10 @@
         <activity
             android:name=".ui.HomeListBigPicActivity"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"
+            android:launchMode="singleTask"></activity>
+
         <!--语音通话界面-->
         <activity
             android:name="com.vmloft.develop.app.demo.call.VoiceCallActivity"

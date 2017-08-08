@@ -67,6 +67,24 @@ public class ChaoSongEntity {
             private String all_con;
             private String onumber;
             private String nstatus;
+            private String nprice;
+            private String qian;
+
+            public String getQian() {
+                return qian;
+            }
+
+            public void setQian(String qian) {
+                this.qian = qian;
+            }
+
+            public String getNprice() {
+                return nprice;
+            }
+
+            public void setNprice(String nprice) {
+                this.nprice = nprice;
+            }
 
             public String getNstatus() {
                 return nstatus;

@@ -53,8 +53,9 @@ public class FindFragment extends BaseFragment {
         fragments.add(new FindTuHaoFrament());
         fragments.add(new FindMeiliFrament());
         fragments.add(new FindGiftFrament());
-        FindViewpagerAdapter adapter = new FindViewpagerAdapter(getActivity().getSupportFragmentManager(), fragments, titles);
+        FindViewpagerAdapter adapter = new FindViewpagerAdapter(getChildFragmentManager(), fragments, titles);
         vpFind.setAdapter(adapter);
+        vpFind.setOffscreenPageLimit(2);
         tlFind.setupWithViewPager(vpFind);
         tlFind.setTabMode(TabLayout.MODE_FIXED);
     }

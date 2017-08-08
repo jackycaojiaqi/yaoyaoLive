@@ -45,6 +45,10 @@ import com.hyphenate.easeui.widget.EaseConversationList;
 import com.hyphenate.util.EasyUtils;
 import com.hyphenate.util.NetUtils;
 import com.socks.library.KLog;
+import com.xlg.android.protocol.LogonResponse;
+
+import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,6 +71,7 @@ public class MessageFragment extends EaseConversationListFragment {
 
     @Override
     protected void initView() {
+        EventBus.getDefault().register(this);
         super.initView();
         tvTitle.setText("消息");
         rllMessageSystem.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +79,7 @@ public class MessageFragment extends EaseConversationListFragment {
             public void onClick(View v) {
 //                Intent startIntent = new Intent(getActivity().getApplicationContext(), VideoService.class);
 //                getActivity().startService(startIntent);
-               startActivity(new Intent(getActivity(),NotifyActivity.class));
+                startActivity(new Intent(getActivity(), NotifyActivity.class));
 //                //通过发送信息来新建conversation对话框
 //                EMMessage message = EMMessage.createTxtSendMessage("123", "15867083398");
 //                //发送消息
@@ -86,12 +91,29 @@ public class MessageFragment extends EaseConversationListFragment {
         errorText = (TextView) errorView.findViewById(R.id.tv_connect_errormsg);
     }
 
+    /**
+     * 登录回调
+     *
+     * @param msg
+     */
+    @Subscriber(tag = "refresh_content_list")
+    public void refresh_content_list(String msg) {
+        if (conversationListView != null)
+            conversationListView.refresh();
+    }
+
+    @Override
+    public void onResume() {
+        conversationListView.refresh();
+        super.onResume();
+    }
 
     @Override
     protected void setUpView() {
         super.setUpView();
         // register context menu
         registerForContextMenu(conversationListView);
+
         conversationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -164,5 +186,9 @@ public class MessageFragment extends EaseConversationListFragment {
         return true;
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }
