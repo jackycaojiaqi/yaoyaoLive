@@ -67,7 +67,7 @@ public class CircleHotActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "朋友圈列表");
+        setText(tvTitle, "精选朋友圈");
         srlCircleListList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

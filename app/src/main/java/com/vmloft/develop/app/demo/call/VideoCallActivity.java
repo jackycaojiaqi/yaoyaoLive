@@ -369,14 +369,16 @@ public class VideoCallActivity extends CallActivity {
                 onRecordCall();
                 break;
             case R.id.fab_end_call:
+
                 // 结束通话
                 endCall();
                 break;
             case R.id.fab_reject_call:
+                updateSuccessRate(1);//更新接通率0-接受，1-拒绝
                 // 拒绝接听通话
-                rejectCall();
                 break;
             case R.id.fab_answer_call:
+                updateSuccessRate(0);//更新接通率0-接受，1-拒绝
                 // 接听通话
                 answerCall();
                 if (timer != null) {
@@ -393,6 +395,29 @@ public class VideoCallActivity extends CallActivity {
                 startActivity(new Intent(context, RechargeActivity.class));
                 break;
         }
+    }
+
+    private void updateSuccessRate(final int type) {
+        OkGo.<SendMsgEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_CESSESS_RATE)
+                .tag(this)
+                .params("nuserid", (String) VMSPUtil.get(context, AppConstant.USERID, ""))
+                .params("ctoken", (String) VMSPUtil.get(context, AppConstant.TOKEN, ""))
+                .params("type", type)
+                .execute(new JsonCallBack<SendMsgEntity>(SendMsgEntity.class) {
+                    @Override
+                    public void onSuccess(Response<SendMsgEntity> response) {
+                        if (response.body().getStatus().equals("success")) {//不存在这个手机号码
+                            if (type == 1) {
+                                rejectCall();//拒绝后 关闭
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<SendMsgEntity> response) {
+                        super.onError(response);
+                    }
+                });
     }
 
     /**

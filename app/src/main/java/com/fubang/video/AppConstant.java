@@ -84,5 +84,8 @@ public class AppConstant {
     public static final String URL_LIWU= "/index.php/LineApp/liwu_bang";//礼物排行
 
 
+    public static final String URL_UPDATE_CESSESS_RATE= "/index.php/LineApp/conn_update";//视频连接接受拒绝  计算成功率
+    public static final String URL_NOTICE= "/index.php/LineApp/notice";//通知
+
 
 }
