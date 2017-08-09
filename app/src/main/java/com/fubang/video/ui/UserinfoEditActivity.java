@@ -224,10 +224,10 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                     public void onSuccess(Response<BaseInfoEntity> response) {
 
                         if (response.body().getStatus().equals("success")) {
-                            if (response.body().getInfo().getNgender().equals("0")) {//性别
+                            if (response.body().getInfo().getNgender().equals("1")) {//性别
                                 tvEditinfoGender.setText("男");
                                 rllEditinfoNk.setVisibility(View.GONE);
-                            } else if (response.body().getInfo().getNgender().equals("1")) {
+                            } else if (response.body().getInfo().getNgender().equals("0")) {
                                 tvEditinfoGender.setText("女");
                                 rllEditinfoNk.setVisibility(View.VISIBLE);
                             }

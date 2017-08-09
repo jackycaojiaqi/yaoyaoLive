@@ -138,6 +138,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/rll_home_nvsheng"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
                     android:layout_marginTop="10dp"
@@ -224,8 +225,10 @@
                     </LinearLayout>
                 </RelativeLayout>
                 <RelativeLayout
+                    android:id="@+id/rll_home_fujin"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
+
                     android:layout_marginTop="10dp"
                     android:background="@color/white"
                     android:padding="5dp">

@@ -17,13 +17,13 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.fubang.video.APP;
 import com.fubang.video.AppConstant;
 import com.fubang.video.R;
 import com.fubang.video.adapter.HomeFujinAdapter;
@@ -44,7 +44,6 @@ import com.fubang.video.ui.MainActivity;
 import com.fubang.video.ui.RechargeActivity;
 import com.fubang.video.ui.SearUserActivity;
 import com.fubang.video.ui.UserInfoActivity;
-import com.fubang.video.util.DownloadAppUtils;
 import com.fubang.video.util.StringUtil;
 import com.fubang.video.util.ToastUtil;
 import com.fubang.video.widget.DividerItemDecoration;
@@ -129,6 +128,10 @@ public class HomeFragment extends BaseFragment {
     TextView tvHomeAction5;
     @BindView(R.id.rv_home_action5)
     RecyclerView rvHomeAction5;
+    @BindView(R.id.rll_home_nvsheng)
+    RelativeLayout rllHomeNvsheng;
+    @BindView(R.id.rll_home_fujin)
+    RelativeLayout rllHomeFujin;
 
     private String username;
     private String password;
@@ -311,14 +314,18 @@ public class HomeFragment extends BaseFragment {
 
     private void initdate() {
         if (String.valueOf(VMSPUtil.get(context, AppConstant.GENDER, "0")).equals("0")) {
+            rllHomeNvsheng.setVisibility(View.GONE);
+            rllHomeFujin.setVisibility(View.GONE);
             gender_post = "1";
         } else {
+            rllHomeNvsheng.setVisibility(View.VISIBLE);
+            rllHomeFujin.setVisibility(View.VISIBLE);
             gender_post = "0";
         }
         OkGo.<HomeEntity>post(AppConstant.BASE_URL + AppConstant.URL_LIFE_HOME_DATE)
                 .tag(this)
                 .params("ctoken", String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))
-                .params("ngender", gender_post)//要传和该账号性别相反的参数
+//                .params("ngender", gender_post)//要传和该账号性别相反的参数
                 .execute(new JsonCallBack<HomeEntity>(HomeEntity.class) {
                     @Override
                     public void onSuccess(Response<HomeEntity> response) {
