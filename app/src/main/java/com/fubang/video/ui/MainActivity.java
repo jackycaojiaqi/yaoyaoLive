@@ -36,6 +36,7 @@ import com.fubang.video.adapter.FragmentTabAdapter;
 import com.fubang.video.base.BaseActivity;
 import com.fubang.video.callback.JsonCallBack;
 import com.fubang.video.entity.PublishUpLoadEntity;
+import com.fubang.video.receive.NetworkConnectChangedReceiver;
 import com.fubang.video.ui.fragment.CircleFragment;
 import com.fubang.video.ui.fragment.FindFragment;
 import com.fubang.video.ui.fragment.HomeFragment;
@@ -161,7 +162,28 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
         //环信登录
         loginHX();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        filter.addAction("android.net.wifi.STATE_CHANGE");
+        registerReceiver(new NetworkConnectChangedReceiver(),filter);
+    }
 
+    /**
+     * 网络变化，重新加入房间
+     */
+    @Subscriber(tag = "reconncet")
+    public void reconncet(String msg) {
+        joinRoom();
+    }
+
+    /**
+     * 网络变化，断开连接加
+     */
+    @Subscriber(tag = "disconncet")
+    public void disconncet(String msg) {
+        roomMain.getRoom().getChannel().SendKickOut();
+        roomMain.getRoom().getChannel().Close();
     }
 
     /**
