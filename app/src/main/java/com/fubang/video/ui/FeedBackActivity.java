@@ -48,8 +48,8 @@ public class FeedBackActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle,"意见反馈");
-        setText(tvSubmit,"提交");
+        setText(tvTitle,R.string.feed_back);
+        setText(tvSubmit,R.string.submit);
     }
 
     @OnClick({R.id.iv_back, R.id.tv_submit})
@@ -73,10 +73,10 @@ public class FeedBackActivity extends BaseActivity {
                             @Override
                             public void onSuccess(Response<PublishUpLoadEntity> response) {
                                 if (response.body().getStatus().equals("success")) {
-                                    ToastUtil.show(context, "提交反馈成功");
+                                    ToastUtil.show(context, context.getString(R.string.success));
                                     finish();
                                 }else {
-                                    ToastUtil.show(context, "提交反馈失败");
+                                    ToastUtil.show(context, context.getString(R.string.fail));
                                 }
                             }
 

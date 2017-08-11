@@ -33,7 +33,7 @@
             android:id="@+id/tv_circle_list_review_hname_and_neirong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="6dp"
+            android:layout_marginLeft="6dp"
             android:text="小丸子"
             android:textColor="@color/gray_deep"
             android:textSize="14dp" />

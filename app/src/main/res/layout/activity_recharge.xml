@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="金币"
+            android:text="@string/nk"
             android:textColor="@color/white"
             android:textSize="30dp" />
 
@@ -49,7 +49,7 @@
             android:textColor="@color/black_3a3a3a"
             android:layout_centerVertical="true"
             android:layout_marginLeft="60dp"
-            android:text="100金币" />
+            android:text="100" />
         <Button
             android:id="@+id/btn_recharge_1"
             android:layout_width="80dp"
@@ -84,7 +84,7 @@
             android:textColor="@color/black_3a3a3a"
             android:layout_centerVertical="true"
             android:layout_marginLeft="60dp"
-            android:text="300金币"
+            android:text="300 "
              />
         <Button
             android:id="@+id/btn_recharge_2"
@@ -122,7 +122,7 @@
             android:textColor="@color/black_3a3a3a"
             android:layout_centerVertical="true"
             android:layout_marginLeft="60dp"
-            android:text="500金币" />
+            android:text="500 " />
         <Button
             android:id="@+id/btn_recharge_3"
             android:layout_width="80dp"
@@ -157,7 +157,7 @@
             android:textColor="@color/black_3a3a3a"
             android:layout_centerVertical="true"
             android:layout_marginLeft="60dp"
-            android:text="980金币" />
+            android:text="980 " />
         <Button
             android:id="@+id/btn_recharge_4"
             android:layout_width="80dp"
@@ -192,7 +192,7 @@
             android:textColor="@color/black_3a3a3a"
             android:layout_centerVertical="true"
             android:layout_marginLeft="60dp"
-            android:text="5000金币" />
+            android:text="5000 " />
         <Button
             android:id="@+id/btn_recharge_5"
             android:layout_width="80dp"
@@ -227,7 +227,7 @@
             android:textColor="@color/black_3a3a3a"
             android:layout_centerVertical="true"
             android:layout_marginLeft="60dp"
-            android:text="9980金币" />
+            android:text="9980 " />
         <Button
             android:id="@+id/btn_recharge_6"
             android:layout_width="80dp"

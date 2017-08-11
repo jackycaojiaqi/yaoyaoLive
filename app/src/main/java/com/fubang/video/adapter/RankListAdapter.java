@@ -50,18 +50,18 @@ public class RankListAdapter extends BaseQuickAdapter<ChaoSongEntity.InfoBean.Da
             ImagUtil.setnoerror(mContext, AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_rank_pic));
         }
         if (item.getNstatus().equals("0")) { //(0-空闲,1-繁忙,2-勿扰,10-冻结)';
-            helper.setText(R.id.tv_rank_state, "空闲");
+            helper.setText(R.id.tv_rank_state, mContext.getString(R.string.leasure));
         } else if (item.getNstatus().equals("1")) { //(0-空闲,1-繁忙,2-勿扰,10-冻结)';
-            helper.setText(R.id.tv_rank_state, "繁忙");
+            helper.setText(R.id.tv_rank_state,mContext.getString(R.string.busy));
         } else if (item.getNstatus().equals("2")) { //(0-空闲,1-繁忙,2-勿扰,10-冻结)';
-            helper.setText(R.id.tv_rank_state, "勿扰");
+            helper.setText(R.id.tv_rank_state, mContext.getString(R.string.dont_call));
         } else if (item.getNstatus().equals("10")) { //(0-空闲,1-繁忙,2-勿扰,10-冻结)';
-            helper.setText(R.id.tv_rank_state, "冻结");
+            helper.setText(R.id.tv_rank_state, mContext.getString(R.string.freze));
         }
         helper.setText(R.id.tv_rank_name, item.getCalias())//名字
                 .setText(R.id.tv_rank_num, helper.getPosition() + 3 + " ")//序号
-                .setText(R.id.tv_rank_city, item.getCcity() != null ? "未知" : item.getNage())
-                .setText(R.id.tv_rank_age, item.getNage() != null ? "未知" : item.getNage() + "岁");
+                .setText(R.id.tv_rank_city, item.getCcity() != null ? mContext.getString(R.string.null_string) : item.getNage())
+                .setText(R.id.tv_rank_age, item.getNage() != null ? mContext.getString(R.string.null_string): item.getNage() + mContext.getString(R.string.year_old));
         if (item.getNgender().equals("0")) {
             helper.setImageResource(R.id.tv_rank_gender, R.drawable.ic_home_female);
         } else if (item.getNgender().equals("1")) {

@@ -54,7 +54,7 @@ public class ForgetPasswordActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "修改密码");
+        setText(tvTitle, R.string.change_pwd);
     }
 
     @OnClick({R.id.btn_login_sign_in})
@@ -64,11 +64,11 @@ public class ForgetPasswordActivity extends BaseActivity {
                 final String et_pass = etChangePassowrdNew.getText().toString().trim();
                 final String et_pass_sure = etChangePassowrdNewSure.getText().toString().trim();
                 if (StringUtil.isEmptyandnull(et_pass) || StringUtil.isEmptyandnull(et_pass_sure)) {
-                    ToastUtil.show(context, "密码不能为空");
+                    ToastUtil.show(context, context.getString(R.string.pwd_not_null));
                     return;
                 }
                 if (!et_pass.equals(et_pass_sure)) {
-                    ToastUtil.show(context, "两次密码输入不一致");
+                    ToastUtil.show(context, context.getString(R.string.pwd_twice_not_same));
                     return;
                 }
                 OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_UPDATE_PASSWORD)
@@ -90,7 +90,7 @@ public class ForgetPasswordActivity extends BaseActivity {
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    ToastUtil.show(context, "修改密码失败");
+                                    ToastUtil.show(context,context.getString(R.string.fail));
                                 }
                             }
 

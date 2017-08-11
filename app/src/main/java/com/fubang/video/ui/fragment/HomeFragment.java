@@ -188,8 +188,8 @@ public class HomeFragment extends BaseFragment {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
                     .title(R.string.pick_call_title)
                     .content(R.string.pick_call_content)
-                    .positiveText("接听")
-                    .negativeText("取消")
+                    .positiveText(R.string.pick_call)
+                    .negativeText(R.string.cancel)
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -216,8 +216,8 @@ public class HomeFragment extends BaseFragment {
     public void onUserLinkResponse(UserLinkInfo msg) {
         if (msg.getType() == 3) {//男主播请求
             MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
-                    .title("没有匹配到可用的女主播")
-                    .positiveText("确定")
+                    .title(R.string.no_patch_anchor)
+                    .positiveText(R.string.sure)
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -279,9 +279,9 @@ public class HomeFragment extends BaseFragment {
                 }
             }
             if (VMSPUtil.get(context, AppConstant.GENDER, "").equals("0")) {//女性
-                ToastUtil.show(context, "该聊天已经被抢接，还请下次加油！");
+                ToastUtil.show(context, R.string.this_call_is_picked);
             } else {
-                ToastUtil.show(context, "已经取消配对视频");
+                ToastUtil.show(context, R.string.user_giveup_call);
             }
         }
     }
@@ -503,11 +503,10 @@ public class HomeFragment extends BaseFragment {
                     return;
                 }
                 if ((long) VMSPUtil.get(context, AppConstant.NKNUM, (long) 0) < 20) {
-                    ToastUtil.show(context, "");
                     MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                             .title(R.string.nk_not_enough)
-                            .positiveText("充值")
-                            .negativeText("取消")
+                            .positiveText(R.string.nk_recharge)
+                            .negativeText(R.string.cancel)
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -620,7 +619,7 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void onDestroy() {
-        if (roomMain.getRoom().getChannel() != null) {
+        if (roomMain.getRoom() != null) {
             roomMain.getRoom().getChannel().SendKickOut();
             roomMain.getRoom().getChannel().Close();
         }

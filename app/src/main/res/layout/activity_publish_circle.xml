@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="视频不超过1分钟" />
+                android:text="@string/video_length_too_long" />
         </LinearLayout>
 
         <View
@@ -60,7 +60,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@null"
                     android:gravity="left"
-                    android:hint="说点什么吧..."
+                    android:hint="@string/say_someting"
                     android:maxLength="100"
                     android:textColor="@color/black_3a3a3a"
                     android:textColorHint="@color/gray_deep" />
@@ -88,7 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="添加一个话题吧~" />
+        android:text="@string/please_add_a_topic" />
 
     <com.zhy.view.flowlayout.TagFlowLayout
         android:id="@+id/id_flowlayout"

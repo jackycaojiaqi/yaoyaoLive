@@ -84,7 +84,7 @@ public class MineFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setText(tvTitle, "我的");
+        setText(tvTitle, R.string.mine);
     }
 
     @Override
@@ -104,9 +104,9 @@ public class MineFragment extends BaseFragment {
                         if (response.body() != null)
                             if (response.body().getStatus().equals("success")) {
                                 user_id = response.body().getInfo().getNuserid();
-                                tvMineId.setText("妖妖ID:" + VMSPUtil.get(getActivity(), AppConstant.USERID, ""));//ID
+                                tvMineId.setText("ID:" + VMSPUtil.get(getActivity(), AppConstant.USERID, ""));//ID
                                 tvMineName.setText(response.body().getInfo().getCalias() + "");//姓名
-                                tvMineNkNum.setText("金币*" + response.body().getInfo().getNmoney() + " ");//金币
+                                tvMineNkNum.setText(getString(R.string.nk) + "*" + response.body().getInfo().getNmoney() + " ");//金币
                                 ImagUtil.setnoerror(getActivity(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto(), ivMinePic);
                                 //本地存头像地址
                                 VMSPUtil.put(getActivity(), AppConstant.USERPIC, AppConstant.BASE_IMG_URL + response.body().getInfo().getCphoto());
@@ -127,6 +127,7 @@ public class MineFragment extends BaseFragment {
                                 startActivity(new Intent(getActivity(), LoginActivity.class));
                             }
                     }
+
                     @Override
                     public void onError(Response<BaseInfoEntity> response) {
                         super.onError(response);

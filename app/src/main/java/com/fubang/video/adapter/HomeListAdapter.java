@@ -50,18 +50,18 @@ public class HomeListAdapter extends BaseQuickAdapter<HomeListEntity.InfoBean.Da
             ImagUtil.setnoerror(mContext, AppConstant.BASE_IMG_URL + item.getCphoto(), helper.getView(R.id.iv_home_list_pic));
         }
         if (item.getNstatus().equals("0")) { //(0-空闲,1-繁忙,2-勿扰,10-冻结)';
-            helper.setText(R.id.tv_home_list_state, "空闲");
+            helper.setText(R.id.tv_home_list_state,  mContext.getString(R.string.leasure));
         } else if (item.getNstatus().equals("1")) { //(0-空闲,1-繁忙,2-勿扰,10-冻结)';
-            helper.setText(R.id.tv_home_list_state, "繁忙");
+            helper.setText(R.id.tv_home_list_state, mContext.getString(R.string.busy));
         } else if (item.getNstatus().equals("2")) { //(0-空闲,1-繁忙,2-勿扰,10-冻结)';
-            helper.setText(R.id.tv_home_list_state, "勿扰");
+            helper.setText(R.id.tv_home_list_state,  mContext.getString(R.string.dont_call));
         } else if (item.getNstatus().equals("10")) { //(0-空闲,1-繁忙,2-勿扰,10-冻结)';
-            helper.setText(R.id.tv_home_list_state, "冻结");
+            helper.setText(R.id.tv_home_list_state, mContext.getString(R.string.freze));
         }
-        helper.setText(R.id.tv_home_list_price, item.getNprice() + "金币/分钟")
+        helper.setText(R.id.tv_home_list_price, item.getNprice() +  mContext.getString(R.string.nk_of_per_minits))
                 .setText(R.id.tv_home_list_name, item.getCalias())
-                .setText(R.id.tv_home_list_city, item.getCcity()!=null ? "未知" : item.getNage())
-                .setText(R.id.tv_home_list_age, item.getNage()!=null ? "未知" : item.getNage() + "岁");
+                .setText(R.id.tv_home_list_city, item.getCcity()!=null ?  mContext.getString(R.string.null_string) : item.getNage())
+                .setText(R.id.tv_home_list_age, item.getNage()!=null ?  mContext.getString(R.string.null_string) : item.getNage() +  mContext.getString(R.string.year_old));
         if (item.getNgender().equals("0")) {
             helper.setImageResource(R.id.iv_home_list_gender, R.drawable.ic_home_female);
         } else if (item.getNgender().equals("1")) {

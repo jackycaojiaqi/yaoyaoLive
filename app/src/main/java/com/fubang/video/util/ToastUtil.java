@@ -10,6 +10,8 @@ import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fubang.video.R;
+
 
 public class ToastUtil {
 
@@ -66,9 +68,9 @@ public class ToastUtil {
 
     public static void show(Context context, int info) {
         if (mToast == null) {
-            mToast = Toast.makeText(context, info, Toast.LENGTH_LONG);
+            mToast = Toast.makeText(context, context.getString(info), Toast.LENGTH_LONG);
         } else {
-            mToast.setText(info);
+            mToast.setText(context.getString(info));
         }
         mToast.show();
     }

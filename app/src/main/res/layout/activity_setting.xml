@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="版本更新"
+            android:text="@string/update_version"
             android:textColor="@color/black_3a3a3a"
             android:textSize="14dp" />
 
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="封禁规则"
+            android:text="@string/rule_of_banned"
             android:textColor="@color/black_3a3a3a"
             android:textSize="14dp" />
 
@@ -94,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="关于聊爱"
+            android:text="@string/about_yaoyao"
             android:textColor="@color/black_3a3a3a"
             android:textSize="14dp" />
 
@@ -121,7 +121,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="退出当前账号"
+            android:text="@string/login_out"
 
             android:layout_centerInParent="true"
             android:textColor="@color/red"

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <include layout="@layout/common_head" />
@@ -19,27 +20,40 @@
             android:layout_marginTop="30dp"
             android:src="@mipmap/ic_launcher" />
 
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginTop="@dimen/vm_dimen_16"
-            android:textColor="@color/vm_black_87"
-            android:textColorHint="@color/vm_black_38">
+            android:orientation="horizontal">
 
-            <com.fubang.video.widget.ClearableEditText
-                android:id="@+id/et_login_username"
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/spinner"
+                android:layout_width="130dp"
+                app:ms_text_color="@color/black_3a3a3a"
+                android:textSize="12dp"
+                android:layout_height="match_parent"
+                app:ms_background_color="@color/white" />
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:maxLength="11"
-                android:hint="手机号码"
-
-                android:inputType="number"
+                android:layout_height="wrap_content"
                 android:textColor="@color/vm_black_87"
-                android:textColorHint="@color/vm_black_38"
-                android:textSize="@dimen/vm_size_body" />
-        </android.support.design.widget.TextInputLayout>
+                android:textColorHint="@color/vm_black_38">
+
+                <com.fubang.video.widget.ClearableEditText
+                    android:id="@+id/et_login_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="@string/phone_number"
+                    android:inputType="number"
+                    android:maxLength="11"
+                    android:textColor="@color/vm_black_87"
+                    android:textColorHint="@color/vm_black_38"
+                    android:textSize="@dimen/vm_size_body" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,7 +74,7 @@
                     android:id="@+id/et_login_keyword"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:hint="验证码"
+                    android:hint="@string/auth_code"
                     android:inputType="number"
                     android:textColor="@color/vm_black_87"
                     android:textColorHint="@color/vm_black_38"
@@ -75,7 +89,7 @@
                 android:layout_marginRight="80dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/shap_rec_30dp_login_next"
-                android:text="获取验证码"
+                android:text="@string/get_auth_code"
                 android:textColor="@color/white"
                 app:countDown="30000"
                 app:countDownFormat="(%ds)"
@@ -90,7 +104,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:background="@drawable/shap_rec_30dp_login_next"
-            android:text="下一步"
+            android:text="@string/next_step"
             android:textColor="@color/white"
             android:textSize="14dp" />
 

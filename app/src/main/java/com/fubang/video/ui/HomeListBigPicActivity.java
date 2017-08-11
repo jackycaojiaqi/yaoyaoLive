@@ -330,8 +330,8 @@ public class HomeListBigPicActivity extends BaseActivity implements View.OnClick
             ImagUtil.setnoerror(context, AppConstant.BASE_IMG_URL + list_circle.get(position).getCphoto(), ivRankOnePic);
         }
         tvRankOneName.setText(list_circle.get(position).getCalias());
-        tvRankOneAge.setText(list_circle.get(position).getNage() != null ? list_circle.get(position).getNage() : "未知");
-        tvRankOneCity.setText(list_circle.get(position).getCcity() != null ? list_circle.get(position).getCcity() : "未知");
+        tvRankOneAge.setText(list_circle.get(position).getNage() != null ? list_circle.get(position).getNage() : context.getString(R.string.null_string));
+        tvRankOneCity.setText(list_circle.get(position).getCcity() != null ? list_circle.get(position).getCcity() :context.getString(R.string.null_string));
         if (list_circle.get(position).getNgender().equals("0")) {
             tvRankOneGender.setImageResource(R.drawable.ic_home_female);
         } else {
@@ -344,8 +344,8 @@ public class HomeListBigPicActivity extends BaseActivity implements View.OnClick
             ImagUtil.setnoerror(context, AppConstant.BASE_IMG_URL + list_circle.get(position).getCphoto(), ivRankTwoPic);
         }
         tvRankTwoName.setText(list_circle.get(position).getCalias());
-        tvRankTwoAge.setText(list_circle.get(position).getNage() != null ? list_circle.get(position).getNage() : "未知");
-        tvRankTwoCity.setText(list_circle.get(position).getCcity() != null ? list_circle.get(position).getCcity() : "未知");
+        tvRankTwoAge.setText(list_circle.get(position).getNage() != null ? list_circle.get(position).getNage() :context.getString(R.string.null_string));
+        tvRankTwoCity.setText(list_circle.get(position).getCcity() != null ? list_circle.get(position).getCcity() : context.getString(R.string.null_string));
         if (list_circle.get(position).getNgender().equals("0")) {
             tvRankTwoGender.setImageResource(R.drawable.ic_home_female);
         } else {
@@ -358,8 +358,8 @@ public class HomeListBigPicActivity extends BaseActivity implements View.OnClick
             ImagUtil.setnoerror(context, AppConstant.BASE_IMG_URL + list_circle.get(position).getCphoto(), ivRankThreePic);
         }
         tvRankThreeName.setText(list_circle.get(position).getCalias());
-        tvRankThreeAge.setText(list_circle.get(position).getNage() != null ? list_circle.get(position).getNage() : "未知");
-        tvRankThreeCity.setText(list_circle.get(position).getCcity() != null ? list_circle.get(position).getCcity() : "未知");
+        tvRankThreeAge.setText(list_circle.get(position).getNage() != null ? list_circle.get(position).getNage() : context.getString(R.string.null_string));
+        tvRankThreeCity.setText(list_circle.get(position).getCcity() != null ? list_circle.get(position).getCcity() :context.getString(R.string.null_string));
         if (list_circle.get(position).getNgender().equals("0")) {
             tvRankThreeGender.setImageResource(R.drawable.ic_home_female);
         } else {

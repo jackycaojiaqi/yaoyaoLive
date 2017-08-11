@@ -83,13 +83,18 @@
                     android:layout_toEndOf="@+id/tv_userinfo_age"
                     android:text="--" />
 
-                <ImageView
+                <TextView
                     android:id="@+id/iv_userinfo_state"
                     android:layout_width="40dp"
                     android:layout_height="30dp"
+                    android:text="空闲"
+                    android:textColor="@color/white"
+                    android:textSize="14dp"
+                    android:gravity="center"
+                    android:background="@drawable/shap_rec_30dp_login_next"
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/ic_userinfo_leisure" />
+                    />
 
                 <TextView
                     android:id="@+id/tv_userinfo_price"
@@ -123,7 +128,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="接听率"
+                        android:text="@string/pick_rate"
                         android:textColor="@color/gray_deep" />
 
                     <TextView
@@ -150,7 +155,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="投诉率"
+                        android:text="@string/conplaint_rate"
                         android:textColor="@color/gray_deep" />
 
                     <TextView
@@ -177,7 +182,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="累计时长"
+                        android:text="@string/phone_call_time"
                         android:textColor="@color/gray_deep" />
 
                     <TextView
@@ -204,7 +209,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="个人介绍"
+                    android:text="@string/self_introduction"
                     android:textColor="@color/gray_deep" />
 
                 <RelativeLayout
@@ -248,7 +253,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="生活圈"
+                    android:text="@string/life_circle"
                     android:textColor="@color/gray_deep" />
 
                 <TextView
@@ -282,7 +287,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="个性签名"
+                    android:text="@string/self_sign"
                     android:textColor="@color/gray_deep" />
 
                 <TextView
@@ -308,7 +313,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="最近通话"
+                    android:text="@string/recent_call_people"
                     android:textColor="@color/gray_deep" />
 
                 <android.support.v7.widget.RecyclerView
@@ -362,7 +367,7 @@
             android:layout_height="35dp"
             android:layout_centerInParent="true"
             android:background="@drawable/shap_rec_30dp_login_next"
-            android:text="视频通话"
+            android:text="@string/videocall"
             android:textColor="@color/white"
             android:textSize="16dp" />
     </RelativeLayout>

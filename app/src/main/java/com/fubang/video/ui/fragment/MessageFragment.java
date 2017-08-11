@@ -73,7 +73,7 @@ public class MessageFragment extends EaseConversationListFragment {
     protected void initView() {
         EventBus.getDefault().register(this);
         super.initView();
-        tvTitle.setText("消息");
+        tvTitle.setText(R.string.message);
         rllMessageSystem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -81,8 +81,8 @@ public class CircleFragment extends BaseFragment {
     }
 
     private void initview() {
-        tvTitle.setText("生活圈");
-        setText(tvSubmit, "规则");
+        tvTitle.setText(R.string.life_circle);
+        setText(tvSubmit, R.string.rule);
         srlCircle.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -220,9 +220,9 @@ public class CircleFragment extends BaseFragment {
                     public void onSuccess(Response<ReviewEntity> response) {
                         if (response.body().getStatus().equals("success")) {
                             initdate();
-                            ToastUtil.show(context, "送鲜花成功");
+                            ToastUtil.show(context, R.string.send_flower_success);
                         }else {
-                            ToastUtil.show(context, "送鲜花失败");
+                            ToastUtil.show(context, R.string.send_flower_fail);
                         }
                     }
 

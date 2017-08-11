@@ -94,7 +94,7 @@ public class RegisterActivity extends TakePhotoActivity {
     }
 
     private void initview() {
-        tvTitle.setText("注册");
+        tvTitle.setText(R.string.register_phone);
         phone = getIntent().getStringExtra(AppConstant.USERID);
     }
 
@@ -125,11 +125,11 @@ public class RegisterActivity extends TakePhotoActivity {
                 calias = etRegisterNickname.getText().toString().trim();
                 password = etRegisterPassword.getText().toString().trim();
                 if (StringUtil.isEmptyandnull(calias)) {
-                    ToastUtil.show(context, "昵称不能为空");
+                    ToastUtil.show(context, R.string.nick_name_not_null);
                     return;
                 }
                 if (StringUtil.isEmptyandnull(password)) {
-                    ToastUtil.show(context, "密码不能为空");
+                    ToastUtil.show(context,R.string.pwd_not_null);
                     return;
                 }
                 KLog.e(photo_name);
@@ -172,7 +172,7 @@ public class RegisterActivity extends TakePhotoActivity {
                                                         finish();
 //                                                        loginHX();
                                                     } else {
-                                                        ToastUtil.show(context, "密码错误");
+                                                        ToastUtil.show(context, getString(R.string.wrong_pwd));
                                                     }
                                                 }
 
@@ -182,7 +182,7 @@ public class RegisterActivity extends TakePhotoActivity {
                                                 }
                                             });
                                 } else {
-                                    ToastUtil.show(context, "注册失败");
+                                    ToastUtil.show(context,getString(R.string.register_fail));
                                 }
                             }
 
@@ -282,10 +282,9 @@ public class RegisterActivity extends TakePhotoActivity {
                                 photo_name = response.body().getInfo().getFilename();
                                 ImagUtil.setnoerror(context, AppConstant.BASE_IMG_URL + photo_name, ivRegisterPic);
                             } else {
-                                ToastUtil.show(context, "上传头像失败");
+                                ToastUtil.show(context, getString(R.string.upload_pick_fail));
                             }
                         }
-
                         @Override
                         public void onError(Response<UploadPhotoEntity> response) {
                             super.onError(response);

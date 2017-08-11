@@ -20,7 +20,7 @@
             android:layout_margin="10dp"
             android:background="@drawable/shap_rec_10dp_edit_bg"
             android:gravity="left"
-            android:hint="请输入您的信息"
+            android:hint="@string/please_input_info"
             android:padding="10dp"
             android:textColor="@color/black_3a3a3a" />
 
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="有钱任性"
+                android:text="@string/has_much_money"
                 android:textColor="@color/black_3a3a3a"
                 android:textSize="16dp" />
 
@@ -84,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="聊污污"
+                android:text="@string/liao_wuwu"
                 android:textColor="@color/black_3a3a3a"
                 android:textSize="16dp" />
 
@@ -118,7 +118,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="空虚寂寞冷"
+
+                android:text="@string/loneliness"
                 android:textColor="@color/black_3a3a3a"
                 android:textSize="16dp" />
 
@@ -152,7 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="声音控"
+                android:text="@string/voice_kong"
                 android:textColor="@color/black_3a3a3a"
                 android:textSize="16dp" />
 

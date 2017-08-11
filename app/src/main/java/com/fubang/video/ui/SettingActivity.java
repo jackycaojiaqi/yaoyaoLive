@@ -63,7 +63,7 @@ public class SettingActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "设置中心");
+        setText(tvTitle,R.string.setting_center );
     }
 
 
@@ -85,13 +85,13 @@ public class SettingActivity extends BaseActivity {
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                                 .title(R.string.has_new_apk)
                                 .content(R.string.has_new_download_or_not)
-                                .positiveText("下载")
-                                .negativeText("取消")
+                                .positiveText(R.string.download)
+                                .negativeText(R.string.cancel)
                                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                         if (Build.VERSION.SDK_INT < 23) {
-                                            DownloadAppUtils.downloadForAutoInstall(context, AppConstant.DOWNLOAD_URL, "yaoyao", "妖妖直播下载中");
+                                            DownloadAppUtils.downloadForAutoInstall(context, AppConstant.DOWNLOAD_URL, "yaoyao", "downloading");
                                         } else {
                                             String url = AppConstant.DOWNLOAD_URL;
                                             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -110,7 +110,7 @@ public class SettingActivity extends BaseActivity {
                         MaterialDialog dialog = builder.build();
                         dialog.show();
                     } else {
-                        ToastUtil.show(context, "已经是最新版本！");
+                        ToastUtil.show(context, getString(R.string.almost_new_version));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

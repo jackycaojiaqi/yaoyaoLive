@@ -166,7 +166,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
         filter.addAction("android.net.wifi.STATE_CHANGE");
-        registerReceiver(new NetworkConnectChangedReceiver(),filter);
+        registerReceiver(new NetworkConnectChangedReceiver(), filter);
     }
 
     /**
@@ -199,7 +199,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
         if (msg.getReasonid() == 101) {
             KLog.e("重复登录被请出");
         } else if (msg.getReasonid() == 102) {
-            ToastUtil.show(getApplicationContext(), "提出超时");
+            KLog.e("提出超时");
         } else if (msg.getReasonid() == 103) {
             KLog.e("自己离开房间");
         } else if (msg.getReasonid() == 104) {
@@ -232,14 +232,14 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
                     MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                             .title(R.string.has_new_apk)
                             .content(R.string.has_new_download_or_not)
-                            .positiveText("下载")
-                            .negativeText("取消")
+                            .positiveText(R.string.download)
+                            .negativeText(R.string.cancle)
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     if (Build.VERSION.SDK_INT < 23) {
                                         KLog.e("<23");
-                                        DownloadAppUtils.downloadForAutoInstall(context, AppConstant.DOWNLOAD_URL, "yaoyao", "妖妖直播下载中");
+                                        DownloadAppUtils.downloadForAutoInstall(context, AppConstant.DOWNLOAD_URL, "yaoyao", "downloading");
                                     } else {
                                         KLog.e(">=23");
                                         String url = AppConstant.DOWNLOAD_URL;
@@ -509,7 +509,7 @@ public class MainActivity extends BaseActivity implements AMapLocationListener {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if (System.currentTimeMillis() - firstTime > 2000) {
-                Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.enter_twice_quite, Toast.LENGTH_SHORT).show();
                 firstTime = System.currentTimeMillis();
             } else {
                 finish();

@@ -46,9 +46,9 @@ public class HomeOnlineAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.Onli
 
     @Override
     protected void convert(BaseViewHolder helper, HomeEntity.InfoBean.OnlineListBean item) {
-        helper.setText(R.id.tv_item_home_online_age,item.getNage()+"")
-                .setText(R.id.tv_item_home_online_city,item.getCcity()+"")
-                .setText(R.id.tv_item_home_online_name,item.getCalias()+"");
+        helper.setText(R.id.tv_item_home_online_age,item.getNage()==null?mContext.getString(R.string.null_string):item.getNage())
+                .setText(R.id.tv_item_home_online_city,item.getCcity()==null?mContext.getString(R.string.null_string):item.getCcity())
+                .setText(R.id.tv_item_home_online_name,item.getCalias()==null?mContext.getString(R.string.null_string):item.getCalias());
         if (!StringUtil.isEmptyandnull(item.getCphoto())){
             ImagUtil.setwithbg(mContext.getApplicationContext(), AppConstant.BASE_IMG_URL+item.getCphoto(),helper.getView(R.id.iv_item_home_online_bg));
         }
@@ -57,6 +57,5 @@ public class HomeOnlineAdapter extends BaseQuickAdapter<HomeEntity.InfoBean.Onli
         }else if (item.getNgender().equals("0")){
             helper.setImageResource(R.id.iv_item_home_online_gender,R.drawable.ic_register_female_checked);
         }
-
     }
 }

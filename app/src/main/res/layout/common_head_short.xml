@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="首页"
+        android:text="@string/first_page"
         android:layout_centerVertical="true"
         android:textColor="@color/head_title"
         android:textSize="18dp" />
@@ -34,7 +34,7 @@
         android:layout_alignParentRight="true"
         android:gravity="center"
         android:layout_centerVertical="true"
-        android:text="提交"
+        android:text="@string/submit"
         android:visibility="gone"
         android:textColor="@color/black_3a3a3a"
         android:textSize="16dp"

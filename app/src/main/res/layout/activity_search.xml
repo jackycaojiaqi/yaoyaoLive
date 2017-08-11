@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/shap_rec_10dp_edit_bg"
-            android:hint="请输入对方的妖妖ID"
+            android:hint="@string/please_Input_id"
             android:paddingLeft="10dp"
             android:singleLine="true"
             android:textSize="14dp" />
@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:background="@color/main_color"
-            android:text="查找"
+            android:text="@string/search_id"
             android:textColor="@color/white"
             android:textSize="16dp" />
     </LinearLayout>

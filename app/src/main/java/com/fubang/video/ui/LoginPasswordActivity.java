@@ -55,7 +55,7 @@ public class LoginPasswordActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "登录");
+        setText(tvTitle, R.string.login_phone);
         phone = getIntent().getStringExtra(AppConstant.USERID);
     }
 
@@ -65,7 +65,7 @@ public class LoginPasswordActivity extends BaseActivity {
             case R.id.btn_login_sign_in:
                 password = etLoginPassowrd.getText().toString().trim();
                 if (StringUtil.isEmptyandnull(password)) {
-                    ToastUtil.show(context, "密码不能为空");
+                    ToastUtil.show(context, R.string.pwd_not_null);
                     return;
                 }
                 OkGo.<LoginEntity>post(AppConstant.BASE_URL + AppConstant.URL_LOGIN)
@@ -88,7 +88,7 @@ public class LoginPasswordActivity extends BaseActivity {
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    ToastUtil.show(context, "密码错误");
+                                    ToastUtil.show(context,R.string.pwd_error );
                                 }
                             }
 

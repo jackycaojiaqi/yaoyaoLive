@@ -68,7 +68,7 @@ public class CircleListActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "朋友圈列表");
+        setText(tvTitle, context.getString(R.string.life_circle_list));
         srlCircleListList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -206,7 +206,7 @@ public class CircleListActivity extends BaseActivity {
                         if (response.body().getStatus().equals("success")) {
                             list_circle.get(position).setNumber("5");
                             circleAdapter.notifyDataSetChanged();
-                            ToastUtil.show(context, "送鲜花成功");
+                            ToastUtil.show(context, context.getString(R.string.success));
                         }
                     }
 

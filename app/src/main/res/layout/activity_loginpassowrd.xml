@@ -31,7 +31,7 @@
                 android:id="@+id/et_login_passowrd"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:hint="请输入您的密码"
+                android:hint="@string/please_input_pwd"
                 android:inputType="textPassword"
                 android:textColor="@color/vm_black_87"
                 android:textColorHint="@color/vm_black_38"
@@ -45,7 +45,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:background="@drawable/shap_rec_30dp_login_next"
-            android:text="登录"
+            android:text="@string/login_phone"
             android:textColor="@color/white"
             android:textSize="14dp" />
 
@@ -56,7 +56,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:background="@drawable/shap_rec_30dp_login_next"
-            android:text="忘记密码"
+            android:text="@string/forget_pwd"
             android:textColor="@color/white"
             android:textSize="14dp" />
 

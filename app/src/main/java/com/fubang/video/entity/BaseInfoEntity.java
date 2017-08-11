@@ -99,8 +99,8 @@ public class BaseInfoEntity {
         private String nlongitude;
         private String nlatitude;
         private String clocation;
-        private int chenggong;
-        private int shibai;
+        private int chenggong = 0;
+        private int shibai = 0;
         private int ntime;
         private List<RecentBean> recent;
 

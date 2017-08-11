@@ -127,4 +127,6 @@ dependencies {
     compile project(':giftlibrary')
     compile files('libs/alipaySdk-20170710.jar')
     compile 'com.skyfishjy.ripplebackground:library:1.0.1'
+
+    compile 'com.jaredrummler:material-spinner:1.1.0'
 }

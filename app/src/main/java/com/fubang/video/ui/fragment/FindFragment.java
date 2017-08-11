@@ -46,10 +46,10 @@ public class FindFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setText(tvTitle, "发现");
-        titles.add("土豪榜");
-        titles.add("魅力榜");
-        titles.add("礼物榜");
+        setText(tvTitle,R.string.find );
+        titles.add(getString(R.string.rank_of_rich));
+        titles.add(getString(R.string.rank_of_meili));
+        titles.add(getString(R.string.rank_of_gift));
         fragments.add(new FindTuHaoFrament());
         fragments.add(new FindMeiliFrament());
         fragments.add(new FindGiftFrament());

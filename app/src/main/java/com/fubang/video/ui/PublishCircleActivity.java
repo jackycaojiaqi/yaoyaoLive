@@ -181,17 +181,17 @@ public class PublishCircleActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.tv_submit:
                 if (StringUtil.isEmpty(path)) {
-                    ToastUtil.show(context, "请选择视频文件");
+                    ToastUtil.show(context, R.string.please_pick_video_file);
                     return;
                 }
-                if (gender == 1) {
+                if (gender == 0) {
                     if (money < 30) {
-                        ToastUtil.show(context, "女性发朋友圈需要30金币");
+                        ToastUtil.show(context,R.string.female_need_30nk );
                         return;
                     }
                 }
                 if (com.fubang.video.util.StringUtil.isEmptyandnull(etPublishContent.getText().toString().trim())) {
-                    ToastUtil.show(context, "请输入朋友圈内容");
+                    ToastUtil.show(context,R.string.please_input_life_circle_content);
                     return;
                 }
                 DialogFactory.showRequestDialog(context);
@@ -352,7 +352,7 @@ public class PublishCircleActivity extends BaseActivity {
                                 photo_name = response.body().getInfo().getFilename();
                                 send_life_to_server();
                             } else {
-                                ToastUtil.show(context, "上传头像失败");
+                                ToastUtil.show(context,R.string.upload_pick_fail );
                             }
                         }
 
@@ -410,7 +410,7 @@ public class PublishCircleActivity extends BaseActivity {
                                                 finish();
                                             } else {
                                                 DialogFactory.hideRequestDialog();
-                                                ToastUtil.show(context, "发送朋友圈失败");
+                                                ToastUtil.show(context,R.string.send_life_circle_fail );
                                             }
                                         }
 
@@ -434,12 +434,12 @@ public class PublishCircleActivity extends BaseActivity {
 
     private VodInfo getVodInfo(String name) {
         VodInfo vodInfo = new VodInfo();
-        vodInfo.setTitle("标题" + name);
-        vodInfo.setDesc("描述." + name);
+        vodInfo.setTitle("tab" + name);
+        vodInfo.setDesc("des." + name);
         vodInfo.setCateId(1);
         vodInfo.setIsProcess(true);
         List<String> tags = new ArrayList<>();
-        tags.add("标签" + name);
+        tags.add("tab" + name);
         vodInfo.setTags(tags);
         vodInfo.setIsShowWaterMark(false);
         vodInfo.setPriority(7);

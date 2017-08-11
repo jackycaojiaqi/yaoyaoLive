@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="昵称"
+            android:text="@string/nick_name"
             android:textColor="@color/gray_deep"
             android:textSize="18dp" />
 
@@ -37,7 +37,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:background="@null"
-            android:hint="请输入昵称"
+            android:hint="@string/please_input_nick_name"
             android:textColor="@color/gray_deep"
             android:textSize="18dp" />
     </LinearLayout>
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="性别"
+            android:text="@string/gender"
             android:textColor="@color/gray_deep"
             android:textSize="18dp" />
 
@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="密码"
+            android:text="@string/pwd"
             android:textColor="@color/gray_deep"
             android:textSize="18dp" />
 
@@ -141,7 +141,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:background="@null"
-            android:hint="请输入密码"
+            android:hint="@string/please_input_pwd"
             android:textColor="@color/gray_deep"
             android:textSize="18dp" />
     </LinearLayout>
@@ -160,7 +160,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="35dp"
         android:background="@drawable/shap_rec_30dp_login_next"
-        android:text="提交"
+        android:text="@string/submit"
         android:textColor="@color/white"
         android:textSize="14dp" />
 

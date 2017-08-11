@@ -160,7 +160,7 @@
                     android:layout_marginTop="260dp"
                     android:background="@drawable/ic_userinfo_trans_bg"
                     android:gravity="center"
-                    android:text="限时公开中"
+                    android:text="@string/time_limit_open"
                     android:textColor="@color/white" />
                 <Button
                     android:id="@+id/btn_circle_detail_state"
@@ -260,6 +260,6 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/shap_rec_10dp_edit_bg"
-            android:hint="请输入评论" />
+            android:hint="@string/please_input_commont" />
     </LinearLayout>
 </RelativeLayout>

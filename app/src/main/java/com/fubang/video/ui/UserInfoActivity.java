@@ -54,7 +54,7 @@ public class UserInfoActivity extends BaseActivity {
     @BindView(R.id.tv_userinfo_address)
     TextView tvUserinfoAddress;
     @BindView(R.id.iv_userinfo_state)
-    ImageView ivUserinfoState;
+    TextView ivUserinfoState;
     @BindView(R.id.tv_userinfo_price)
     TextView tvUserinfoPrice;
     @BindView(R.id.tv_userinfo_pickup_rate)
@@ -113,9 +113,9 @@ public class UserInfoActivity extends BaseActivity {
         user_id = getIntent().getStringExtra(AppConstant.USERID);
         type = getIntent().getIntExtra(AppConstant.TYPE, 0);
         if (type == 1) {
-            btnUserinfoAction.setText("编辑信息");
+            btnUserinfoAction.setText(R.string.edit_info);
         } else if (type == 0) {
-            btnUserinfoAction.setText("视频通话");
+            btnUserinfoAction.setText(R.string.videocall);
         }
         banner = (Banner) findViewById(R.id.banner_userinfo);
 
@@ -149,26 +149,42 @@ public class UserInfoActivity extends BaseActivity {
                                     }
                                 }
                             }
+                            //接听率
+                            if (response.body().getInfo().getShibai() == 0) {
+                                if (response.body().getInfo().getChenggong() != 0) {
+                                    tvUserinfoPickupRate.setText("100%");
+                                } else {
+                                    tvUserinfoPickupRate.setText("0%");
+                                }
+                            } else {
+                                if (response.body().getInfo().getChenggong() != 0) {
+                                    tvUserinfoPickupRate.setText(response.body().getInfo().getChenggong() /
+                                            (response.body().getInfo().getChenggong() + response.body().getInfo().getShibai()) + "%");
+                                } else {
+                                    tvUserinfoPickupRate.setText("0%");
+                                }
+                            }
                             banner.setImages(imags).setImageLoader(new GlideImageLoader()).start();//头像照片墙
                             if (response.body().getInfo().getNgender().equals("1")) {//性别
                                 ivUserinfoGender.setImageResource(R.drawable.ic_register_male_checked);
                             } else if (response.body().getInfo().getNgender().equals("0")) {
                                 ivUserinfoGender.setImageResource(R.drawable.ic_register_female_checked);
                             }
-                            tvUserinfoAddress.setText(response.body().getInfo().getCcity() + " ");//定位地址
-                            tvUserinfoAge.setText(response.body().getInfo().getNage() + " ");//年龄
+                            tvUserinfoAddress.setText(response.body().getInfo().getCcity()==null?getString(R.string.null_string):response.body().getInfo().getCcity());//定位地址
+                            tvUserinfoAge.setText(response.body().getInfo().getNage()==null?getString(R.string.null_string):response.body().getInfo().getNage());//年龄
+
                             if (response.body().getInfo().getNstatus().equals("0")) {//状态
-                                ivUserinfoState.setImageResource(R.drawable.ic_userinfo_leisure);
+                                ivUserinfoState.setText(context.getString(R.string.leasure));
                             } else if (response.body().getInfo().getNstatus().equals("1")) {//繁忙
-                                ivUserinfoState.setImageResource(R.drawable.ic_userinfo_busy);
+                                ivUserinfoState.setText(context.getString(R.string.busy));
                             } else if (response.body().getInfo().getNstatus().equals("2")) {//勿扰
-
+                                ivUserinfoState.setText(context.getString(R.string.dont_call));
                             } else if (response.body().getInfo().getNstatus().equals("10")) {//冻结
-
+                                ivUserinfoState.setText(context.getString(R.string.freze));
                             }
                             tvUserinfoPrice.setText(response.body().getInfo().getNprice() + "金币/分钟");//每分钟价格
                             ImagUtil.set(getApplicationContext(), AppConstant.BASE_IMG_URL + response.body().getInfo().getCvideophoto(), ivUserinfoSelfVideo);//个人介绍视频图片
-                            tvUserinfoSelfSign.setText(response.body().getInfo().getCidiograph() + " ");//签名
+                            tvUserinfoSelfSign.setText(response.body().getInfo().getCidiograph()==null?getString(R.string.null_string):response.body().getInfo().getCidiograph());//签名
                             //处理最近观看的用户列表
                             final List<BaseInfoEntity.InfoBean.RecentBean> list_recent = response.body().getInfo().getRecent();
                             //=========================recycleview

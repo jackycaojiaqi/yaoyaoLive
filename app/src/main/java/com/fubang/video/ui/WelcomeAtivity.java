@@ -31,10 +31,10 @@ public class WelcomeAtivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!StringUtil.isEmptyandnull(String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN,"")))){
+                if (!StringUtil.isEmptyandnull(String.valueOf(VMSPUtil.get(context, AppConstant.TOKEN, "")))) {
                     startActivity(new Intent(context, MainActivity.class));
                     finish();
-                }else {
+                } else {
 //                    Intent intent = new Intent(context,ForgetPasswordActivity.class);
 //                    intent.putExtra(AppConstant.PHONE,"15867083390");
 //                    startActivity(intent);

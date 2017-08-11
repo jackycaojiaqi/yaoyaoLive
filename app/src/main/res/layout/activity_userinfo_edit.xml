@@ -130,7 +130,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="签名"
+                    android:text="@string/self_sign"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -142,7 +142,7 @@
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="25dp"
                     android:lines="1"
-                    android:text="未添加"
+                    android:text="@string/null_string"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -169,7 +169,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="昵称"
+                    android:text="@string/nick_name"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="25dp"
-                    android:text="小新"
+                    android:text="@string/null_string"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -206,7 +206,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="性别"
+                    android:text="@string/gender"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="25dp"
-                    android:text="男"
+                    android:text="@string/null_string"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -244,7 +244,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="位置"
+                    android:text="@string/location"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -254,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="25dp"
-                    android:text="台州"
+                    android:text="@string/null_string"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -281,7 +281,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="生日"
+                    android:text="@string/birthday"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -291,7 +291,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="25dp"
-                    android:text="未添加"
+                    android:text="@string/null_string"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -318,7 +318,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="标签"
+                    android:text="@string/self_tab"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -328,7 +328,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="25dp"
-                    android:text="未添加"
+                    android:text="@string/null_string"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -356,7 +356,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="每分钟金币"
+                    android:text="@string/nk_per_minits"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 
@@ -366,7 +366,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="25dp"
-                    android:text="10金币/分钟"
+                    android:text="@string/null_string"
                     android:textColor="@color/gray_deep"
                     android:textSize="14dp" />
 

@@ -82,31 +82,31 @@ public class CircleListSelfAdapter extends BaseQuickAdapter<CircleListEntity.Inf
         String interval = dataUtils.getInterval(Long.parseLong(item.getDtime1()), System.currentTimeMillis() / 1000);
         //是否限时免费
         if (is_self) {
-            helper.setText(R.id.tv_circle_list_state, "限时公开中");
+            helper.setText(R.id.tv_circle_list_state, mContext.getString(R.string.time_limit_open));
             helper.getView(R.id.btn_circle_list_state).setVisibility(View.GONE);
         } else if (interval.contains("天")) {
-            helper.setText(R.id.tv_circle_list_state, "送花看视频");
+            helper.setText(R.id.tv_circle_list_state, mContext.getString(R.string.send_flow_to_see_video));
             if (item.getNumber().equals("0")) {  //没有送过花
                 helper.getView(R.id.btn_circle_list_state).setVisibility(View.VISIBLE);
                 helper.getView(R.id.btn_circle_list_state).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ToastUtil.show(mContext, "需要先送花再观看！");
+                        ToastUtil.show(mContext, mContext.getString(R.string.you_should_send_flower_first));
                     }
                 });
             } else {//送过花
                 helper.getView(R.id.btn_circle_list_state).setVisibility(View.GONE);
             }
         } else {
-            helper.setText(R.id.tv_circle_list_state, "限时公开中");
+            helper.setText(R.id.tv_circle_list_state,  mContext.getString(R.string.time_limit_open));
             helper.getView(R.id.btn_circle_list_state).setVisibility(View.GONE);
         }
 
         helper.setText(R.id.tv_circle_list_name, item.getCalias() + "")//名字
-                .setText(R.id.tv_circle_list_age, StringUtil.isEmptyandnull(item.getNage()) ? "未知" : item.getNage() + "")//年龄
-                .setText(R.id.tv_circle_list_timeslong, interval + "前发布")//多久前发布
-                .setText(R.id.tv_circle_list_city, StringUtil.isEmptyandnull(item.getCcity()) ? "未知" : item.getCcity() + "")//城市
-                .setText(R.id.tv_circle_list_see_num, "浏览次数" + item.getNscan())//浏览次数
+                .setText(R.id.tv_circle_list_age, StringUtil.isEmptyandnull(item.getNage()) ? mContext.getString(R.string.null_string) : item.getNage() + "")//年龄
+                .setText(R.id.tv_circle_list_timeslong, interval + mContext.getString(R.string.time_before))//多久前发布
+                .setText(R.id.tv_circle_list_city, StringUtil.isEmptyandnull(item.getCcity()) ?  mContext.getString(R.string.null_string) : item.getCcity() + "")//城市
+                .setText(R.id.tv_circle_list_see_num,  mContext.getString(R.string.see_times) + item.getNscan())//浏览次数
                 .setText(R.id.tv_circle_list_content, item.getCcontent() + "")//内容
                 .setText(R.id.tv_circlr_review_num, item.getNreview() + "")//评论次数
                 .setText(R.id.tv_circle_flower_num, item.getNflowercount() + "")//收到鲜花量

@@ -35,6 +35,6 @@ public class RuleActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "规则");
+        setText(tvTitle, R.string.rule);
     }
 }

@@ -75,7 +75,8 @@ public class EditInfoActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvSubmit, "提交");
+        setText(tvTitle,context.getString(R.string.edit));
+        setText(tvSubmit, context.getString(R.string.submit));
         if (type == 3) {
             llEditType12.setVisibility(View.GONE);
             llEditType3.setVisibility(View.VISIBLE);
@@ -83,7 +84,7 @@ public class EditInfoActivity extends BaseActivity {
                 @Override
                 public void onCheckedChanged(View buttonView, boolean isChecked) {
                     if (isChecked) {
-                        lable1 = "有钱任性";
+                        lable1 =  context.getString(R.string.has_much_money);
                     } else {
                         lable1 = null;
                     }
@@ -94,7 +95,7 @@ public class EditInfoActivity extends BaseActivity {
                 @Override
                 public void onCheckedChanged(View buttonView, boolean isChecked) {
                     if (isChecked) {
-                        lable2 = "聊污污";
+                        lable2 = context.getString(R.string.liao_wuwu);
                     } else {
                         lable2 = null;
                     }
@@ -105,7 +106,7 @@ public class EditInfoActivity extends BaseActivity {
                 @Override
                 public void onCheckedChanged(View buttonView, boolean isChecked) {
                     if (isChecked) {
-                        lable3 = "空虚寂寞冷";
+                        lable3 = context.getString(R.string.loneliness);
                     } else {
                         lable3 = null;
                     }
@@ -116,7 +117,7 @@ public class EditInfoActivity extends BaseActivity {
                 @Override
                 public void onCheckedChanged(View buttonView, boolean isChecked) {
                     if (isChecked) {
-                        lable4 = "声音控";
+                        lable4 = context.getString(R.string.voice_kong);
                     } else {
                         lable4 = null;
                     }
@@ -127,10 +128,10 @@ public class EditInfoActivity extends BaseActivity {
             llEditType3.setVisibility(View.GONE);
             if (type == 1) {
                 tvEditTips.setText(R.string.edit_sign);
-                setText(tvTitle, "修改签名");
+                setText(tvTitle, R.string.edit);
             } else if (type == 2) {
                 tvEditTips.setText(R.string.edit_name);
-                setText(tvTitle, "修改昵称");
+                setText(tvTitle,  R.string.edit);
             }
         }
     }
@@ -144,7 +145,7 @@ public class EditInfoActivity extends BaseActivity {
                     if (!StringUtil.isEmptyandnull(content)) {
                         update_imag_to_server(content);
                     } else {
-                        ToastUtil.show(context, "内容不能为空");
+                        ToastUtil.show(context, context.getString(R.string.content_not_null));
                     }
                 } else if (type == 3) {
                     String content = (lable1 == null ? "" : lable1 + ";") + (lable2 == null ? "" : lable2 + ";") + (lable3 == null ? "" : lable3 + ";") + (lable4 == null ? "" : lable4);
@@ -180,7 +181,7 @@ public class EditInfoActivity extends BaseActivity {
                     @Override
                     public void onSuccess(Response<PublishUpLoadEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-                            ToastUtil.show(context, "修改成功");
+                            ToastUtil.show(context,context.getString(R.string.success));
                             finish();
                         }
                     }

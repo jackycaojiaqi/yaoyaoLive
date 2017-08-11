@@ -182,7 +182,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
 
     private void initview() {
         back(ivBack);
-        tvTitle.setText("编辑信息");
+        tvTitle.setText(R.string.edit_info);
         list_nk.clear();
         list_nk.add("2");
         list_nk.add("4");
@@ -194,16 +194,16 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
         list_nk.add("16");
         list_nk.add("18");
         list_nk.add("20");
-        list_nk_name.add("2金币/分钟");
-        list_nk_name.add("4金币/分钟");
-        list_nk_name.add("6金币/分钟");
-        list_nk_name.add("8金币/分钟");
-        list_nk_name.add("10金币/分钟");
-        list_nk_name.add("12金币/分钟");
-        list_nk_name.add("14金币/分钟");
-        list_nk_name.add("16金币/分钟");
-        list_nk_name.add("18金币/分钟");
-        list_nk_name.add("20金币/分钟");
+        list_nk_name.add("2"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("4"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("6"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("8"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("10"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("12"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("14"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("16"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("18"+getString(R.string.nk_of_per_minits));
+        list_nk_name.add("20"+getString(R.string.nk_of_per_minits));
         //获取权限
         if (ContextCompat.checkSelfPermission(UserinfoEditActivity.this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             PermissionGen.with(UserinfoEditActivity.this)
@@ -225,19 +225,19 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
 
                         if (response.body().getStatus().equals("success")) {
                             if (response.body().getInfo().getNgender().equals("1")) {//性别
-                                tvEditinfoGender.setText("男");
+                                tvEditinfoGender.setText(R.string.male);
                                 rllEditinfoNk.setVisibility(View.GONE);
                             } else if (response.body().getInfo().getNgender().equals("0")) {
-                                tvEditinfoGender.setText("女");
+                                tvEditinfoGender.setText(R.string.female);
                                 rllEditinfoNk.setVisibility(View.VISIBLE);
                             }
                             //每分钟金币数
-                            tvEditinfoNk.setText(response.body().getInfo().getNprice() + "金币/分钟");
-                            tvEditinfoSign.setText(response.body().getInfo().getCidiograph() + " ");//签名
+                            tvEditinfoNk.setText(response.body().getInfo().getNprice() +getString(R.string.nk_of_per_minits));
+                            tvEditinfoSign.setText(response.body().getInfo().getCidiograph()==null?getString(R.string.null_string):response.body().getInfo().getCidiograph());//签名
                             tvEditinfoName.setText(response.body().getInfo().getCalias() + " ");//姓名
-                            tvEditinfoAddress.setText(response.body().getInfo().getCcity() + " ");//城市
-                            tvEditinfoBirth.setText(response.body().getInfo().getCbirthdate() + " ");//生日
-                            tvEditinfoTab.setText(response.body().getInfo().getClabel() + " ");//标签
+                            tvEditinfoAddress.setText(response.body().getInfo().getCcity()==null?getString(R.string.null_string):response.body().getInfo().getCcity());//城市
+                            tvEditinfoBirth.setText(response.body().getInfo().getCbirthdate()==null?getString(R.string.null_string):response.body().getInfo().getCbirthdate());//生日
+                            tvEditinfoTab.setText(response.body().getInfo().getClabel()==null?getString(R.string.null_string):response.body().getInfo().getClabel());//标签
                             if (!StringUtil.isEmptyandnull(response.body().getInfo().getCphoto())) {
                                 pic_name = response.body().getInfo().getCphoto();
                                 ImagUtil.set(context, AppConstant.BASE_IMG_URL + pic_name, ivEditinfoPic1);//个人头像
@@ -454,7 +454,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                 OptionsPickerView pvOptions = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
                     @Override
                     public void onOptionsSelect(int options1, int option2, int options3, View v) {
-                        tvEditinfoNk.setText(list_nk.get(options1) + "金币/分钟");
+                        tvEditinfoNk.setText(list_nk.get(options1) +getString(R.string.nk_of_per_minits) );
                         update_et_to_server(list_nk.get(options1));
                     }
                 }).build();
@@ -573,7 +573,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                                 photo_name = response.body().getInfo().getFilename();
                                 send_life_to_server();
                             } else {
-                                ToastUtil.show(context, "上传头像失败");
+                                ToastUtil.show(context, getString(R.string.upload_pick_fail));
                             }
                         }
 
@@ -601,7 +601,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                     @Override
                     public void onSuccess(Response<PublishUpLoadEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-                            ToastUtil.show(context, "上传视频成功");
+                            ToastUtil.show(context,R.string.upload_video_success );
                             initdate();
                         }
                     }
@@ -658,12 +658,12 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
 
     private VodInfo getVodInfo(String name) {
         VodInfo vodInfo = new VodInfo();
-        vodInfo.setTitle("标题" + name);
-        vodInfo.setDesc("描述." + name);
+        vodInfo.setTitle("tab" + name);
+        vodInfo.setDesc("des." + name);
         vodInfo.setCateId(1);
         vodInfo.setIsProcess(true);
         List<String> tags = new ArrayList<>();
-        tags.add("标签" + name);
+        tags.add("tab" + name);
         vodInfo.setTags(tags);
         vodInfo.setIsShowWaterMark(false);
         vodInfo.setPriority(7);
@@ -815,7 +815,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                                 update_imag_to_server(imagwall_str.toString());
                             }
                         } else {
-                            ToastUtil.show(context, "上传头像失败");
+                            ToastUtil.show(context, R.string.upload_pick_fail);
                         }
                     }
 
@@ -856,7 +856,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                     @Override
                     public void onSuccess(Response<PublishUpLoadEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-                            ToastUtil.show(context, "上传成功");
+                            ToastUtil.show(context, R.string.upload_success);
                             initdate();
                         }
                     }
@@ -892,7 +892,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
                     @Override
                     public void onSuccess(Response<PublishUpLoadEntity> response) {
                         if (response.body().getStatus().equals("success")) {
-                            ToastUtil.show(context, "上传成功");
+                            ToastUtil.show(context, R.string.upload_success);
                             initdate();
                         }
                     }
@@ -948,7 +948,7 @@ public class UserinfoEditActivity extends BaseActivity implements TakePhoto.Take
             extinfo_type = 0;
             KLog.e(aMapLocation.getCity());
             if (StringUtil.isEmptyandnull(aMapLocation.getCity())) {
-                ToastUtil.show(context, "定位失败，请开启应用定位权限");
+                ToastUtil.show(context,R.string.location_fail );
                 return;
             }
             VMSPUtil.put(context, AppConstant.CITY, aMapLocation.getCity());

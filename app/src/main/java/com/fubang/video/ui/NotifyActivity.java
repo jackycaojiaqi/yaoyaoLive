@@ -59,7 +59,7 @@ public class NotifyActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "朋友圈列表");
+        setText(tvTitle, R.string.notify_list);
         srlRank.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

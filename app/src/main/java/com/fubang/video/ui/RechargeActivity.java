@@ -83,7 +83,7 @@ public class RechargeActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "金币充值");
+        setText(tvTitle, R.string.nk_recharge);
     }
 
     private void initdate() {
@@ -134,7 +134,7 @@ public class RechargeActivity extends BaseActivity {
                             Thread payThread = new Thread(payRunnable);
                             payThread.start();
                         } else {
-                            ToastUtil.show(context, "获取订单信息失败");
+                            ToastUtil.show(context, R.string.get_order_info_fail);
                         }
                     }
 
@@ -190,11 +190,11 @@ public class RechargeActivity extends BaseActivity {
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
                         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-                        Toast.makeText(context, "支付成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.pay_success, Toast.LENGTH_SHORT).show();
                         initdate();
                     } else {
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-                        Toast.makeText(context, "支付失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.pay_fail, Toast.LENGTH_SHORT).show();
                     }
                     break;
                 }

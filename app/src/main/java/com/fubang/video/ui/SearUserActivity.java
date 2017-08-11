@@ -50,7 +50,7 @@ public class SearUserActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "ID搜索");
+        setText(tvTitle,R.string.search_by_id );
     }
 
 
@@ -60,7 +60,7 @@ public class SearUserActivity extends BaseActivity {
             case R.id.btn_search_commit:
                 String content = etSearch.getText().toString().trim();
                 if (StringUtil.isEmptyandnull(content)) {
-                    ToastUtil.show(context, "请输入ID");
+                    ToastUtil.show(context, getString(R.string.please_Input_id));
                     return;
                 }
                 initdate(content);
@@ -88,7 +88,7 @@ public class SearUserActivity extends BaseActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            ToastUtil.show(context, "您所搜索的用户不存在");
+                            ToastUtil.show(context, getString(R.string.id_not_exit));
                         }
                     }
 

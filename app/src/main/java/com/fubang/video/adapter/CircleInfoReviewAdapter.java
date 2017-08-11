@@ -50,7 +50,7 @@ public class CircleInfoReviewAdapter extends BaseQuickAdapter<CircleInfoEntity.I
             helper.setText(R.id.tv_circle_list_review_hname_and_neirong,item.getCreview()+" ");
         } else {//是回复
             helper.setText(R.id.tv_circle_list_review_pname,item.getPcalias()+" ");
-            helper.setText(R.id.tv_circle_list_review_huifu_or_maohao,"回复:");
+            helper.setText(R.id.tv_circle_list_review_huifu_or_maohao,mContext.getString(R.string.reply_with_mao));
             helper.setText(R.id.tv_circle_list_review_hname_and_neirong,item.getHcalias()+"  "+item.getCreview());
         }
     }

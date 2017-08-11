@@ -30,7 +30,7 @@
         android:layout_alignParentRight="true"
         android:background="@drawable/ic_gift_sure_bg"
         android:gravity="center"
-        android:text="赠送"
+        android:text="@string/give_gift"
         android:textColor="@color/white"
         android:textSize="18dp" />
 

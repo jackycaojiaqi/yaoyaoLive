@@ -91,7 +91,7 @@ public class ChatActivity extends BaseActivity {
                         if (response.body().getStatus().equals("fail")) {//不存在这个手机号码
                             toChatUserId = response.body().getInfo().getNuserid();
                         } else {//存在这个手机号码
-                            ToastUtil.show(context, "对方帐号不存在");
+                            ToastUtil.show(context, context.getString(R.string.phone_not_exist));
                         }
                     }
 
@@ -141,7 +141,7 @@ public class ChatActivity extends BaseActivity {
         if (msg.getReasonid() == 101) {
             KLog.e("重复登录被请出");
         } else if (msg.getReasonid() == 102) {
-            ToastUtil.show(getApplicationContext(), "提出超时");
+          KLog.e("提出超时");
         } else if (msg.getReasonid() == 103) {
             KLog.e("自己离开房间");
         } else if (msg.getReasonid() == 104) {
@@ -184,11 +184,11 @@ public class ChatActivity extends BaseActivity {
     @Subscriber(tag = "onTradeGiftError")
     public void onTradeGiftError(TradeGiftError msg) {
         if (msg.getErrorid() == 504) {
-            ToastUtil.show(context, "用户金币不足");
+            ToastUtil.show(context, context.getString(R.string.nk_not_enough));
         } else if (msg.getErrorid() == 501) {
-            ToastUtil.show(context, "礼物未维护");
+           KLog.e( "礼物未维护");
         } else if (msg.getErrorid() == 404) {
-            ToastUtil.show(context, "数据库操作失败");
+           KLog.e( "数据库操作失败");
         }
     }
 
@@ -198,7 +198,7 @@ public class ChatActivity extends BaseActivity {
     @Subscriber(tag = "onTradeGiftNotify")
     public void onTradeGiftNotify(TradeGiftNotify obj) {
         KLog.e(obj.getPhoto());
-        giftControl.loadGift(new GiftModel(String.valueOf(gift_id), "送出礼物：", 1,
+        giftControl.loadGift(new GiftModel(String.valueOf(gift_id),context.getString(R.string.send_gift), 1,
                 String.valueOf(obj.getGiftid()), String.valueOf(obj.getUserid()), obj.getAlias(),
                 obj.getPhoto(), System.currentTimeMillis()));
     }
@@ -230,7 +230,7 @@ public class ChatActivity extends BaseActivity {
             if (msg.getType() == 1) {
                 callBack.success("成功");
             } else {
-                ToastUtil.show(context, "扣币操作失败");
+               KLog.e("扣币操作失败");
             }
             callBack = null;//用完之后重置
         }
@@ -240,9 +240,9 @@ public class ChatActivity extends BaseActivity {
     @Subscriber(tag = "onUserPayError")
     public void onUserPayError(UserPayError msg) {
         if (msg.getErrorid() == 504) {
-            callBack.fail("金币不足");
+            callBack.fail(context.getString(R.string.nk_not_enough));
         } else if (msg.getErrorid() == 404) {
-            callBack.fail("数据库操作失败");
+            callBack.fail(context.getString(R.string.fail));
         }
     }
 
@@ -315,7 +315,7 @@ public class ChatActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (gift_id == -1) {
-                    ToastUtil.show(context, "请先选择一种礼物");
+                    ToastUtil.show(context, context.getString(R.string.please_pick_one_gift));
                     return;
                 }
                 roomMain.getRoom().getChannel().SendGift(Integer.parseInt(toChatUserId), gift_id, 1,

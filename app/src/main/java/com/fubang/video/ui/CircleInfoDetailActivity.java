@@ -130,27 +130,27 @@ public class CircleInfoDetailActivity extends BaseActivity {
                             String interval = dataUtils.getInterval(Long.parseLong(response.body().getInfo().getDtime1()), System.currentTimeMillis() / 1000);
                             //是否限时免费
                             if (interval.contains("天")) {
-                                tvCircleDetailState.setText("送花看视频");
+                                tvCircleDetailState.setText(context.getString(R.string.send_flow_to_see_video));
                                 if (response.body().getInfo().getNumber().equals("0")) {  //没有送过花
                                     btnCircleDetailState.setVisibility(View.VISIBLE);
                                     btnCircleDetailState.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            ToastUtil.show(context, "需要先送花再观看！");
+                                            ToastUtil.show(context, context.getString(R.string.you_should_send_flower_first));
                                         }
                                     });
                                 } else {//送过花
                                     btnCircleDetailState.setVisibility(View.GONE);
                                 }
                             } else {
-                                tvCircleDetailState.setText("限时公开中");
+                                tvCircleDetailState.setText(context.getString(R.string.time_limit_open));
                                 btnCircleDetailState.setVisibility(View.GONE);
                             }
                             tvCircleInfoName.setText(response.body().getInfo().getCalias() + "");//名字
-                            tvCircleInfoAge.setText(StringUtil.isEmptyandnull(response.body().getInfo().getNage()) ? "未知" : response.body().getInfo().getNage() + "");//年龄
-                            tvCircleInfoTimeslong.setText(interval + "前发布");//多久前发布
-                            tvCircleInfoCity.setText(StringUtil.isEmptyandnull(response.body().getInfo().getCcity()) ? "未知" : response.body().getInfo().getCcity() + "");//城市
-                            tvCircleInfoSeeNum.setText("浏览次数" + response.body().getInfo().getNscan());//浏览次数
+                            tvCircleInfoAge.setText(StringUtil.isEmptyandnull(response.body().getInfo().getNage()) ? context.getString(R.string.null_string) : response.body().getInfo().getNage() + "");//年龄
+                            tvCircleInfoTimeslong.setText(interval + context.getString(R.string.time_before));//多久前发布
+                            tvCircleInfoCity.setText(StringUtil.isEmptyandnull(response.body().getInfo().getCcity()) ? context.getString(R.string.null_string) : response.body().getInfo().getCcity() + "");//城市
+                            tvCircleInfoSeeNum.setText(context.getString(R.string.see_times) + response.body().getInfo().getNscan());//浏览次数
                             tvCircleInfoContent.setText(response.body().getInfo().getCcontent() + "");//内容
                             tvCirclrReviewNum.setText(response.body().getInfo().getNreview() + "");//评论次数
                             tvCircleFlowerNum.setText(response.body().getInfo().getNflowercount() + "");//收到鲜花量
@@ -168,7 +168,7 @@ public class CircleInfoDetailActivity extends BaseActivity {
                             reviewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                                    etCircleInfo.setHint("回复：" + list_review.get(position).getPcalias());
+                                    etCircleInfo.setHint(context.getString(R.string.reply_with_mao) + list_review.get(position).getPcalias());
                                     //不是回复其他人
                                     if (!list_review.get(position).getNbuddyid().equals("0") && !StringUtil.isEmptyandnull(list_review.get(position).getNbuddyid())) {
                                         nreplyid = list_review.get(position).getNbuddyid();
@@ -218,7 +218,7 @@ public class CircleInfoDetailActivity extends BaseActivity {
 
     private void initview() {
         back(ivBack);
-        setText(tvTitle, "详情");
+        setText(tvTitle, context.getString(R.string.detail));
         etCircleInfo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -227,11 +227,11 @@ public class CircleInfoDetailActivity extends BaseActivity {
                         KLog.e("发送");
                         send_review_content(etCircleInfo.getText().toString().trim());
                     } else {
-                        ToastUtil.show(context, "内容不能为空");
+                        ToastUtil.show(context, context.getString(R.string.content_not_null));
                     }
                     closeKeyboard();
                     etCircleInfo.setText("");
-                    etCircleInfo.setHint("请输入评论");
+                    etCircleInfo.setHint(context.getString(R.string.please_input_commont));
                     return true;
                 }
                 return false;
@@ -259,7 +259,7 @@ public class CircleInfoDetailActivity extends BaseActivity {
                     public void onSuccess(Response<ReviewEntity> response) {
                         if (response.body().getStatus().equals("success")) {
                             initdate();
-                            ToastUtil.show(context, "评论成功");
+                            ToastUtil.show(context, context.getString(R.string.success));
                         }
                     }
 
@@ -287,9 +287,9 @@ public class CircleInfoDetailActivity extends BaseActivity {
                     public void onSuccess(Response<ReviewEntity> response) {
                         if (response.body().getStatus().equals("success")) {
                             initdate();
-                            ToastUtil.show(context, "送鲜花成功");
+                            ToastUtil.show(context, context.getString(R.string.success));
                         } else {
-                            ToastUtil.show(context, "送鲜花失败");
+                            ToastUtil.show(context, context.getString(R.string.fail));
                         }
                     }
 

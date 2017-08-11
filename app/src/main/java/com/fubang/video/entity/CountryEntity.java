@@ -1,13 +1,4 @@
-package com.fubang.video.adapter;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
-import com.fubang.video.R;
-import com.fubang.video.entity.CircleInfoEntity;
-import com.fubang.video.entity.NoticeEntity;
-import com.fubang.video.util.StringUtil;
-
-import java.util.List;
+package com.fubang.video.entity;
 
 /**
  * 　　　　　　　　┏┓　　　┏┓
@@ -32,20 +23,47 @@ import java.util.List;
  * 　　　　　　　　　　┃┫┫　┃┫┫
  * 　　　　　　　　　　┗┻┛　┗┻┛
  * ━━━━━━神兽出没━━━━━━
- * Created by jacky on 17/3/10.
+ * <p>
+ * 项目名称：fubangzhibo
+ * 类描述：
+ * 创建人：dell
+ * 创建时间：2016-05-24 15:28
+ * 修改人：dell
+ * 修改时间：2016-05-24 15:28
+ * 修改备注：
  */
-public class NotifyAdapter extends BaseQuickAdapter<NoticeEntity.InfoBean.DataListBean, BaseViewHolder> {
-    private List<NoticeEntity.InfoBean.DataListBean> list;
+public class CountryEntity {
+    private String quhao;
+    private String country_name;
+    private String totle_content;
 
-    public NotifyAdapter(int layoutResId, List data) {
-        super(layoutResId, data);
-        list = data;
+    public String getQuhao() {
+        return quhao;
     }
 
-    @Override
-    protected void convert(BaseViewHolder helper, NoticeEntity.InfoBean.DataListBean item) {
-        helper.setText(R.id.tv_notify_name, item.getCopalias() + " ");
-        helper.setText(R.id.tv_notify_time, item.getDtime() != null ? item.getDtime().substring(0, 16) : mContext.getString(R.string.null_string));
-        helper.setText(R.id.tv_notify_content, item.getCcontent() + " ");
+    public void setQuhao(String quhao) {
+        this.quhao = quhao;
+    }
+
+    public String getCountry_name() {
+        return country_name;
+    }
+
+    public void setCountry_name(String country_name) {
+        this.country_name = country_name;
+    }
+
+    public String getTotle_content() {
+        return totle_content;
+    }
+
+    public void setTotle_content(String totle_content) {
+        this.totle_content = totle_content;
+    }
+
+    public CountryEntity(String quhao, String country_name, String totle_content) {
+        this.quhao = quhao;
+        this.country_name = country_name;
+        this.totle_content = totle_content;
     }
 }
