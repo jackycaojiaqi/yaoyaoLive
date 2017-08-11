@@ -150,14 +150,23 @@ public class RoomPoolChannel implements ClientSocketHandler {
         obj.setParam2(obj.getParam0() - 2 * (obj.getParam0() & 0xffff));
         sendPack(head, obj);
     }
+    private long before = 0;
+    private long after = 0;
 
     // 发起心跳
     public void SendKeepAliveReq() {
+        before = System.currentTimeMillis();
         Header head = new Header();
         head.setVersion((byte) 1);
         KeepLiveRepuest obj = new KeepLiveRepuest();
-        KLog.e("发起心跳");
+
         // 构建消息头
+        head.setCmd1(Header.MessageType_mxpClientPingCommand);
+        if (before - after < 3000) {
+            return;
+        }
+        KLog.e("发起心跳");
+        after = before;
         head.setCmd1(Header.MessageType_mxpClientPingCommand);
         sendPack(head, obj);
     }

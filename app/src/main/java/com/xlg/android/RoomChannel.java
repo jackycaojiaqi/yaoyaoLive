@@ -190,15 +190,25 @@ public class RoomChannel implements ClientSocketHandler {
         sendPack(head, obj);
     }
 
+    private long before = 0;
+    private long after = 0;
+
     // 发起心跳
     public void SendKeepAliveReq() {
+        before = System.currentTimeMillis();
         Header head = new Header();
         head.setVersion((byte) 1);
         KeepLiveRepuest obj = new KeepLiveRepuest();
-        KLog.e("发起心跳");
+
         // 构建消息头
         head.setCmd1(Header.MessageType_mxpClientPingCommand);
+        if (before - after < 3000) {
+            return;
+        }
+        after = before;
+        KLog.e("发起心跳");
         sendPack(head, obj);
+
     }
 
     // 发起登录房间请求
@@ -217,7 +227,7 @@ public class RoomChannel implements ClientSocketHandler {
 
     // 发送礼物请求
     public void SendGift(int toid, int gift_id, int num, String alias, String photo) {
-        KLog.e("SendGift "+ toid+" " + gift_id + " " + num + " " + alias + " " + photo);
+        KLog.e("SendGift " + toid + " " + gift_id + " " + num + " " + alias + " " + photo);
         Header head = new Header();
         head.setVersion((byte) 1);
         TradeGiftRecord obj = new TradeGiftRecord();
@@ -287,6 +297,7 @@ public class RoomChannel implements ClientSocketHandler {
         head.setCmd1(Header.MessageType_mxpUserLinkRequest);
         sendPack(head, obj);
     }
+
     // 男性用户取消链接请求
     public void SendUserDisLinkRequest() {
         Header head = new Header();
